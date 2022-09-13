@@ -170,6 +170,8 @@ int** solve(int** grid) {
     return NULL;
 }
 
+
+// Write the solved grid in the filename.result file
 void write_grid(int** grid, char * filename) {
 
     char result[strlen(filename) + 6];
@@ -194,6 +196,8 @@ void write_grid(int** grid, char * filename) {
     fclose(fp);
 }
 
+
+// DEBUG
 void print_grid(int** grid) {
 
     for (int i = 0; i < 9; i++) {
