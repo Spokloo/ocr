@@ -51,4 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# IDE Preferences
+.idea/
+
+# Our executable
 solver/solver
