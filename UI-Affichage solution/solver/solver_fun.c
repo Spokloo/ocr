@@ -2,25 +2,40 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+/*
+ * Function: convert
+ * -----------------
+ *
+ * Converts and returns the sudoku grid in filename into
+ * a more usable format
+ *
+ * filename: name of the file containing the sudoku grid to
+ *           convert
+ * 
+ * returns: | the int[9][9] sudoku grid containing in each
+ *          position either the numbers in the grid or 0 if no 
+ *          number was found
+ */
 int** convert(char * filename) {
     
     FILE * fp = fopen(filename, "r");
-    char line[12];
+    char line[12]; // 9 numbers + 2 space + final character
 
     int **grid = malloc(sizeof(int*) *9);
     for (int j = 0; j < 9; j++) {
         grid[j] = malloc(sizeof(int*) *9);
     }
-    int y = 0;
-    int x;
+    int y = 0, x;
 
+    // fgets put one line from filename in line each time it is called
     while (fgets(line, sizeof(line), fp) != NULL) {
-        if (line[0] != 10) {
+        if (line[0] != 10) { // char 10 is End Of Line
             x = 0;
             for (int i = 0; i < 12; i++) {
-                if (line[i] != 32) {
-                    if (line[i] != 46 && line[i] != 0) {
-                        grid[y][x] = line[i] - '0';
+                if (line[i] != 32) { // char 32 is Space
+                    if (line[i] != 46 && line[i] != 0) { // char 46 is .
+                        grid[y][x] = line[i] - '0'; // char '0' is 48
                     }
                     x++;
                 }
@@ -35,6 +50,19 @@ int** convert(char * filename) {
 
 
 
+/*
+ * Function check_line
+ * -------------------
+ *
+ * Checks if the line grid[line] is a valid suduko line
+ * (if it contains numbers from 1 to 9 only one time)
+ *
+ * grid: the suduko grid to check
+ * line: the line index to check
+ *
+ * returns: | 1 if grid[line] is a valid sudoku line
+ *          | 0 if grid[line] is not a valid sudoku line
+ */
 int check_line(int** grid, int line) {
 
     int check_array[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -53,6 +81,21 @@ int check_line(int** grid, int line) {
     return check;
 }
 
+
+
+/*
+ * Function check_column
+ * -------------------
+ *
+ * Checks if the column grid[column] is a valid suduko column
+ * (if it contains numbers from 1 to 9 only one time)
+ *
+ * grid: the suduko grid to check
+ * column: the column index to check
+ *
+ * returns: | 1 if grid[column] is a valid sudoku column
+ *          | 0 if grid[column] is not a valid sudoku column
+ */
 int check_column(int** grid, int column) {
 
     int check_array[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -71,6 +114,23 @@ int check_column(int** grid, int column) {
     return check;
 }
 
+
+
+/*
+ * Function check_square
+ * -------------------
+ *
+ * Checks if the square starting at grid[start_x][start_y]
+ * is a valid suduko square (if it contains numbers
+ * from 1 to 9 only one time)
+ *
+ * grid: the suduko grid to check
+ * start_x: x index if the upper-left cell of the square
+ * start_y: y index if the upper-left cell of the square
+ *
+ * returns: | 1 if grid[start_x][start_y] is a valid sudoku square
+ *          | 0 if grid[start_x][start_y] is not a valid sudoku square
+ */
 int check_square(int** grid, int start_x, int start_y) {
     
     int check_array[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -91,6 +151,19 @@ int check_square(int** grid, int start_x, int start_y) {
     return check;
 }
 
+
+
+/*
+ * Function check_grid
+ * -------------------
+ *
+ * Checks if the grid is a valid sudoku grid
+ *
+ * grid: the suduko grid to check
+ *
+ * returns: | 1 if grid is a valid sudoku grid
+ *          | 0 if grid is not a valid sudoku grid
+ */
 int check_grid(int** grid) {
 
     int check = 1;
@@ -108,6 +181,18 @@ int check_grid(int** grid) {
     return check;
 }
 
+
+
+/*
+ * Function: is_board_solved
+ * -------------------------
+ *
+ * Checks if grid is a solved sudoku board
+ *
+ * grid: the grid to check
+ *
+ * returns : | 1 if grid is solved | 0 if grid is not solved
+ */
 int is_board_solved(int** grid) {
 
     int check = 0;
@@ -124,6 +209,18 @@ int is_board_solved(int** grid) {
     return check;
 }
 
+
+
+/*
+ * Function: solve
+ * ---------------
+ *
+ * Solve the sudoku grid using the backtracking method
+ *
+ * grid: the grid to solve
+ *
+ * returns: | the solved grid | NULL if the grid is not solvable
+ */
 int** solve(int** grid) {
 
     int **solved_grid = grid; 
@@ -171,7 +268,17 @@ int** solve(int** grid) {
 }
 
 
-// Write the solved grid in the filename.result file
+
+/*
+ * Function: write_grid
+ * --------------------
+ *
+ * Write the solved grid in the filename.result file
+ *
+ * grid: the solved grid
+ * filename: the file where the unsolved grid is
+ *
+ */
 void write_grid(int** grid, char * filename) {
 
     char result[strlen(filename) + 6];
@@ -197,7 +304,16 @@ void write_grid(int** grid, char * filename) {
 }
 
 
-// DEBUG
+
+/*
+ * Function: print_grid
+ * --------------------
+ *
+ * Print the grid in stdout for debugging. The grid
+ * is printed in the same style as it is in the file
+ *
+ * grid: the grid to print
+ */
 void print_grid(int** grid) {
 
     for (int i = 0; i < 9; i++) {
