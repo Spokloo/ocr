@@ -53,6 +53,9 @@ dkms.conf
 
 # IDE Preferences
 .idea/
+.vscode/
+.history/
+*.vsix
 
 # Our executable
 solver/solver
