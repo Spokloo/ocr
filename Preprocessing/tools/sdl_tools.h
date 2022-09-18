@@ -1,5 +1,5 @@
-#ifndef SPLIT_H
-#define SPLIT_H
+#ifndef SDL_TOOLS_H
+#define SDL_TOOLS_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>

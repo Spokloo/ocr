@@ -1,17 +1,22 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
 LDFLAGS =
-LDLIBS = `pkg-config --libs sdl2` -lSDL2_image
+LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-SRC = main.c sdl_tools.c image.c
+#SRC = main.c sdl_tools.c image.c
 #OBJ = ${SRC:.c=.o}
-EXEC = echo "Nothing"
+TOOLS = tools/*
 
 all:
 	echo "Nothing"
 
+.PHONY: grayscale
 grayscale:
-	${CC} ${CFLAGS} ${SRC} ${LDLIBS} -o $@
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
-clean_grayscale:
-	${RM} grayscale result_grayscale.png
+.PHONY: rotation
+rotation:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
+clean:
+	${RM} grayscale.exe result_grayscale.jpg rotation.exe result_rotation.jpg

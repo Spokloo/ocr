@@ -22,16 +22,16 @@ Image load_image(char *path);
 /**
  * Save the Image structure into current directory.
  */
-void save_image(Image *img);
+void save_image(Image *img, char* newFileName);
+
+/*
+ * Copy all content of source to destination.
+ */
+void copy_image(Image *src, Image *dst);
 
 /**
  * Free allocated memory used by Image structure.
  */
 void free_image(Image *img);
-
-/**
- * Apply grayscale filter into image.
- */
-void grayscale(Image *img);
 
 #endif

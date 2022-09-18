@@ -12,7 +12,7 @@ Image load_image(char *path){
     Image img;
     img.path = path;
 
-    SDL_Surface *image_surface;
+    SDL_Surface *image_surface = NULL;
     image_surface = IMG_Load(path);
     if (!image_surface)
         errx(1, "Can't load %s: %s", path, IMG_GetError());
@@ -25,34 +25,59 @@ Image load_image(char *path){
     if(img.matrix == NULL)
         errx(1, "Error during allocation of pixels' matrix.");
 
-    for (unsigned int i = 0; i < img.width; i++)
-    {
-        img.matrix[i] = malloc(img.height * sizeof(Pixel));
-        if(img.matrix[i] == NULL)
-            errx(1, "Error during allocation of pixels' matrix.");
-    }
-
-    //Fill the pixels' matrix with Pixel structure (RGB value)
     Uint32 pixel;
     Uint8 r, g, b;
     for (unsigned int x = 0; x < img.width; x++)
     {
+        img.matrix[x] = malloc(img.height * sizeof(Pixel));
+        if(img.matrix[x] == NULL)
+            errx(1, "Error during allocation of pixels' matrix.");
+
+        //Fill the pixels' matrix with Pixel structure (RGB value)
         for (unsigned int y = 0; y < img.height; y++)
         {
             pixel = get_pixel(image_surface, x, y);
             SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
-            img.matrix[x][y].r = r;
-            img.matrix[x][y].g = g;
-            img.matrix[x][y].b = b;
+            img.matrix[x][y] = (Pixel) {r, g, b};
         }
     }
+
+    SDL_FreeSurface(image_surface);
+    SDL_Quit();
     return img;
+}
+
+/*
+ * Copy all content of source to destination.
+ */
+void copy_image(Image *src, Image *dst){
+
+    dst->path = src->path;
+    dst->height = src->height;
+    dst->width = src->width;
+
+    //Allocate memory
+    dst->matrix = malloc(src->width * sizeof(Pixel*));
+    if(dst->matrix == NULL)
+        errx(1, "Error during allocation of pixels' matrix.");
+
+    for (unsigned int x = 0; x < src->width; x++)
+    {
+        dst->matrix[x] = malloc(src->height * sizeof(Pixel));
+        if(dst->matrix[x] == NULL)
+            errx(1, "Error during allocation of pixels' matrix.");
+        
+        //Copy each pixel
+        for (unsigned int y = 0; y < src->height; y++)
+            dst->matrix[x][y] = src->matrix[x][y];
+    }
+
 }
 
 /*
  * Save the Image structure into current directory.
  */
-void save_image(Image *img){
+void save_image(Image *img, char* newFileName){
 
     SDL_Surface *image_surface =
             SDL_CreateRGBSurface(0, img->width, img->height, 32, 0, 0, 0, 0);
@@ -69,8 +94,9 @@ void save_image(Image *img){
         }
     }
 
-    SDL_SaveBMP(image_surface , "result_grayscale.png");
+    SDL_SaveBMP(image_surface , newFileName);
     SDL_FreeSurface(image_surface);
+    SDL_Quit();
 }
 
 /*
@@ -82,25 +108,4 @@ void free_image(Image *img){
     for(unsigned int i = 0; i < width; i++)
         free(img->matrix[i]);
     free(img->matrix);
-}
-
-/*
- * Apply grayscale filter into image.
- */
-void grayscale(Image *img){
-
-    Pixel pixel;
-    unsigned int average;
-    for (unsigned int x = 0; x < img->width; x++)
-    {
-        for (unsigned int y = 0; y < img->height; y++)
-        {
-            pixel = img->matrix[x][y];
-            average = 0.3 * pixel.r + 0.59 * pixel.g + 0.11 * pixel.b;
-
-            img->matrix[x][y].r = average;
-            img->matrix[x][y].g = average;
-            img->matrix[x][y].b = average;
-        }
-    }
 }
