@@ -18,5 +18,11 @@ grayscale:
 rotation:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
+.PHONY: convolution
+convolution:
+	${CC} ${CFLAGS} ${TOOLS} grayscale/*e.[ch] $@/* ${LDLIBS} -o $@.exe
+
 clean:
-	${RM} grayscale.exe result_grayscale.jpg rotation.exe result_rotation.jpg
+	${RM} grayscale.exe result_grayscale.jpg \
+	rotation.exe result_rotation.jpg \
+	convolution.exe result_convolution.jpg

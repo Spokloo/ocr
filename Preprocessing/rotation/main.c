@@ -12,9 +12,10 @@ int main(int argc, char **argv){
     //rotateSDL(argv[1], param);
 
     Image wow = load_image(argv[1]);
-    rotate(&wow, param);
+    for(int i = 0; i < 20; i++)
+        rotate(&wow, param);
     save_image(&wow, "result_rotation.jpg");
     free_image(&wow);
-    
+
     return 0;
 }
