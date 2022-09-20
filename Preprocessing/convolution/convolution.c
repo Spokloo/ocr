@@ -5,6 +5,7 @@
 
 /*
  * Getting the 8 pixels values around the pixel at (x,y).
+ * x and y are always correct depending to matrix size.
  */
 void get_around_pixels(Pixel **matrix, char color, unsigned char *around_pixels,
                                     unsigned int x, unsigned int y){
