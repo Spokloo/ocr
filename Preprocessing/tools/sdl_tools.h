@@ -2,7 +2,6 @@
 #define SDL_TOOLS_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 /**
  * Get the pixel value at (x,y) on the SDL Surface.

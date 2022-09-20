@@ -1,7 +1,6 @@
 #include "convolution.h"
 #include "../tools/image.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 /*
  * Getting the 8 pixels values around the pixel at (x,y).

@@ -89,7 +89,8 @@ void save_image(Image *img, char* newFileName){
         for (unsigned int y = 0; y < img->height; y++)
         {
             pixel = img->matrix[x][y];
-            SDL_pixel = SDL_MapRGB(image_surface->format, pixel.r, pixel.g, pixel.b);
+            SDL_pixel = SDL_MapRGB(image_surface->format, 
+                                                    pixel.r, pixel.g, pixel.b);
             put_pixel(image_surface, x, y, SDL_pixel);
         }
     }
