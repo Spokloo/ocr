@@ -7,8 +7,8 @@
 /*
  * Load an image into code with Image structure.
  */
-Image load_image(char *path){
-
+Image load_image(char *path)
+{
     Image img;
     img.path = path;
 
@@ -50,8 +50,8 @@ Image load_image(char *path){
 /*
  * Copy all content of source to destination.
  */
-void copy_image(Image *src, Image *dst){
-
+void copy_image(Image *src, Image *dst)
+{
     dst->path = src->path;
     dst->height = src->height;
     dst->width = src->width;
@@ -75,10 +75,33 @@ void copy_image(Image *src, Image *dst){
 }
 
 /*
+ * Getting the w*w pixels values around the pixel at (x,y).
+ * x and y are always correct depending to matrix size.
+ */
+void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y, 
+                                    unsigned char w, Pixel *around_pixels)
+{
+    //for odd numbers
+    unsigned char fix = 0;
+    unsigned char index = 0;
+    if (w % 2 != 0)
+        fix = 1;
+    
+    for(unsigned int i = x - w/2; i < x + w/2 + fix; i++)
+    {
+        for(unsigned int j = y - w/2; j < y + w/2 + fix; j++)
+        {
+            around_pixels[index] = matrix[i][j];
+            index++;
+        }
+    }
+}
+
+/*
  * Save the Image structure into current directory.
  */
-void save_image(Image *img, char* newFileName){
-
+void save_image(Image *img, char* newFileName)
+{
     SDL_Surface *image_surface =
             SDL_CreateRGBSurface(0, img->width, img->height, 32, 0, 0, 0, 0);
 
@@ -103,8 +126,8 @@ void save_image(Image *img, char* newFileName){
 /*
  * Free allocated memory used by Image structure.
  */
-void free_image(Image *img){
-
+void free_image(Image *img)
+{
     unsigned width = img->width;
     for(unsigned int i = 0; i < width; i++)
         free(img->matrix[i]);

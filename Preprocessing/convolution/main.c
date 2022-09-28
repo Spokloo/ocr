@@ -11,7 +11,7 @@ int main(int argc, char **argv){
     //float kernel[9] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
     //float kernel[9] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
     float kernel[9] = {0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11};
-    //grayscale(&wow);
+    grayscale(&wow);
     convolution(&wow, kernel);
     save_image(&wow, "result_convolution.jpg");
     free_image(&wow);
