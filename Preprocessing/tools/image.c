@@ -1,7 +1,7 @@
 #include "image.h"
-#include "sdl_tools.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_pixels.h>
 #include <err.h>
 
 /*
@@ -12,10 +12,14 @@ Image load_image(char *path)
     Image img;
     img.path = path;
 
-    SDL_Surface *image_surface = NULL;
-    image_surface = IMG_Load(path);
-    if (!image_surface)
+    SDL_Surface *tmp = IMG_Load(path);
+    if (tmp == NULL)
         errx(1, "Can't load %s: %s", path, IMG_GetError());
+    SDL_Surface *image_surface =
+                SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
+    if (image_surface == NULL)
+        errx(1, "Can't load %s: %s", path, IMG_GetError());
+    SDL_FreeSurface(tmp);
 
     img.width = image_surface->w;
     img.height = image_surface->h;
@@ -25,8 +29,10 @@ Image load_image(char *path)
     if(img.matrix == NULL)
         errx(1, "Error during allocation of pixels' matrix.");
 
-    Uint32 pixel;
+    Uint32 *pixels = image_surface->pixels;
+    SDL_PixelFormat *format = image_surface->format;
     Uint8 r, g, b;
+    SDL_LockSurface(image_surface);
     for (unsigned int x = 0; x < img.width; x++)
     {
         img.matrix[x] = malloc(img.height * sizeof(Pixel));
@@ -36,14 +42,14 @@ Image load_image(char *path)
         //Fill the pixels' matrix with Pixel structure (RGB value)
         for (unsigned int y = 0; y < img.height; y++)
         {
-            pixel = get_pixel(image_surface, x, y);
-            SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
+            SDL_GetRGB(pixels[y * img.width + x], format, &r, &g, &b);
             img.matrix[x][y] = (Pixel) {r, g, b};
         }
     }
-
+    SDL_UnlockSurface(image_surface);
     SDL_FreeSurface(image_surface);
     SDL_Quit();
+
     return img;
 }
 
@@ -66,7 +72,7 @@ void copy_image(Image *src, Image *dst)
         dst->matrix[x] = malloc(src->height * sizeof(Pixel));
         if(dst->matrix[x] == NULL)
             errx(1, "Error during allocation of pixels' matrix.");
-        
+
         //Copy each pixel
         for (unsigned int y = 0; y < src->height; y++)
             dst->matrix[x][y] = src->matrix[x][y];
@@ -78,7 +84,7 @@ void copy_image(Image *src, Image *dst)
  * Getting the w*w pixels values around the pixel at (x,y).
  * x and y are always correct depending to matrix size.
  */
-void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y, 
+void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y,
                                     unsigned char w, Pixel *around_pixels)
 {
     //for odd numbers
@@ -86,7 +92,7 @@ void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y,
     unsigned char index = 0;
     if (w % 2 != 0)
         fix = 1;
-    
+
     for(unsigned int i = x - w/2; i < x + w/2 + fix; i++)
     {
         for(unsigned int j = y - w/2; j < y + w/2 + fix; j++)
@@ -103,21 +109,25 @@ void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y,
 void save_image(Image *img, char* newFileName)
 {
     SDL_Surface *image_surface =
-            SDL_CreateRGBSurface(0, img->width, img->height, 32, 0, 0, 0, 0);
+            SDL_CreateRGBSurfaceWithFormat(0, img->width, img->height, 32,
+                                                    SDL_PIXELFORMAT_RGB888);
 
-    Uint32 SDL_pixel;
-    Pixel pixel;
+    Uint32 *pixels = image_surface->pixels;
+    SDL_PixelFormat *format = image_surface->format;
+    Pixel myPixel;
+    SDL_LockSurface(image_surface);
+
     for (unsigned int x = 0; x < img->width; x++)
     {
         for (unsigned int y = 0; y < img->height; y++)
         {
-            pixel = img->matrix[x][y];
-            SDL_pixel = SDL_MapRGB(image_surface->format, 
-                                                    pixel.r, pixel.g, pixel.b);
-            put_pixel(image_surface, x, y, SDL_pixel);
+            myPixel = img->matrix[x][y];
+            pixels[y * image_surface->w + x] = SDL_MapRGB(format, myPixel.r,
+                                                        myPixel.g, myPixel.b);
         }
     }
 
+    SDL_UnlockSurface(image_surface);
     SDL_SaveBMP(image_surface , newFileName);
     SDL_FreeSurface(image_surface);
     SDL_Quit();
