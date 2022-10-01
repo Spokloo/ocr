@@ -10,7 +10,14 @@ void blur(Image *img);
 
 /*
  * Applying the Sobel filter (edge detection).
+ * Return the matrix of normalized gradient direction.
  */
-void sobel(Image *img);
+Pixel **sobel(Image *img);
+
+/*
+ * Removal of non-maximums: remove all "weak" values by following the angle of 
+ * their gradient.
+ */
+void non_maximum_suppression(Image *img, Pixel **gradients_dirs);
 
 #endif

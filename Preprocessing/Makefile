@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra
 LDFLAGS =
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-SRC = contrast/contrast.c grayscale/grayscale.c canny/canny.c main.c
+SRC = contrast/contrast.c grayscale/grayscale.c canny/canny_tools.c canny/canny.c main.c
 #OBJ = ${SRC:.c=.o}
 TOOLS = tools/*
 
