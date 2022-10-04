@@ -13,9 +13,10 @@ int main(int argc, char **argv)
 
     grayscale(&img);
     //contrast(&img, 128);
-    blur(&img);
-    Pixel **gradients_dirs = sobel(&img);
+    //blur(&img);
+    unsigned int **gradients_dirs = sobel(&img);
     non_maximum_suppression(&img, gradients_dirs);
+    threashold(&img, gradients_dirs, 110, 120);
     save_image(&img, "result.jpg");
     free_image(&img);
 

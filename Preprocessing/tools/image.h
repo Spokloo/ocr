@@ -25,10 +25,10 @@ Image load_image(char *path);
 void save_image(Image *img, char* newFileName);
 
 /*
- * Getting the w*w pixels values around the pixel at (x,y).
- * x and y are always correct depending to matrix size.
+ * Getting the w*w pixels values around the pixel at (x,y) and put them
+ * into around_pixels list.
  */
-void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y, 
+void get_around_pixels(Image *matrix, unsigned int x, unsigned int y, 
                                     unsigned char w, Pixel *around_pixels);
 
 /*

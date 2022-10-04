@@ -81,23 +81,28 @@ void copy_image(Image *src, Image *dst)
 }
 
 /*
- * Getting the w*w pixels values around the pixel at (x,y).
- * x and y are always correct depending to matrix size.
+ * Getting the w*w pixels values around the pixel at (x,y) and put them
+ * into around_pixels list.
  */
-void get_around_pixels(Pixel **matrix, unsigned int x, unsigned int y,
+void get_around_pixels(Image *img, unsigned int x, unsigned int y,
                                     unsigned char w, Pixel *around_pixels)
 {
     //for odd numbers
     unsigned char fix = 0;
     unsigned char index = 0;
+    int wi = img->width;
+    int h = img->height;
     if (w % 2 != 0)
         fix = 1;
-
-    for(unsigned int i = x - w/2; i < x + w/2 + fix; i++)
+    
+    for(int i = x - w/2; i < (int) (x + w/2 + fix); i++)
     {
-        for(unsigned int j = y - w/2; j < y + w/2 + fix; j++)
+        for(int j = y - w/2; j < (int) (y + w/2 + fix); j++)
         {
-            around_pixels[index] = matrix[i][j];
+            if(i >= 0 && j >= 0 && i < wi && j < h)
+                around_pixels[index] = img->matrix[i][j];
+            else
+                around_pixels[index] = (Pixel) {0, 0, 0};
             index++;
         }
     }

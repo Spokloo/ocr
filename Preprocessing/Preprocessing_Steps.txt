@@ -1,5 +1,0 @@
-Redressement de l'image (De-skew)
-renforcement des contrastes / normalisation
-Réduction des bruits (Despeckle, Gauss)
-Binarisation (noir ou blanc, Otsu)
-Inversion des couleurs
