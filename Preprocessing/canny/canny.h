@@ -28,4 +28,9 @@ unsigned int **non_maximum_suppression(Image *img, unsigned int **grad_dirs);
 void threashold(Image *img, unsigned int **grad_dirs, 
                                             unsigned int tl, unsigned int th);
 
+/*
+ * Apply the canny filter (without blur).
+ */
+void canny(Image *img);
+
 #endif

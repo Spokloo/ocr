@@ -166,3 +166,13 @@ void threashold(Image *img, unsigned int **grad_dirs,
         free(grad_dirs[x]);
     free(grad_dirs);
 }
+
+/*
+ * Apply the canny filter (without blur).
+ */
+void canny(Image *img)
+{
+    unsigned int **gradients_dirs = sobel(img);
+    non_maximum_suppression(img, gradients_dirs);
+    threashold(img, gradients_dirs, 75, 150);
+}
