@@ -29,7 +29,13 @@ void threashold(Image *img, unsigned int **grad_dirs,
                                             unsigned int tl, unsigned int th);
 
 /*
- * Apply the canny filter (without blur).
+ * Compute high threashold thanks to Otsu Algorithm.
+ */
+unsigned int compute_high_threashold(Image *img);
+
+/*
+ * Apply the canny filter.
+ * (Sobel, Non-Maximum Suppression and Double Threashold)
  */
 void canny(Image *img);
 

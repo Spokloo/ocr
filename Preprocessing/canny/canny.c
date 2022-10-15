@@ -161,18 +161,64 @@ void threashold(Image *img, unsigned int **grad_dirs,
             }
         }
     }
-    //free useless variables
-    for(unsigned int x = 0; x < img->width; x++)
-        free(grad_dirs[x]);
-    free(grad_dirs);
 }
 
 /*
- * Apply the canny filter (without blur).
+ * Compute high threashold thanks to Otsu Algorithm.
+ */
+unsigned int compute_high_threashold(Image *img)
+{
+    //https://www.ipol.im/pub/art/2016/158/article_lr.pdf
+    //build image histogram
+    unsigned long histo[256];
+    for(unsigned int i = 0; i < 256; i++)
+        histo[i] = 0;
+    //skip borders because there are not treated by Sobel
+    for(unsigned int x = 1; x < img->width-1; x++)
+    {
+        for(unsigned int y = 1; y < img->height-1; y++)
+            histo[img->matrix[x][y].r] += 1;
+    }
+
+    //Apply Otsu algorithm
+    float total_sum, partial_sum, w0, w1, u0, u1, sigma2, s2_max, tmp = 0;
+    unsigned int t = 0;
+    unsigned long size = img->height * img->width;
+    for(unsigned int i = 0; i < 256; i++)
+        total_sum += i * histo[i];
+    
+    for(unsigned int i = 0; i < 256; i++)
+    {
+        w0 += histo[i];
+        if(w0 == 0)
+            continue;
+        w1 = size - w0;
+        partial_sum += i * histo[i];
+        u0 = partial_sum / w0;
+        u1 = (total_sum - partial_sum) / w1;
+        tmp = u0-u1;
+        sigma2 = w0*w1*tmp*tmp;
+        if (sigma2 > s2_max)
+        {
+            t = i;
+            s2_max = sigma2;
+        }
+    }
+    return t;
+}
+
+/*
+ * Apply the Canny filter.
+ * (Sobel, Non-Maximum Suppression and Double Threashold)
  */
 void canny(Image *img)
 {
     unsigned int **gradients_dirs = sobel(img);
     non_maximum_suppression(img, gradients_dirs);
-    threashold(img, gradients_dirs, 75, 150);
+    unsigned int th = compute_high_threashold(img);
+    unsigned int tl = 0.5*th;
+    threashold(img, gradients_dirs, tl, th);
+    for(unsigned int x = 0; x < img->width; x++)
+        free(gradients_dirs[x]);
+    free(gradients_dirs);
 }

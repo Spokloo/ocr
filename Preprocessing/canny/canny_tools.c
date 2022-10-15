@@ -1,6 +1,7 @@
 #include "canny_tools.h"
 #include "../tools/image.h"
 #include <math.h>
+#include <stdlib.h>
 
 /*
  * Compute the convolution product. Not a matrix product!
@@ -48,14 +49,12 @@ unsigned int normalize_grad_dir(float dir)
     dir = 180 * dir / M_PI; // Convert in degrees
     if (dir < 0)
         dir += 180;
-
     if (dir >= 22.5 && dir < 67.5)
         return 45;
     if (dir >= 67.5 && dir < 112.5)
         return 90;
     if (dir >= 112.5 && dir < 157.5)
         return 135;
-
     return 0;
 }
 

@@ -25,4 +25,5 @@ unsigned int normalize_grad_dir(float dir);
  */
 void get_grad_neighbours(unsigned int grad_dir, Image *img,
                     unsigned int x, unsigned int y, unsigned int *neighbours);
+
 #endif
