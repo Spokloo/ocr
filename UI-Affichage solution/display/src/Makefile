@@ -40,4 +40,4 @@ sudocr-gui: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o $(IDIR)/*~ sudocr-gui
+	rm -f $(ODIR)/*.o sudocr-gui

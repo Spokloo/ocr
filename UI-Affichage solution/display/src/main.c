@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include "rotate.h"
 #include <gtk/gtk.h>
+#include "rotate.h"
 #include <string.h>
+#include <stdio.h>
 
 
 typedef struct GImage {
@@ -10,6 +10,60 @@ typedef struct GImage {
     char *path;
 
 } GImage;
+
+// okrtj
+// qeb
+// oigầaguqùeoifiga74
+// qgija$ef54a"$e)dfb,a
+// = =
+//     ézêerf  éjepfiuzsduvnap"etoruig )   épzerd$
+//     R
+//         PÉIIZEFJ    É⁾'PEOFR =$ ẐEPFVK  87  7
+//         ZE+9
+//
+//             ÉZFÀOIAEÀRÇFG_I Z   ²&ÉZR=F OEDIVHRKZS*QZPORFU  ÀÉ)ÀRGOV 6  578 Z
+//
+//             AED)ÀI AZZ)EÊR NF   $*Q
+
+char * format_path(char * src) {
+    int last_slash = 0, i = 0, j = 0;
+
+    while (src[i] != '\0') {
+        if (src[i] == '/') {last_slash = i;}
+        i++;
+    }
+    printf("%s, %d, %d\n", src, last_slash, i);
+    
+    if (last_slash == 0 && src[0] != '/') {
+        return src;
+    }
+    char * res = malloc(i - last_slash);
+    i = last_slash +1;
+    while (src[i] != '\0') {
+        res[j] = src[i];
+        j++;
+        i++;
+    }
+    printf("%s, %li\n", res, strlen(res));
+
+    return res;
+}
+
+
+void on_open_button_file_activated(GtkFileChooserButton *open_button, gpointer user_data) {
+    printf("Image loaded\n");
+
+    GImage *f_img = user_data;
+
+    gchar * filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open_button));
+
+    f_img->path = filename;
+    
+    GError **error = NULL;
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 200, 200, TRUE, error);
+    gtk_image_set_from_pixbuf(&f_img->image, pixbuf);
+
+}
 
 
 void on_rotate_scale_value_changed(GtkRange *range, gpointer user_data) {
@@ -21,9 +75,10 @@ void on_rotate_scale_value_changed(GtkRange *range, gpointer user_data) {
    
     rotate(&img, value);
 
+    char * path = format_path(f_img->path);
     char *buffer = malloc(7 + sizeof(f_img->path));
     strcpy(buffer, "rotate_");
-    strcat(buffer, f_img->path);
+    strcat(buffer, path);
     save_image(&img, buffer);
 
     GError **error = NULL;
@@ -33,7 +88,6 @@ void on_rotate_scale_value_changed(GtkRange *range, gpointer user_data) {
     free(buffer);
     free_image(&img);
     g_object_unref(pixbuf);
-
 }
 
 
@@ -43,30 +97,34 @@ void on_activate(GtkApplication *app)
     GtkBuilder *builder = gtk_builder_new_from_file("test.glade");
 
     GtkWidget *window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
-    //GtkButton *save_button = GTK_BUTTON(gtk_builder_get_object(builder, "save_button"));
-    //GtkButton *load_button = GTK_BUTTON(gtk_builder_get_object(builder, "load_button"));
-    //GtkButton *solve_button = GTK_BUTTON(gtk_builder_get_object(builder, "solve_button"));
-
-    GtkScale *scale = GTK_SCALE(gtk_builder_get_object(builder, "rotate_scale"));
-    gtk_range_set_range(GTK_RANGE(scale), 0, 360);
-    //g_signal_connect(scale, "value-changed", G_CALLBACK(print_scale), NULL);
-
-
-    GError **error = NULL;
-    char * path = "image_01.jpeg";
     GtkImage *image = GTK_IMAGE(gtk_builder_get_object(builder, "former_image"));
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(path, 200, 200, TRUE, error);
-    gtk_image_set_from_pixbuf(image, pixbuf);
+    GtkScale *scale = GTK_SCALE(gtk_builder_get_object(builder, "rotate_scale"));
+    GtkFileChooserButton *open_button = GTK_FILE_CHOOSER_BUTTON(gtk_builder_get_object(builder, "open_button"));
+    //GtkButton *solve_button = GTK_BUTTON(gtk_builder_get_object(builder, "solve_button"));
+    
 
+    // VARIABLES
     GImage *former_image = malloc(sizeof(GImage));
     former_image->image = *image;
-    former_image->path = path;
+    //////////
+
+
+    // OPEN FILE DIALOG
+    g_signal_connect(open_button, "file-set", G_CALLBACK(on_open_button_file_activated), former_image);
+    /////////////
+
+
+
+    // IMAGE ROTATION
+    gtk_range_set_range(GTK_RANGE(scale), 0, 360);
 
     g_signal_connect(GTK_RANGE(scale), "value-changed", G_CALLBACK(on_rotate_scale_value_changed), former_image);
+    //////////////////
 
     
 
     gtk_builder_connect_signals(builder, NULL);
+
     g_object_unref(builder);
     gtk_window_set_application(GTK_WINDOW(window), app);
     gtk_widget_show_all(window);
