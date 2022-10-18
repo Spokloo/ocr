@@ -75,17 +75,17 @@ void on_rotate_scale_value_changed(GtkRange *range, gpointer user_data) {
    
     rotate(&img, value);
 
-    char * path = format_path(f_img->path);
-    char *buffer = malloc(7 + sizeof(f_img->path));
-    strcpy(buffer, "rotate_");
-    strcat(buffer, path);
-    save_image(&img, buffer);
+    /*char * path = format_path(f_img->path);*/
+    /*char *buffer = malloc(7 + sizeof(f_img->path));*/
+    /*strcpy(buffer, "rotate_");*/
+    /*strcat(buffer, path);*/
+    save_image(&img, "res.jpg");
 
     GError **error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(buffer, 200, 200, TRUE, error);
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale("res.jpg", 200, 200, TRUE, error);
     gtk_image_set_from_pixbuf(&f_img->image, pixbuf);
 
-    free(buffer);
+    //free(buffer);
     free_image(&img);
     g_object_unref(pixbuf);
 }
