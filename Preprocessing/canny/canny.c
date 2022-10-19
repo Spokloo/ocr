@@ -5,51 +5,6 @@
 #include <math.h>
 
 /*
- * Applying a blur with a convolution matrix.
- */
-void blur(Image *img)
-{
-    Image original_image;
-    copy_image(img, &original_image);
-    
-    //flou gaussien
-    //double kernel[9] = 
-    //       {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625};
-    unsigned char kernel_size = 25;
-    double kernel[25] = 
-        {0.0036630037, 0.0146520147, 0.0256410256, 0.0146520147, 0.0036630037,
-        0.0146520147, 0.0586080586, 0.0952380952, 0.0586080586, 0.0146520147,
-        0.0256410256, 0.0952380952, 0.1501831502, 0.0952380952, 0.0256410256,
-        0.0146520147, 0.0586080586, 0.0952380952, 0.0586080586, 0.0146520147,
-        0.0036630037, 0.0146520147, 0.0256410256, 0.0146520147, 0.0036630037};
-    Pixel around_pixels[kernel_size];
-
-    for(unsigned int x = 0; x < img->width; x++)
-    {
-        for(unsigned int y = 0; y < img->height; y++)
-        {
-            //Get pixels around (x,y) and the current pixel
-            get_around_pixels(&original_image, x, y, 
-                                    sqrt(kernel_size), (Pixel*) &around_pixels);
-
-            //Red
-            img->matrix[x][y].r = 
-                convolution_product(around_pixels, (double*) &kernel, 
-                                                            kernel_size, 'r');
-            //Green
-            img->matrix[x][y].g = 
-                convolution_product(around_pixels, (double*) &kernel, 
-                                                            kernel_size, 'g');
-            //Blue
-            img->matrix[x][y].b = 
-                convolution_product(around_pixels, (double*) &kernel, 
-                                                            kernel_size, 'b');
-        }
-    }
-    free_image(&original_image);
-}
-
-/*
  * Applying the Sobel filter (edge detection).
  * Return the matrix of normalized gradient direction.
  */
@@ -62,8 +17,8 @@ unsigned int **sobel(Image *img)
 
     unsigned int newval;
     double gx, gy;
-    double kernel_x[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
-    double kernel_y[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
+    float kernel_x[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
+    float kernel_y[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
     
     for(unsigned int x = 0; x < img->width; x++)
     {
@@ -76,9 +31,9 @@ unsigned int **sobel(Image *img)
             //Compute only for one value because input is grayscale image
             //so r = g = b
             gx = convolution_product((Pixel*) &around_pixels,
-                                                (double*) &kernel_x, 9, 'r');
+                                                (float*) &kernel_x, 9, 'r');
             gy = convolution_product((Pixel*) &around_pixels, 
-                                                (double*) &kernel_y, 9, 'r');
+                                                (float*) &kernel_y, 9, 'r');
             newval = sqrt(gx*gx + gy*gy);
             if(newval > 255)
                 newval = 255;

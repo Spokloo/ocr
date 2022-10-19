@@ -4,11 +4,6 @@
 #include "../tools/image.h"
 
 /*
- * Applying a blur with a convolution matrix.
- */
-void blur(Image *img);
-
-/*
  * Applying the Sobel filter (edge detection).
  * Return the matrix of normalized gradient direction.
  */

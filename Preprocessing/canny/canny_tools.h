@@ -4,12 +4,6 @@
 #include "../tools/image.h"
 
 /*
- * Compute the convolution product. Not a matrix product!
- */
-double convolution_product(Pixel *pixels, double *kernel,
-                                 unsigned char size, unsigned char color);
-
-/*
  * Normalize and convert gradient direction into degrees.
  * Return 0, 45, 90 or 135.
  */
