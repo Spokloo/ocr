@@ -23,42 +23,6 @@
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="save_button">
-                <property name="label" translatable="yes">Save</property>
-                <property name="width-request">200</property>
-                <property name="height-request">40</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="load_button">
-                <property name="label" translatable="yes">Load</property>
-                <property name="width-request">200</property>
-                <property name="height-request">40</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkButton" id="solve_button">
                 <property name="label" translatable="yes">Solve</property>
                 <property name="width-request">200</property>
@@ -78,7 +42,7 @@
             </child>
             <child>
               <object class="GtkScale" id="rotate_scale">
-                <property name="width-request">400</property>
+                <property name="width-request">200</property>
                 <property name="height-request">40</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -92,6 +56,32 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="open_button">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="title" translatable="yes">Open image</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="save_button">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="title" translatable="yes">Save image</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
           </object>

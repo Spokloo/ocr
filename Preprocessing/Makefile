@@ -3,12 +3,12 @@ CFLAGS = -Wall -Wextra
 LDFLAGS =
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-SRC = contrast/contrast.c grayscale/grayscale.c canny/canny_tools.c canny/canny.c main.c
+SRC = tools/* contrast/contrast.c grayscale/grayscale.c canny/canny_tools.c canny/canny.c normalize/normalize.c main.c
 #OBJ = ${SRC:.c=.o}
-TOOLS = tools/*
+TOOLS = tools/* grayscale/grayscale.c
 
 all:
-	${CC} ${CFLAGS} ${TOOLS} ${SRC} ${LDLIBS} -o main.exe
+	${CC} ${CFLAGS} ${SRC} ${LDLIBS} -o main.exe
 
 .PHONY: grayscale
 grayscale:
@@ -22,9 +22,20 @@ rotation:
 contrast:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
+.PHONY: canny
+canny:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
+.PHONY: normalize
+normalize:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
 clean:
 	${RM} grayscale.exe result_grayscale.jpg \
 	rotation.exe result_rotation.jpg \
 	convolution.exe result_convolution.jpg \
 	contrast.exe result_contrast.jpg \
+	canny.exe result_canny.jpg \
+	normalize.exe result_normalize.jpg \
+	result_image_0?.jpeg \
 	main.exe result.jpg
