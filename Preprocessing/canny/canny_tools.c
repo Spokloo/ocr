@@ -1,44 +1,6 @@
 #include "canny_tools.h"
 #include "../tools/image.h"
 #include <math.h>
-#include <stdlib.h>
-
-/*
- * Compute the convolution product. Not a matrix product!
- */
-double convolution_product(Pixel *pixels, double *kernel,
-                                 unsigned char size, unsigned char color)
-{
-    double res = 0;
-    unsigned int j = size-1;
-    switch (color)
-    {
-    case 'r':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((double) pixels[j].r) * kernel[i];
-            j--;
-        }
-        break;
-
-    case 'g':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((double) pixels[j].g) * kernel[i];
-            j--;
-        }
-        break;
-
-    case 'b':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((double) pixels[j].b) * kernel[i];
-            j--;
-        }
-        break;
-    }
-    return res;
-}
 
 /*
  * Normalize and convert gradient direction into degrees.

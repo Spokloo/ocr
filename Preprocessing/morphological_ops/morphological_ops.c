@@ -1,6 +1,9 @@
 #include "../tools/image.h"
 #include "morphological_ops.h"
 
+/*
+ * Expand white shapes in image.
+ */
 void dilation(Image *img)
 {
     Image original_img;
@@ -25,6 +28,9 @@ void dilation(Image *img)
     free_image(&original_img);
 }
 
+/*
+ * Reduce white shapes in image.
+ */
 void erosion(Image *img)
 {
     Image original_img;

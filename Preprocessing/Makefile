@@ -3,7 +3,9 @@ CFLAGS = -Wall -Wextra
 LDFLAGS =
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-SRC = tools/* contrast/contrast.c grayscale/grayscale.c canny/canny_tools.c canny/canny.c normalize/normalize.c main.c
+SRC = tools/* contrast/contrast.c grayscale/grayscale.c canny/canny_tools.c \
+canny/canny.c normalize/normalize.c morphological_ops/morphological_ops.c \
+blur/blur.c main.c
 #OBJ = ${SRC:.c=.o}
 TOOLS = tools/* grayscale/grayscale.c
 
@@ -22,12 +24,20 @@ rotation:
 contrast:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
+.PHONY: blur
+blur:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
 .PHONY: canny
 canny:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
 .PHONY: normalize
 normalize:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
+.PHONY: morphological_ops
+morphological_ops:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
 clean:
@@ -37,5 +47,7 @@ clean:
 	contrast.exe result_contrast.jpg \
 	canny.exe result_canny.jpg \
 	normalize.exe result_normalize.jpg \
+	morphological_ops.exe result_morpho_ops.jpg \
+	blur.exe result_blur.jpg \
 	result_image_0?.jpeg \
 	main.exe result.jpg

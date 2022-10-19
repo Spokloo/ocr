@@ -3,8 +3,14 @@
 
 #include "../tools/image.h"
 
+/*
+ * Expand white shapes in image.
+ */
 void dilation(Image *img);
 
+/*
+ * Reduce white shapes in image.
+ */
 void erosion(Image *img);
 
 #endif
