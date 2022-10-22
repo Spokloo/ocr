@@ -37,10 +37,9 @@ void get_around_pixels(Image *matrix, unsigned int x, unsigned int y,
                                     unsigned char w, Pixel *around_pixels);
 
 /*
- * Compute the convolution product. Not a matrix product!
+ * Compute the convolution product on red pixels. Not a matrix product!
  */
-float convolution_product(Pixel *pixels, float *kernel,
-                                 unsigned char size, unsigned char color);
+float convolution_product(Pixel *pixels, float *kernel, unsigned char size);
 
 /*
  * Free allocated memory used by Image structure.

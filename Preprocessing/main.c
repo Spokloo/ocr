@@ -6,7 +6,6 @@
 #include "morphological_ops/morphological_ops.h"
 #include "blur/blur.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <err.h>
 
@@ -18,15 +17,14 @@ void apply_filters(char *path, char *newName)
         filter_size = img.width / 300;
     else
         filter_size = img.height / 300;
-    printf("%d\n", filter_size);
+    printf("filter size : %d\n", filter_size);
     grayscale(&img);
     gaussian_blur(&img, filter_size);
-    /*normalize(&img);
-    dilation(&img);
-    //erosion(&img);   
-    canny(&img); */    
+    normalize(&img);
+    dilation(&img, filter_size);
+    //erosion(&img, filter_size);   
+    canny(&img);    
     save_image(&img, newName);
-    
     free_image(&img);
 }
 
@@ -43,18 +41,23 @@ void testall()
         newName[14] = i + '0';
         printf("Work on %s\n", path);
         apply_filters(path, newName);
+        printf("==============================\n");
     }
 }
 
 int main(int argc, char **argv)
 {
+    /*unsigned char oui = 0;
+        for (size_t i = 0; i < 280; i++)
+        {
+            oui++;
+            printf("%d\n", oui);
+        }*/
+    if(argc != 2)
+        errx(1, "Give an image path or 'all' as arguments");
     if(strcmp(argv[1], "all") == 0)
         testall();
     else
-    {
-        if(argc != 2)
-            errx(1, "Give an image path");
         apply_filters(argv[1], "result.jpg");
-    }
     return 0;
 }

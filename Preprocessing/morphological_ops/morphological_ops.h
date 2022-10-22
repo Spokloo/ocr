@@ -4,13 +4,13 @@
 #include "../tools/image.h"
 
 /*
- * Expand white shapes in image.
+ * Expand shapes in image.
  */
-void dilation(Image *img);
+void dilation(Image *img, unsigned char filter_size);
 
 /*
- * Reduce white shapes in image.
+ * Reduce shapes in image.
  */
-void erosion(Image *img);
+void erosion(Image *img, unsigned char filter_size);
 
 #endif

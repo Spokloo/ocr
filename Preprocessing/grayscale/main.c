@@ -6,9 +6,9 @@ int main(int argc, char **argv){
 
     if(argc != 2)
         errx(1, "Give an image path as argument");
-    Image wow = load_image(argv[1]);
-    grayscale(&wow);
-    save_image(&wow, "result_grayscale.jpg");
-    free_image(&wow);
+    Image img = load_image(argv[1]);
+    grayscale(&img);
+    save_image(&img, "result_grayscale.jpg");
+    free_image(&img);
     return 0;
 }

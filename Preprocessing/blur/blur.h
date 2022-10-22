@@ -4,13 +4,9 @@
 #include "../tools/image.h"
 
 /*
- * Applying a blur with a convolution matrix.
+ * Applying a gaussian blur with a convolution matrix.
+ * Only on a grayscale image.
  */
 void gaussian_blur(Image *img, unsigned char filter_size);
-
-/*
- * Median blur.
- */
-void median_blur(Image *img);
 
 #endif

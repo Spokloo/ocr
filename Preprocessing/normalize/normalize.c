@@ -6,8 +6,7 @@
  */
 void normalize(Image *img){
 
-    float tmp, max, min = 0;
-    
+    float tmp = 0, max = 0, min = 0;
     for (unsigned int x = 0; x < img->width; x++)
     {
         for (unsigned int y = 0; y < img->height; y++)
@@ -19,15 +18,15 @@ void normalize(Image *img){
                 min = tmp;            
         }
     }
-    float newmin = 0;
-    float newmax = 255;
+    
+    float diff = max - min;
     float newval = 0;
     for (unsigned int x = 0; x < img->width; x++)
     {
         for (unsigned int y = 0; y < img->height; y++)
         {
-            newval = (img->matrix[x][y].r - min) * ((newmax - newmin)/(max-min)) + newmin;   
-            img->matrix[x][y] = (Pixel) {newval, newval, newval};           
+            newval = (img->matrix[x][y].r - min) * (255 / diff);
+            img->matrix[x][y] = (Pixel) {newval, newval, newval};          
         }
     }
 }
