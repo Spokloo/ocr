@@ -42,6 +42,13 @@ void get_around_pixels(Image *matrix, unsigned int x, unsigned int y,
 float convolution_product(Pixel *pixels, float *kernel, unsigned char size);
 
 /*
+ * Return sub image of src between (x1,y1) and (x2,y2) 
+ * which are position of angle in a rectangle.
+ */
+Image get_sub_image(Image *src, unsigned int x1, unsigned int y1,
+                                        unsigned int x2, unsigned int y2);
+
+/*
  * Free allocated memory used by Image structure.
  */
 void free_image(Image *img);

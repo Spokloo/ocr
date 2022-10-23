@@ -23,7 +23,7 @@ void apply_filters(char *path, char *newName)
     normalize(&img);
     dilation(&img, filter_size);
     //erosion(&img, filter_size);   
-    canny(&img);    
+    canny(&img);
     save_image(&img, newName);
     free_image(&img);
 }

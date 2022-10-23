@@ -153,6 +153,42 @@ void save_image(Image *img, char* newFileName)
 }
 
 /*
+ * Return sub image of src between (x1,y1) and (x2,y2) 
+ * which are position of angle in a rectangle.
+ */
+Image get_sub_image(Image *src, unsigned int x1, unsigned int y1,
+                                        unsigned int x2, unsigned int y2)
+{
+    if(x1 > src->width || x2 > src->width || 
+                                        y1 > src->height || y2 > src->height)
+        errx(1, "Error when getting sub image. Invalid coordinates.");
+    Image dst;
+    dst.path = "";
+    dst.height = y2 - y1;
+    dst.width = x2 - x1;
+    unsigned int ytmp;
+    dst.matrix = malloc(dst.width * sizeof(Pixel*));
+    if(dst.matrix == NULL)
+        errx(1, "Error during allocation of pixels' matrix.");
+    for (unsigned int x = 0; x < dst.width; x++)
+    {
+        ytmp = y1;
+        dst.matrix[x] = malloc(dst.height * sizeof(Pixel));
+        if(dst.matrix[x] == NULL)
+            errx(1, "Error during allocation of pixels' matrix.");
+
+        //Fill the pixels' matrix with Pixel structure (RGB value)
+        for (unsigned int y = 0; y < dst.height; y++)
+        {
+            dst.matrix[x][y] = src->matrix[x1][ytmp];
+            ytmp++;
+        }
+        x1++;
+    }
+    return dst;
+}
+
+/*
  * Free allocated memory used by Image structure.
  */
 void free_image(Image *img)
