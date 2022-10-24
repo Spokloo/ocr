@@ -1,31 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "../Preprocessing/tools/image.h"
 
-#define THETA 180
-
-
-
-size_t max_dist(Image* img) {
-    int x1 = 0;
-    int y1 = 0;
-    int x2 = img->width - 1;
-    int y2 = img->height - 1;
-
-    return (size_t) sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+unsigned int max_dist(Image* img) {
+    return round(sqrt(pow(img->height, 2) + pow(img->width, 2)));
 }
 
-void add_to_acc(size_t len, size_t cols, int acc[], int x, int y) {
-    for (size_t c = 0; c < cols; c++) {
-        size_t rho = (y * cos(c)) - (x * sin(c));
-        if (rho * cols + c < len)
-            acc[rho * cols + c] += 1;
+void add_to_acc(unsigned int x, unsigned int y, unsigned int diag, unsigned int theta, unsigned int acc[]) {
+    for (unsigned int t = 0; t < theta; t++) {
+        double rad = t * M_PI / 180;
+        double r = x * cos(rad) + y * sin(rad);
+        unsigned int rho = r + diag;
+
+        acc[rho * theta + t]++;
     }
 }
 
-int max_val(int acc[], size_t len) {
-    int max = 0;
-    for (size_t i = 0; i < len; i++) {
+unsigned int max_value(unsigned int len, unsigned int acc[]) {
+    unsigned int max = 0;
+
+    for (unsigned int i = 0; i < len; i++) {
         if (acc[i] > max)
             max = acc[i];
     }
@@ -33,54 +28,144 @@ int max_val(int acc[], size_t len) {
     return max;
 }
 
-void draw_line(Image* img, size_t rho, size_t theta) {
-    for (unsigned int x = 0; x < img->height; x++) {
-        for (unsigned int y = 0; y < img->width; y++) {
-            size_t eq = x * sin(theta) - y * cos(theta) + rho;
-
-            if (eq == 0) {
-                img->matrix[y][x] = (Pixel) {255, 0, 0};
+void draw_lines(Image* img, unsigned int rho, double rad, unsigned int diag) {
+    for (unsigned int x = 0; x < img->width; x++) {
+        for (unsigned int y = 0; y < img->height; y++) {
+            if ((int) round((x * cos(rad) + y * sin(rad) + diag) - rho) == 0) {
+                //if (img->matrix[x][y].r >= 250)
+                    img->matrix[x][y] = (Pixel) { 255, 0, 0 };
             }
         }
     }
 }
 
-void get_lines(Image* img, int acc[], size_t rows, size_t cols) {
-    int threshold = max_val(acc, rows * cols) * 0.7;
-    for (size_t row = 0; row < rows; row++) {
-        for (size_t col = 0; col < cols; col++) {
-            size_t i = row * cols + col;
-            if (acc[i] >= threshold) {
-                draw_line(img, row, col);
+void get_lines(Image* img, unsigned int rho, unsigned int theta, unsigned int diag, unsigned int acc[]) {
+    double threshold = max_value(rho * theta, acc) * 0.4;
+    //double threshold = 400;
+
+    unsigned int rho_min_dist = 20;
+    unsigned int rho_vertical = 0;
+    unsigned int rho_horizontal = 0;
+
+    //unsigned int theta_min_angle = 5;
+    //unsigned int theta_vertical = 90;
+    //unsigned int theta_horizontal = 0;
+
+    for (unsigned int t = 0; t < theta; t++) {
+        for (unsigned int r = 0; r < rho; r++) {
+            unsigned int i = r * theta + t;
+            double rad = t * M_PI / 180;
+
+            // Only drawing lines when it is a local maxima
+            int is_local_max = 1;
+            if (r > 0)
+                is_local_max &= acc[(r - 1) * theta + t] <= acc[i];
+
+            if (is_local_max && r + 1 < rho - 1)
+                is_local_max &= acc[(r + 1) * theta + t] <= acc[i];
+
+            if (is_local_max && t > 0)
+                is_local_max &= acc[r * theta + (t - 1)] <= acc[i];
+
+            if (is_local_max && t + 1 < theta - 1)
+                is_local_max &= acc[r * theta + (t + 1)] <= acc[i];
+
+            if (is_local_max && (double) acc[i] >= threshold) {
+                // Filtering lines which are too close (rho)
+                if (sin(rad) > 0.5) {               // Vertical Lines
+                    if (r - rho_vertical > rho_min_dist)
+                        rho_vertical = r;
+                    else
+                        continue;
+                } else {                            // Horizontal Lines
+                    if (r - rho_horizontal > rho_min_dist)
+                        rho_horizontal = r;
+                    else
+                        continue;
+                }
+
+                /*
+                // Filtering lines with almost equal angles (theta)
+                if (sin(rad) > 0.5) {               // Vertical Lines
+                    if (t - theta_vertical < theta_min_angle)
+                        continue;
+                } else {                            // Horizontal Lines
+                    if (t - theta_horizontal < theta_min_angle)
+                        continue;
+                }
+                */
+
+                draw_lines(img, r, rad, diag);
             }
         }
     }
 }
+
+/*
+unsigned int** get_lines(unsigned int rho, unsigned int theta, unsigned int acc[]) {
+    double threshold = max_value(rho * theta, acc) * 0.7;
+    unsigned int** lines;
+    lines = (unsigned int**) malloc(sizeof(unsigned int*) * (rho * theta));
+
+    for (unsigned int r = 0; r < rho; r++) {
+        for (unsigned int t = 0; t < theta; t++) {
+            unsigned int i = r * theta + t;
+            lines[i] = (unsigned int*) malloc(sizeof(unsigned int) * 2);
+
+            if ((double) acc[i] >= threshold) {
+                lines[i][0] = r;
+                lines[i][1] = t;
+            } else {
+                lines[i][0] = rho;
+                lines[i][1] = theta;
+            }
+        }
+    }
+
+    return lines;
+}
+
+void draw_lines(Image* img, unsigned int rho, unsigned int theta, unsigned int diag, unsigned int** lines) {
+    for (unsigned int i = 0; i < rho * theta; i++) {
+        unsigned int r = lines[i][0];
+        unsigned int t = lines[i][1];
+        double rad = t * M_PI / 180;
+
+        if (r < rho && t < theta) {
+            for (unsigned int x = 0; x < img->width; x++) {
+                for (unsigned int y = 0; y < img->height; y++) {
+                    if ((int) round((x * cos(rad) + y * sin(rad) + diag) - rho) == 0) {
+                        img->matrix[x][y] = (Pixel) { 255, 0, 0 };
+                    }
+                }
+            }
+        }
+    }
+}
+*/
 
 void hough_transform(Image* img) {
-    Pixel pixel;
+    unsigned int diag = max_dist(img);
+    unsigned int rho = 2 * diag;
+    unsigned int theta = 180;
+    unsigned int len = rho * theta;
 
-    // Creating accumulator
-    size_t rows = max_dist(img);
-    size_t cols = THETA;
-    size_t len = rows * cols;
-    int accumulator[len];
+    printf("%d * %d = %d\n", rho, theta, len);
+    unsigned int accumulator[len];
 
-    // Initializing accumulator
-    for (size_t i = 0; i < len; i++) {
+    for (unsigned int i = 0; i < len; i++) {
         accumulator[i] = 0;
     }
 
-    // Adding to accumulator when a pixel is white
-    for (unsigned int x = 0; x < img->height; x++) {
-        for (unsigned int y = 0; y < img->width; y++) {
-            pixel = img->matrix[y][x];
-            if (pixel.r == 255 && pixel.g == 255 && pixel.b == 255) {
-                add_to_acc(len, cols, accumulator, x, y);
+    for (unsigned int x = 0; x < img->width; x++) {
+        for (unsigned int y = 0; y < img->height; y++) {
+            if (img->matrix[x][y].r >= 250) {
+                add_to_acc(x, y, diag, theta, accumulator);
             }
         }
     }
 
-    get_lines(img, accumulator, rows, cols);
+    //unsigned int** lines = get_lines(rho, theta, accumulator);
+    //draw_lines(img, rho, theta, diag, lines);
+    get_lines(img, rho, theta, diag, accumulator);
 }
-

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 EXEC = main
@@ -15,4 +15,4 @@ ${EXEC}: ${OBJ}
 clean:
 	rm -f ${OBJ}
 	rm -f ${EXEC}
-	rm -f result_hough.jpg 
+	rm -f result_hough.jpg
