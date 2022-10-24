@@ -19,11 +19,14 @@ void apply_filters(char *path, char *newName)
         filter_size = img.height / 300;
     printf("filter size : %d\n", filter_size);
     grayscale(&img);
-    gaussian_blur(&img, filter_size);
     normalize(&img);
+
+    gaussian_blur(&img, filter_size);
+    //contrast(&img, 32);
     dilation(&img, filter_size);
-    //erosion(&img, filter_size);   
+    erosion(&img, filter_size);   
     canny(&img);
+    //erosion(&img, filter_size);
     save_image(&img, newName);
     free_image(&img);
 }
