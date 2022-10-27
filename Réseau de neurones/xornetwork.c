@@ -169,12 +169,13 @@ int main(){
     init_second();
     init_out();
     int arr_input[2];
+    arr_input[0]=0;
+    arr_input[1]=0;
     double e=1;
     double expected;
     double seuil=0.001;
     while ((e>seuil && e>0) || (e<-seuil && e<0))
     {
-        generate(arr_input);   
         for (int k=0;k<NB_INPUT;k++)
         {
             layer1[k].value=arr_input[k];
