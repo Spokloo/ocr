@@ -3,6 +3,7 @@
 #include "../tools/image.h"
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 /*
  * Applying the Sobel filter (edge detection).
@@ -31,10 +32,10 @@ unsigned int **sobel(Image *img)
             //Compute only for one value because input is grayscale image
             //so r = g = b
             gx = convolution_product((Pixel*) &around_pixels,
-                                                (float*) &kernel_x, 9, 'r');
+                                                    (float*) &kernel_x, 9);
             gy = convolution_product((Pixel*) &around_pixels, 
-                                                (float*) &kernel_y, 9, 'r');
-            newval = sqrt(gx*gx + gy*gy);
+                                                    (float*) &kernel_y, 9);
+            newval = sqrt(gx * gx + gy * gy);
             if(newval > 255)
                 newval = 255;
             img->matrix[x][y] = (Pixel) {newval, newval, newval};
@@ -65,7 +66,7 @@ unsigned int **non_maximum_suppression(Image *img, unsigned int **grad_dirs)
             get_grad_neighbours(grad_dirs[x][y], &original_image, x, y, 
                                                 (unsigned int*) &neighbours);
             if (pixel.r < neighbours[0] || pixel.r < neighbours[1])
-                img->matrix[x][y] = (Pixel) {0,0,0};
+                img->matrix[x][y] = (Pixel) {0, 0, 0};
         }
     }
     free_image(&original_image);
@@ -134,9 +135,9 @@ unsigned int compute_high_threashold(Image *img)
         for(unsigned int y = 1; y < img->height-1; y++)
             histo[img->matrix[x][y].r] += 1;
     }
-
     //Apply Otsu algorithm
-    float total_sum, partial_sum, w0, w1, u0, u1, sigma2, s2_max, tmp = 0;
+    float total_sum = 0, partial_sum = 0, w0 = 0, w1 = 0, u0 = 0, u1 = 0, 
+                                                sigma2 = 0, s2_max = 0, tmp = 0;
     unsigned int t = 0;
     unsigned long size = img->height * img->width;
     for(unsigned int i = 0; i < 256; i++)
@@ -169,9 +170,10 @@ unsigned int compute_high_threashold(Image *img)
 void canny(Image *img)
 {
     unsigned int **gradients_dirs = sobel(img);
-    non_maximum_suppression(img, gradients_dirs);
+    //non_maximum_suppression(img, gradients_dirs);
     unsigned int th = compute_high_threashold(img);
     unsigned int tl = 0.5*th;
+    printf("high: %d and low : %d\n", th, tl);
     threashold(img, gradients_dirs, tl, th);
     for(unsigned int x = 0; x < img->width; x++)
         free(gradients_dirs[x]);

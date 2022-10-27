@@ -12,6 +12,5 @@ int main(int argc, char **argv){
     gaussian_blur(&wow, 1);
     save_image(&wow, "result_blur.jpg");
     free_image(&wow);
-
     return 0;
 }

@@ -108,38 +108,16 @@ void get_around_pixels(Image *img, unsigned int x, unsigned int y,
 }
 
 /*
- * Compute the convolution product. Not a matrix product!
+ * Compute the convolution product on red pixels. Not a matrix product!
  */
-float convolution_product(Pixel *pixels, float *kernel,
-                                 unsigned char size, unsigned char color)
+float convolution_product(Pixel *pixels, float *kernel, unsigned char size)
 {
     float res = 0;
     unsigned int j = size-1;
-    switch (color)
+    for (unsigned char i = 0; i < size; i++)
     {
-    case 'r':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((float) pixels[j].r) * kernel[i];
-            j--;
-        }
-        break;
-
-    case 'g':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((float) pixels[j].g) * kernel[i];
-            j--;
-        }
-        break;
-
-    case 'b':
-        for (unsigned char i = 0; i < size; i++)
-        {
-            res += ((float) pixels[j].b) * kernel[i];
-            j--;
-        }
-        break;
+        res += ((float) pixels[j].r) * kernel[i];
+        j--;
     }
     return res;
 }
@@ -172,6 +150,42 @@ void save_image(Image *img, char* newFileName)
     SDL_SaveBMP(image_surface , newFileName);
     SDL_FreeSurface(image_surface);
     SDL_Quit();
+}
+
+/*
+ * Return sub image of src between (x1,y1) and (x2,y2) 
+ * which are position of angle in a rectangle.
+ */
+Image get_sub_image(Image *src, unsigned int x1, unsigned int y1,
+                                        unsigned int x2, unsigned int y2)
+{
+    if(x1 > src->width || x2 > src->width || 
+                                        y1 > src->height || y2 > src->height)
+        errx(1, "Error when getting sub image. Invalid coordinates.");
+    Image dst;
+    dst.path = "";
+    dst.height = y2 - y1;
+    dst.width = x2 - x1;
+    unsigned int ytmp;
+    dst.matrix = malloc(dst.width * sizeof(Pixel*));
+    if(dst.matrix == NULL)
+        errx(1, "Error during allocation of pixels' matrix.");
+    for (unsigned int x = 0; x < dst.width; x++)
+    {
+        ytmp = y1;
+        dst.matrix[x] = malloc(dst.height * sizeof(Pixel));
+        if(dst.matrix[x] == NULL)
+            errx(1, "Error during allocation of pixels' matrix.");
+
+        //Fill the pixels' matrix with Pixel structure (RGB value)
+        for (unsigned int y = 0; y < dst.height; y++)
+        {
+            dst.matrix[x][y] = src->matrix[x1][ytmp];
+            ytmp++;
+        }
+        x1++;
+    }
+    return dst;
 }
 
 /*

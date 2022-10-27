@@ -2,22 +2,22 @@
 #include "morphological_ops.h"
 
 /*
- * Expand white shapes in image.
+ * Expand shapes in image.
  */
-void dilation(Image *img)
+void dilation(Image *img, unsigned char filter_size)
 {
     Image original_img;
     copy_image(img, &original_img);
     unsigned int min;
-    unsigned char size = 5;
-    Pixel around_pixels[size*size];
+    Pixel around_pixels[filter_size*filter_size];
     for(unsigned int x = 0; x < img->width; x++)
     {
         for(unsigned int y = 0; y < img->height; y++)
         {
             min = 255;
-            get_around_pixels(&original_img, x, y, size, (Pixel*) &around_pixels);
-            for(unsigned int k = 0; k < size*size; k++)
+            get_around_pixels(&original_img, x, y, filter_size, 
+                                                    (Pixel*) &around_pixels);
+            for(unsigned int k = 0; k < filter_size*filter_size; k++)
             {
                 if (around_pixels[k].r < min)
                     min = around_pixels[k].r;
@@ -29,22 +29,22 @@ void dilation(Image *img)
 }
 
 /*
- * Reduce white shapes in image.
+ * Reduce shapes in image.
  */
-void erosion(Image *img)
+void erosion(Image *img, unsigned char filter_size)
 {
     Image original_img;
     copy_image(img, &original_img);
     unsigned int max;
-    unsigned char size = 5;
-    Pixel around_pixels[size*size];
+    Pixel around_pixels[filter_size*filter_size];
     for(unsigned int x = 0; x < img->width; x++)
     {
         for(unsigned int y = 0; y < img->height; y++)
         {
             max = 0;
-            get_around_pixels(&original_img, x, y, size, (Pixel*) &around_pixels);
-            for(unsigned int k = 0; k < size*size; k++)
+            get_around_pixels(&original_img, x, y, filter_size, 
+                                                    (Pixel*) &around_pixels);
+            for(unsigned int k = 0; k < filter_size*filter_size; k++)
             {
                 if (around_pixels[k].r > max)
                     max = around_pixels[k].r;
