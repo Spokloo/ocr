@@ -20,6 +20,11 @@ typedef struct Image
 Image load_image(char *path);
 
 /*
+ * Copy all content of source to destination.
+ */
+void copy_image(Image *src, Image *dst);
+
+/*
  * Save the Image structure into current directory.
  */
 void save_image(Image *img, char* newFileName);
@@ -32,9 +37,10 @@ void get_around_pixels(Image *matrix, unsigned int x, unsigned int y,
                                     unsigned char w, Pixel *around_pixels);
 
 /*
- * Copy all content of source to destination.
+ * Compute the convolution product. Not a matrix product!
  */
-void copy_image(Image *src, Image *dst);
+float convolution_product(Pixel *pixels, float *kernel,
+                                 unsigned char size, unsigned char color);
 
 /*
  * Free allocated memory used by Image structure.
