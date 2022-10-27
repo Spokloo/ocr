@@ -1,4 +1,4 @@
-#include "../include/image.h"
+#include "image.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <err.h>
@@ -105,6 +105,43 @@ void get_around_pixels(Image *img, unsigned int x, unsigned int y,
             index++;
         }
     }
+}
+
+/*
+ * Compute the convolution product. Not a matrix product!
+ */
+float convolution_product(Pixel *pixels, float *kernel,
+                                 unsigned char size, unsigned char color)
+{
+    float res = 0;
+    unsigned int j = size-1;
+    switch (color)
+    {
+    case 'r':
+        for (unsigned char i = 0; i < size; i++)
+        {
+            res += ((float) pixels[j].r) * kernel[i];
+            j--;
+        }
+        break;
+
+    case 'g':
+        for (unsigned char i = 0; i < size; i++)
+        {
+            res += ((float) pixels[j].g) * kernel[i];
+            j--;
+        }
+        break;
+
+    case 'b':
+        for (unsigned char i = 0; i < size; i++)
+        {
+            res += ((float) pixels[j].b) * kernel[i];
+            j--;
+        }
+        break;
+    }
+    return res;
 }
 
 /*

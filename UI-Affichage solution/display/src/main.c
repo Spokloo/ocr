@@ -1,143 +1,61 @@
 #include <gtk/gtk.h>
-#include "rotate.h"
-#include <string.h>
-#include <stdio.h>
+
+#include "callbacks.h"
 
 
-typedef struct GImage {
+int main(int argc, char **argv) {
+    
+    GtkBuilder *builder;
+    GObject *window;
+    GObject *save_button;
+    GObject *open_button;
+    GObject *solve_button;
+    GObject *rotate_scale;
+    GObject *former_image;
+    GObject *solved_image;
+    GError *error = NULL;
 
-    GtkImage image;
-    char *path;
+    
+    gtk_init(&argc, &argv);
 
-} GImage;
-
-// okrtj
-// qeb
-// oigầaguqùeoifiga74
-// qgija$ef54a"$e)dfb,a
-// = =
-//     ézêerf  éjepfiuzsduvnap"etoruig )   épzerd$
-//     R
-//         PÉIIZEFJ    É⁾'PEOFR =$ ẐEPFVK  87  7
-//         ZE+9
-//
-//             ÉZFÀOIAEÀRÇFG_I Z   ²&ÉZR=F OEDIVHRKZS*QZPORFU  ÀÉ)ÀRGOV 6  578 Z
-//
-//             AED)ÀI AZZ)EÊR NF   $*Q
-
-char * format_path(char * src) {
-    int last_slash = 0, i = 0, j = 0;
-
-    while (src[i] != '\0') {
-        if (src[i] == '/') {last_slash = i;}
-        i++;
+    builder = gtk_builder_new();
+    if (gtk_builder_add_from_file(builder, "ui.glade", &error) == 0) {
+        g_printerr("Error loading file: %s\n", error->message);
+        g_clear_error(&error);
+        return 1;
     }
-    printf("%s, %d, %d\n", src, last_slash, i);
-    
-    if (last_slash == 0 && src[0] != '/') {
-        return src;
-    }
-    char * res = malloc(i - last_slash);
-    i = last_slash +1;
-    while (src[i] != '\0') {
-        res[j] = src[i];
-        j++;
-        i++;
-    }
-    printf("%s, %li\n", res, strlen(res));
 
-    return res;
-}
+    window = gtk_builder_get_object(builder, "main_window");
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
+    former_image = gtk_builder_get_object(builder, "former_image");
+    solved_image = gtk_builder_get_object(builder, "solved_image");
 
-void on_open_button_file_activated(GtkFileChooserButton *open_button, gpointer user_data) {
-    printf("Image loaded\n");
-
-    GImage *f_img = user_data;
-
-    gchar * filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(open_button));
-
-    f_img->path = filename;
-    
-    GError **error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(filename, 200, 200, TRUE, error);
-    gtk_image_set_from_pixbuf(&f_img->image, pixbuf);
-
-}
+    GVariables var = {
+        .parent_window = GTK_WIDGET(window),
+        .former_image = GTK_WIDGET(former_image),
+        .solved_image = GTK_WIDGET(solved_image),
+        .filename_base = NULL,
+        .filename_rot = NULL,
+        .filename_solv = NULL
+    };
 
 
-void on_rotate_scale_value_changed(GtkRange *range, gpointer user_data) {
-    double value = gtk_range_get_value(range);
+    save_button = gtk_builder_get_object(builder, "save_button");
+    g_signal_connect(save_button, "clicked", G_CALLBACK(on_save_button_clicked), &var);
 
-    GImage *f_img = user_data;
+    open_button = gtk_builder_get_object(builder, "open_button");
+    g_signal_connect(open_button, "clicked", G_CALLBACK(on_open_button_clicked), &var);
 
-    Image img = load_image(f_img->path);
-   
-    rotate(&img, value);
+    solve_button = gtk_builder_get_object(builder, "solve_button");
+    g_signal_connect(solve_button, "clicked", G_CALLBACK(on_solve_button_clicked), &var);
 
-    /*char * path = format_path(f_img->path);*/
-    /*char *buffer = malloc(7 + sizeof(f_img->path));*/
-    /*strcpy(buffer, "rotate_");*/
-    /*strcat(buffer, path);*/
-    save_image(&img, "res.jpg");
-
-    GError **error = NULL;
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale("res.jpg", 200, 200, TRUE, error);
-    gtk_image_set_from_pixbuf(&f_img->image, pixbuf);
-
-    //free(buffer);
-    free_image(&img);
-    g_object_unref(pixbuf);
-}
+    rotate_scale = gtk_builder_get_object(builder, "rotate_scale");
+    gtk_range_set_range(GTK_RANGE(rotate_scale), 0, 360);
+    g_signal_connect(rotate_scale, "value-changed", G_CALLBACK(on_rotate_scale_value_changed), &var);
 
 
+    gtk_main();
 
-void on_activate(GtkApplication *app)
-{
-    GtkBuilder *builder = gtk_builder_new_from_file("test.glade");
-
-    GtkWidget *window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
-    GtkImage *image = GTK_IMAGE(gtk_builder_get_object(builder, "former_image"));
-    GtkScale *scale = GTK_SCALE(gtk_builder_get_object(builder, "rotate_scale"));
-    GtkFileChooserButton *open_button = GTK_FILE_CHOOSER_BUTTON(gtk_builder_get_object(builder, "open_button"));
-    //GtkButton *solve_button = GTK_BUTTON(gtk_builder_get_object(builder, "solve_button"));
-    
-
-    // VARIABLES
-    GImage *former_image = malloc(sizeof(GImage));
-    former_image->image = *image;
-    //////////
-
-
-    // OPEN FILE DIALOG
-    g_signal_connect(open_button, "file-set", G_CALLBACK(on_open_button_file_activated), former_image);
-    /////////////
-
-
-
-    // IMAGE ROTATION
-    gtk_range_set_range(GTK_RANGE(scale), 0, 360);
-
-    g_signal_connect(GTK_RANGE(scale), "value-changed", G_CALLBACK(on_rotate_scale_value_changed), former_image);
-    //////////////////
-
-    
-
-    gtk_builder_connect_signals(builder, NULL);
-
-    g_object_unref(builder);
-    gtk_window_set_application(GTK_WINDOW(window), app);
-    gtk_widget_show_all(window);
-}
-
-
-int main(int argc, char **argv) 
-{
-    GtkApplication *app = gtk_application_new("org.gtk.ocr", G_APPLICATION_DEFAULT_FLAGS);
-    g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
-    
-    int status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
-
-    return status;
+    return 0;
 }

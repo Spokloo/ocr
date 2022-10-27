@@ -170,7 +170,7 @@ unsigned int compute_high_threashold(Image *img)
 void canny(Image *img)
 {
     unsigned int **gradients_dirs = sobel(img);
-    non_maximum_suppression(img, gradients_dirs);
+    //non_maximum_suppression(img, gradients_dirs);
     unsigned int th = compute_high_threashold(img);
     unsigned int tl = 0.5*th;
     printf("high: %d and low : %d\n", th, tl);
