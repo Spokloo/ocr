@@ -27,7 +27,7 @@ struct neural_first_layer
 struct neural_first_layer *i1=&input1;
 
 struct neural_first_layer *i2=&input2;
-struct neural_first_layer layer1[2];
+struct neural_first_layer layer1[NB_INPUT];
 
 
 void init_weigth(){
@@ -43,7 +43,6 @@ void init_weigth(){
 struct neural_second_layer
 {
     double value;
-    struct neural_first_layer previous[2];
     double weights[NB_OUT];
     double bias;
 }n1,n2;
@@ -78,22 +77,16 @@ double activation(float value){
 }
 
 
-double calculate_delta(double expected,double output){
-    return (expected-output)*output*(1-output);
-}
-
-double change_weight_out(double d, double learnrate, double out){
-    return d*learnrate*out;
-}
-void gradient_out(struct out out_n, double gradient, double lr){
-    for (int i;i<2;i++){
-        out_n.second_layer[i].bias= lr*-1*gradient;  
-        out_n.second_layer[i].weights[0] += lr*out_n.value*gradient;
+void gradient_out(struct out out_n, struct neural_second_layer second_layer[NB_HIDDEN],double gradient, double lr){
+    for (int i=0;i<NB_HIDDEN;i++){
+        layer2[i].weights[0] += lr*out_n.value*gradient;
     }
+
+    o1.bias += lr*1*gradient;  
 }
 
-double calculate_error_gradient_out(double output,double e){
-    return output*(1-output)*e;
+void calculate_error_gradient_out(double output,double e){
+    o1.gradient= output*(1-output)*e;
 }
 
 double calculate_error_gradient_hidden(double output, double weight, double gradient){
@@ -113,49 +106,51 @@ void generate(int *a)
     a[1]=n2;
 }
 
-void sum_first(struct neural_second_layer neural)
+double sum_first(struct neural_second_layer neural, struct neural_first_layer n1[2])
 {
     double sum=0;
     for (int j=0;j<NB_HIDDEN;j++)
     {
         for (int i=0; i<NB_INPUT;i++){
-            sum+=neural.previous[j].value*neural.previous[j].weights[i];
+            sum+=n1[i].value*n1[i].weights[j];
         }
     }
-    neural.value= activation(sum+neural.bias);
+    return sum+neural.bias;
     
 }
 
-void sum_out(struct out neural)
+void sum_out(struct out neural, struct neural_second_layer second_layer[NB_HIDDEN])
 {
-    float sum=0;
+    float sum = 0;
     for (unsigned long int i=0; i<NB_HIDDEN;i++)
-        sum+=neural.second_layer[i].value * neural.second_layer->weights[i];
-    
-    neural.value= activation(sum+neural.bias);
-   
+        sum+=second_layer[i].value * second_layer[i].weights[i];
+     
+    o1.value = activation(sum+neural.bias);
 }
 
 
 
-void change_out_weigth_apply(double expected, struct out out, double g)
+void change_out_weigth_apply(struct neural_second_layer l2[NB_HIDDEN],struct out out, double g)
 {
     out.gradient=g;
-    gradient_out(out,g,0.1); 
+    gradient_out(out,l2,g,0.1); 
 }
 
-void change_hidden_weigth_apply(struct neural_second_layer *l, struct out out)
+void change_hidden_weigth_apply(struct neural_first_layer n1[NB_INPUT],struct neural_second_layer *l, struct out out)
 {
     for (int k=0;k<NB_HIDDEN;k++)
     {
    
-        double g=calculate_error_gradient_hidden(l[k].value,l[k].weights[0],out.gradient);
+        double g=calculate_error_gradient_hidden(o1.value,l[k].weights[k],out.gradient);
         
         for (int j=0;j<NB_INPUT;j++)
         {
-            l[k].previous[j].weights[j]+=LR*l[k].previous[j].value*g; 
+            
+            layer1[j].weights[k]+=LR*layer1[j].value*g;
+            
         }
-        l[k].bias+=LR*(-1)*g;
+        layer2[k].bias+=LR*(1)*g;
+   
     }
 }
 
@@ -175,26 +170,31 @@ int main(){
     init_out();
     int arr_input[2];
     double e=1;
-    
+    double expected;
     double seuil=0.001;
-    while (e>seuil)
+    while ((e>seuil && e>0) || (e<-seuil && e<0))
     {
-       
-        generate(arr_input);
-      
+        generate(arr_input);   
         for (int k=0;k<NB_INPUT;k++)
         {
             layer1[k].value=arr_input[k];
         }
         for (int i=0;i<NB_HIDDEN;i++)
         {
-            sum_first(layer2[i]);
+            layer2[i].value=sum_first(layer2[i],layer1);
         }
-        sum_out(o1);
-        e = calculate_expected(arr_input[0],arr_input[1])-o1.value;
-        double g=calculate_error_gradient_out(o1.value,e);
-        change_out_weigth_apply(e,o1,g);
-        change_hidden_weigth_apply(layer2,out); 
+        //printf("%f %f\n",layer2[0].value, layer2[0].bias);
+     
+        sum_out(o1, layer2);
+        //printf("%f   ",o1.value);
+        expected=calculate_expected(arr_input[0],arr_input[1]);
+        e = expected-o1.value;
+        printf("in : %d  %d expected %f  got %f \n",layer1[0].value,layer1[1].value,expected,o1.value);
+        
+        calculate_error_gradient_out(o1.value,e);
+    
+        change_out_weigth_apply(layer2,o1,o1.gradient);
+        change_hidden_weigth_apply(layer1,layer2,o1); 
     }
     return 0;
 }

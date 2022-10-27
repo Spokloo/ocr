@@ -15,15 +15,14 @@ bias	xornetwork.c	/^    double bias;$/;"	m	struct:out	file:	access:public
 bias_21	xornetwork.c	/^double bias_21=0.8;$/;"	v
 bias_22	xornetwork.c	/^double bias_22=-0.1;$/;"	v
 bias_31	xornetwork.c	/^double bias_31=0.3;$/;"	v
-calculate_delta	xornetwork.c	/^double calculate_delta(double expected,double output){$/;"	f	signature:(double expected,double output)
 calculate_error_gradient_hidden	xornetwork.c	/^double calculate_error_gradient_hidden(double output, double weight, double gradient){$/;"	f	signature:(double output, double weight, double gradient)
 calculate_error_gradient_out	xornetwork.c	/^double calculate_error_gradient_out(double output,double e){$/;"	f	signature:(double output,double e)
-change_hidden_weigth_apply	xornetwork.c	/^void change_hidden_weigth_apply(double expected, struct neural_second_layer *l, struct out out)$/;"	f	signature:(double expected, struct neural_second_layer *l, struct out out)
-change_out_weigth_apply	xornetwork.c	/^void change_out_weigth_apply(double expected, struct out out)$/;"	f	signature:(double expected, struct out out)
-change_weight_out	xornetwork.c	/^double change_weight_out(double d, double learnrate, double out){$/;"	f	signature:(double d, double learnrate, double out)
-generate	xornetwork.c	/^double *generate()$/;"	f
+calculate_expected	xornetwork.c	/^double calculate_expected(int i1,int i2)$/;"	f	signature:(int i1,int i2)
+change_hidden_weigth_apply	xornetwork.c	/^void change_hidden_weigth_apply(struct neural_first_layer n1[NB_INPUT],struct neural_second_layer *l, struct out out)$/;"	f	signature:(struct neural_first_layer n1[NB_INPUT],struct neural_second_layer *l, struct out out)
+change_out_weigth_apply	xornetwork.c	/^void change_out_weigth_apply(struct neural_second_layer l2[NB_HIDDEN],struct out out, double g)$/;"	f	signature:(struct neural_second_layer l2[NB_HIDDEN],struct out out, double g)
+generate	xornetwork.c	/^void generate(int *a)$/;"	f	signature:(int *a)
 gradient	xornetwork.c	/^    double gradient;$/;"	m	struct:out	file:	access:public
-gradient_out	xornetwork.c	/^void gradient_out(struct out out_n, double gradient, double lr){$/;"	f	signature:(struct out out_n, double gradient, double lr)
+gradient_out	xornetwork.c	/^void gradient_out(struct out out_n, struct neural_second_layer second_layer[NB_HIDDEN],double gradient, double lr){$/;"	f	signature:(struct out out_n, struct neural_second_layer second_layer[NB_HIDDEN],double gradient, double lr)
 i1	xornetwork.c	/^struct neural_first_layer *i1=&input1;$/;"	v	typeref:struct:neural_first_layer
 i2	xornetwork.c	/^struct neural_first_layer *i2=&input2;$/;"	v	typeref:struct:neural_first_layer
 init_out	xornetwork.c	/^void init_out()$/;"	f
@@ -31,7 +30,7 @@ init_second	xornetwork.c	/^void init_second()$/;"	f
 init_weigth	xornetwork.c	/^void init_weigth(){$/;"	f
 input1	xornetwork.c	/^}input1,input2;$/;"	v	typeref:struct:neural_first_layer
 input2	xornetwork.c	/^}input1,input2;$/;"	v	typeref:struct:neural_first_layer
-layer1	xornetwork.c	/^struct neural_first_layer layer1[2];$/;"	v	typeref:struct:neural_first_layer
+layer1	xornetwork.c	/^struct neural_first_layer layer1[NB_INPUT];$/;"	v	typeref:struct:neural_first_layer
 layer2	xornetwork.c	/^struct neural_second_layer layer2[2];$/;"	v	typeref:struct:neural_second_layer
 learnrate	xornetwork.c	/^double learnrate = 0.1;$/;"	v
 main	xornetwork.c	/^int main(){$/;"	f
@@ -42,7 +41,6 @@ neural_first_layer::value	xornetwork.c	/^    int value;$/;"	m	struct:neural_firs
 neural_first_layer::weights	xornetwork.c	/^    double weights[2];$/;"	m	struct:neural_first_layer	file:	access:public
 neural_second_layer	xornetwork.c	/^struct neural_second_layer$/;"	s	file:
 neural_second_layer::bias	xornetwork.c	/^    double bias;$/;"	m	struct:neural_second_layer	file:	access:public
-neural_second_layer::previous	xornetwork.c	/^    struct neural_first_layer previous[2];$/;"	m	struct:neural_second_layer	typeref:struct:neural_second_layer::neural_first_layer	file:	access:public
 neural_second_layer::value	xornetwork.c	/^    double value;$/;"	m	struct:neural_second_layer	file:	access:public
 neural_second_layer::weights	xornetwork.c	/^    double weights[NB_OUT];$/;"	m	struct:neural_second_layer	file:	access:public
 new_weigth	xornetwork.c	/^double new_weigth(double lr, double value,double gradient){$/;"	f	signature:(double lr, double value,double gradient)
@@ -52,10 +50,9 @@ out::bias	xornetwork.c	/^    double bias;$/;"	m	struct:out	file:	access:public
 out::gradient	xornetwork.c	/^    double gradient;$/;"	m	struct:out	file:	access:public
 out::second_layer	xornetwork.c	/^    struct neural_second_layer second_layer[2];$/;"	m	struct:out	typeref:struct:out::neural_second_layer	file:	access:public
 out::value	xornetwork.c	/^    double value;$/;"	m	struct:out	file:	access:public
-previous	xornetwork.c	/^    struct neural_first_layer previous[2];$/;"	m	struct:neural_second_layer	typeref:struct:neural_second_layer::neural_first_layer	file:	access:public
 second_layer	xornetwork.c	/^    struct neural_second_layer second_layer[2];$/;"	m	struct:out	typeref:struct:out::neural_second_layer	file:	access:public
-sum_first	xornetwork.c	/^void sum_first(struct neural_second_layer neural)$/;"	f	signature:(struct neural_second_layer neural)
-sum_out	xornetwork.c	/^float sum_out(struct out neural)$/;"	f	signature:(struct out neural)
+sum_first	xornetwork.c	/^void sum_first(struct neural_second_layer neural, struct neural_first_layer n1[2])$/;"	f	signature:(struct neural_second_layer neural, struct neural_first_layer n1[2])
+sum_out	xornetwork.c	/^void sum_out(struct out neural, struct neural_second_layer second_layer[NB_HIDDEN])$/;"	f	signature:(struct out neural, struct neural_second_layer second_layer[NB_HIDDEN])
 val_bias	xornetwork.c	/^int val_bias=-1;$/;"	v
 value	xornetwork.c	/^    double value;$/;"	m	struct:neural_second_layer	file:	access:public
 value	xornetwork.c	/^    double value;$/;"	m	struct:out	file:	access:public
