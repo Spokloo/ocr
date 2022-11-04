@@ -1,6 +1,6 @@
 C = gcc
 CPPFLAGS =
-CFLAGS = -Wall -Wextra -O3
+CFLAGS = -g -Wall -Wextra 
 LDLIBS = -lm
 
 all : xornetwork
