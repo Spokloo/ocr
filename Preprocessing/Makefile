@@ -40,6 +40,10 @@ normalize:
 morphological_ops:
 	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
 
+.PHONY: perspective_correction
+perspective_correction:
+	${CC} ${CFLAGS} ${TOOLS} $@/* ${LDLIBS} -o $@.exe
+
 clean:
 	${RM} grayscale.exe result_grayscale.jpg \
 	rotation.exe result_rotation.jpg \
@@ -49,5 +53,6 @@ clean:
 	normalize.exe result_normalize.jpg \
 	morphological_ops.exe result_morpho_ops.jpg \
 	blur.exe result_blur.jpg \
+	perspective_correction.exe result_perspective.jpg \
 	result_image_0?.jpeg \
 	main.exe result.jpg
