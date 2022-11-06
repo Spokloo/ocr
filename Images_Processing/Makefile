@@ -1,6 +1,6 @@
 #- - - - - - - - VARIABLES - - - - - - - - 
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 SRC_DIR = source
@@ -39,4 +39,4 @@ $(DIR_OBJ)/%.o: %.c $(INC_DIR)
 clean:
 	rm -rf $(DIR_OBJ)
 	rm -f $(EXEC)
-	rm -f result.jpg
+	rm -f result.jpg result_image_??.jpeg

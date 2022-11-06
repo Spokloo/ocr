@@ -3,7 +3,7 @@
 
 typedef struct Pixel
 {
-    unsigned int r, g, b;
+    unsigned char r, g, b;
 } Pixel;
 
 typedef struct Image

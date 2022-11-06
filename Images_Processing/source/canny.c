@@ -15,7 +15,7 @@ unsigned int **sobel(Image *img)
     Image original_image;
     copy_image(img, &original_image);
     Pixel around_pixels[9];
-    unsigned int **gradients_dirs = malloc(img->width * sizeof(Pixel*));
+    unsigned int **gradients_dirs = malloc(img->width * sizeof(unsigned int*));
 
     unsigned int newval;
     double gx, gy;
@@ -24,7 +24,7 @@ unsigned int **sobel(Image *img)
     
     for(unsigned int x = 0; x < img->width; x++)
     {
-        gradients_dirs[x] = malloc(img->height * sizeof(Pixel));
+        gradients_dirs[x] = malloc(img->height * sizeof(unsigned int));
         for(unsigned int y = 0; y < img->height; y++)
         {
             //Get 8 pixels around (x,y) and the current pixel
