@@ -19,13 +19,13 @@ void normalize(Image *img){
         }
     }
     
-    float diff = max - min;
+    float diff = 255 / (max - min);
     float newval = 0;
     for (unsigned int x = 0; x < img->width; x++)
     {
         for (unsigned int y = 0; y < img->height; y++)
         {
-            newval = (img->matrix[x][y].r - min) * (255 / diff);
+            newval = (img->matrix[x][y].r - min) * diff;
             img->matrix[x][y] = (Pixel) {newval, newval, newval};          
         }
     }
