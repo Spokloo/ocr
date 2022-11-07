@@ -4,9 +4,8 @@
 #include <stdlib.h>
 #define LR 0.1
 #define NB_INPUT 2
-#define NB_HIDDEN 2
+#define NB_HIDDEN 2 
 #define NB_OUT 1
-double learnrate = 0.1;
 
 typedef struct neural_first_layer
 {
@@ -60,9 +59,17 @@ void init_all(neural_first_layer layer1[NB_INPUT], neural_second_layer layer2[NB
     o1->bias = generate_weigth(NB_OUT);
 }
 
-double activation(float value)
+void activation_hidden(neural_second_layer layer[NB_HIDDEN])
 {
-    return 1 / (1 + exp(-value));
+    double sum=0;
+    for (int k=0;k<NB_HIDDEN;k++)
+    {
+        sum+=exp(layer[k].value);
+    }
+    for (int j=0;j<NB_HIDDEN;j++)
+    {
+        layer[j].value= exp(layer[j].value)/sum;
+    }
 }
 
 void gradient_out(out *out_n, neural_second_layer layer[NB_HIDDEN], double gradient, double lr)
@@ -71,7 +78,7 @@ void gradient_out(out *out_n, neural_second_layer layer[NB_HIDDEN], double gradi
     {
         layer[i].weights[0] += lr * (*out_n).value * gradient;
     }
-    out_n->bias += lr * 1 * gradient;
+    out_n->bias += lr * -1 * gradient;
 }
 
 void calculate_error_gradient_out(out *o, double e)
@@ -110,13 +117,13 @@ double sum_first(neural_second_layer *neural, neural_first_layer n1[NB_INPUT])
     return sum + neural->bias;
 }
 
-void sum_out(out *o, neural_second_layer second_layer[NB_HIDDEN])
+double sum_out(out *o, neural_second_layer second_layer[NB_HIDDEN])
 {
     double sum = 0;
     for (unsigned long int i = 0; i < NB_HIDDEN; i++)
-        sum += second_layer[i].value * second_layer[i].weights[i];
+        sum += second_layer[i].value * second_layer[i].weights[0];
 
-    o->value = activation(sum + o->bias);
+    return sum;
 }
 
 void change_out_weigth_apply(out *out, double g, neural_second_layer l2[NB_HIDDEN])
@@ -137,7 +144,7 @@ void change_hidden_weigth_apply(neural_first_layer l1[NB_INPUT], neural_second_l
 
             l1[j].weights[k] += LR * l1[j].value * g;
         }
-        l2[k].bias += LR * g;
+        l2[k].bias += -1*LR * g;
     }
 }
 
@@ -156,13 +163,13 @@ int main()
 
     for (int i = 0; i < NB_INPUT; i++)
     {
-        for (int j = 0; l1[i].weights[j]; j++)
+        for (int j = 0; j<NB_HIDDEN; j++)
             l1[i].weights[j] = 0;
         l1[i].value = 0;
     }
     struct neural_second_layer l2[NB_HIDDEN];
     struct out o1;
-
+    int w=0;
     for (int i = 0; i < NB_HIDDEN; i++)
     {
         for (int k = 0; k < NB_OUT; k++)
@@ -177,15 +184,14 @@ int main()
     int arr_input[NB_INPUT];
     for(int i = 0; i < NB_INPUT; i++)
     {
-        arr_input[i] = 1;
+        arr_input[i] = 0;
     }
     double e = 1;
-    int w = 0;
     double expected;
     double seuil = 0.001;
-    while (w < 10 && ((e > seuil && e > 0) || (e < -seuil && e < 0)))
+    while (w<1000 && ((e > seuil && e > 0) || (e < -seuil && e < 0)))
     {
-        // generate(arr_input);
+        //generate(arr_input);
         for (int k = 0; k < NB_INPUT; k++)
         {
             l1[k].value = arr_input[k];
@@ -194,7 +200,9 @@ int main()
         {
             l2[i].value = sum_first(&l2[i], l1);
         }
-        sum_out(&o1, l2);
+        activation_hidden(l2);
+        double sum=sum_out(&o1, l2);
+        o1.value= 1/(1+exp(-sum));
         expected = calculate_expected(arr_input[0], arr_input[1]);
         e = expected - o1.value;
         printf("in : %d  %d expected %f  got %f \n", l1[0].value, l1[1].value, expected, o1.value);
