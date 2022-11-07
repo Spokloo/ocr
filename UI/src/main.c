@@ -54,6 +54,8 @@ int main(int argc, char **argv) {
     gtk_range_set_range(GTK_RANGE(rotate_scale), 0, 360);
     g_signal_connect(rotate_scale, "value-changed", G_CALLBACK(on_rotate_scale_value_changed), &var);
 
+    // RESIZE WINDOW
+    //g_signal_connect(window, "size-allocate", G_CALLBACK(on_resize), &var);
 
     gtk_main();
 

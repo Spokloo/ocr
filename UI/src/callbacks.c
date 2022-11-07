@@ -68,7 +68,9 @@ void on_open_button_clicked(GtkButton *button, gpointer user_data) {
     GVariables *var = user_data;
     GtkWidget *dialog;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint width, height;
     gint res;
+
 
     gtk_button_set_label(button, "Open");
 
@@ -84,7 +86,8 @@ void on_open_button_clicked(GtkButton *button, gpointer user_data) {
         GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
         filename = gtk_file_chooser_get_filename(chooser);
     
-        if (load_gtk_image(var->former_image, filename) == 0) {
+        gtk_window_get_size(GTK_WINDOW(var->parent_window), &width, &height);
+        if (load_gtk_image(var->former_image, filename, width, height) == 0) {
             var->filename_base = filename;
         }
 
@@ -98,6 +101,9 @@ void on_open_button_clicked(GtkButton *button, gpointer user_data) {
 void on_rotate_scale_value_changed(GtkRange *rotate_scale, gpointer user_data) {
 
     GVariables *var = user_data;
+    gint width, height;
+
+    gtk_window_get_size(GTK_WINDOW(var->parent_window), &width, &height);
 
     if (gtk_image_get_storage_type(GTK_IMAGE(var->former_image)) == GTK_IMAGE_PIXBUF) {
         double value = gtk_range_get_value(rotate_scale);
@@ -108,7 +114,7 @@ void on_rotate_scale_value_changed(GtkRange *rotate_scale, gpointer user_data) {
         save_image(&img, "res");
         var->filename_rot = "res";
 
-        load_gtk_image(var->former_image, var->filename_rot);
+        load_gtk_image(var->former_image, var->filename_rot, width, height);
 
         free_image(&img);
     }
@@ -119,16 +125,49 @@ void on_rotate_scale_value_changed(GtkRange *rotate_scale, gpointer user_data) {
 void on_solve_button_clicked(GtkButton *button, gpointer user_data) {
 
     GVariables *var = user_data;
+    gint width, height;
+
+    gtk_window_get_size(GTK_WINDOW(var->parent_window), &width, &height);
 
     if (var->filename_rot != NULL) {
-        load_gtk_image(var->solved_image, var->filename_rot);
+        load_gtk_image(var->solved_image, var->filename_rot, width, height);
         Image solv = load_image(var->filename_rot);
         save_image(&solv, "solv");
         var->filename_solv = "solv";
         gtk_button_set_label(button, "SOLVED!");
     } else if (var->filename_base != NULL) {
-        load_gtk_image(var->solved_image, var->filename_base);
+        load_gtk_image(var->solved_image, var->filename_base, width, height);
         var->filename_solv = var->filename_base;
         gtk_button_set_label(button, "SOLVED!");
     }
 }
+
+
+/*void on_resize(GtkWindow *window, gpointer user_data) {*/
+
+    /*GVariables *var = user_data;*/
+    /*gint width, height;*/
+
+    /*gtk_window_get_size(GTK_WINDOW(window), &width, &height);*/
+
+    /*[>g_print("%s", var->filename_base);<]*/
+    /*[>g_print("%s", var->filename_rot);<]*/
+    /*[>g_print("%s", var->filename_solv);<]*/
+
+    /*if (var->filename_solv != NULL) {*/
+        /*load_gtk_image(var->former_image, var->filename_rot, width, height);*/
+        /*load_gtk_image(var->solved_image, var->filename_solv, width, height);*/
+        /*g_print("Found s image\n");*/
+    /*} else if (var->filename_rot != NULL) {*/
+        /*load_gtk_image(var->former_image, var->filename_rot, width, height);*/
+        /*g_print("Found r image\n");*/
+    /*} else if (var->filename_base != NULL) {*/
+        /*load_gtk_image(var->former_image, var->filename_base, width, height);*/
+        /*g_print("Found o image\n");*/
+    /*}*/
+
+    /*g_print("Image resized\n");*/
+
+/*}*/
+
+
