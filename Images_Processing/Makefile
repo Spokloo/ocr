@@ -1,6 +1,6 @@
 #- - - - - - - - VARIABLES - - - - - - - - 
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 SRC_DIR = source
@@ -31,7 +31,7 @@ tools:
 	$(CC) $(CFLAGS) -c $(file) -o $(DIR_OBJ)/$(SRC_TOOLS)/$(basename $(notdir $(file))).o;)
 
 $(EXEC): $(OBJ)
-	$(CC) $(OBJ) $(OBJ_TOOLS) $(LDLIBS) -o $@
+	$(CC) $(CFLAGS) $(OBJ) $(OBJ_TOOLS) $(LDLIBS) -o $@
 
 $(DIR_OBJ)/%.o: %.c $(INC_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
