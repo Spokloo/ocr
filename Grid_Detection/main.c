@@ -1,6 +1,6 @@
 #include <err.h>
 #include "houghtransform.h"
-#include "../Preprocessing/tools/image.h"
+#include "../Tools/image.h"
 
 int main(int argc, char** argv) {
     if (argc != 2)
