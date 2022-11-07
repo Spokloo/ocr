@@ -163,20 +163,21 @@ double calculate_expected(int i1,int i2)
 
 
 int main()
-{ 
-    struct neural_first_layer *l1= malloc(NB_INPUT*sizeof(struct neural_first_layer));
+{
+    struct neural_first_layer *l1=malloc(NB_INPUT*sizeof(struct neural_first_layer));
+    struct neural_first_layer **l1_p=&l1;
+    
     for (int i=0;i<NB_INPUT;i++)
     {
-        for (int k=0;k<NB_HIDDEN;k++)
-        {
-            l1[i].weights[k]=0;
-        }
-    }
+        for (int j=0;l1[i].weights[j];j++)
+            l1[i].weights[j]=0;
+        l1[i].value=0;
+    }  
+    struct neural_second_layer *l2=malloc(NB_HIDDEN*sizeof(struct neural_second_layer));
  
-    struct neural_second_layer *l2= malloc(NB_HIDDEN*sizeof(struct neural_second_layer)); 
+    struct neural_second_layer **l2_p= &l2; 
     struct out o1;
-    l2[0]=struct neural_second_layer;
-    l2[1]==struct neural_second_layer;
+
     for (int i=0;i<NB_HIDDEN;i++)
     {
         for (int k=0;k<NB_OUT;k++)
@@ -184,9 +185,10 @@ int main()
             l2[i].weights[k]=0;
         }
         l2[i].bias=0;
+        l2[i].value=0;
     } 
     o1.bias=0;
-    init_all(&l1,&l2,&o1);
+    init_all(l1_p,l2_p,&o1);
     int arr_input[2];
 
     arr_input[0]=1;
@@ -209,7 +211,7 @@ int main()
         sum_out(&o1,l2);
         expected=calculate_expected(arr_input[0],arr_input[1]);
         e = expected-o1.value;
-        printf("in : %d  %d expected %f  got %f \n",l1[0].value,l1[1].value,expected,o1.value);
+        printf("in : %f  %f expected %f  got %f \n",l1[0].value,l1[1].value,expected,o1.value);
         //printf("%f\n",l2[0].weights[0]);
         calculate_error_gradient_out(&o1,e);
     

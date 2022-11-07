@@ -1,6 +1,8 @@
 C = gcc
 CPPFLAGS =
-CFLAGS = -g -Wall -Wextra 
+
+CFLAGS = -g -Wall -Wextra -fsanitize=address 
+LDFLAGS= -fsanitize=address
 LDLIBS = -lm
 
 all : xornetwork
