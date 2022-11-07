@@ -36,8 +36,6 @@ void on_save_button_clicked(GtkButton *button, gpointer user_data) {
             strcpy(filename, res);
             strcat(filename, ".jpeg\0");
 
-            g_print("Length res : %li\nLenght file : %li\n", strlen(res), strlen(filename));
-        
             GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(var->filename_solv, &error);
 
             if (pixbuf == NULL) {
@@ -124,7 +122,9 @@ void on_solve_button_clicked(GtkButton *button, gpointer user_data) {
 
     if (var->filename_rot != NULL) {
         load_gtk_image(var->solved_image, var->filename_rot);
-        var->filename_solv = var->filename_rot;
+        Image solv = load_image(var->filename_rot);
+        save_image(&solv, "solv");
+        var->filename_solv = "solv";
         gtk_button_set_label(button, "SOLVED!");
     } else if (var->filename_base != NULL) {
         load_gtk_image(var->solved_image, var->filename_base);
