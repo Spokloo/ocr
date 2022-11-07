@@ -14,7 +14,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 ############ FLAGS AND LIBS
 CC = gcc
 CPPFLAGS =
-CFLAGS = -I$(IDIR) -Wall -Wextra -Werror `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2`
+CFLAGS = -I$(IDIR) -Wall -Wextra -Werror `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2` -g
 LDFLAGS = 
 LDLIBS = `pkg-config --libs gtk+-3.0` `pkg-config --libs sdl2` -lSDL2_image -lm
 

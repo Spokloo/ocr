@@ -16,7 +16,7 @@ typedef struct GVariables {
 } GVariables;
 
 
-int load_gtk_image(GtkWidget *former_image, char *filename);
+int load_gtk_image(GtkWidget *former_image, char *filename, int width, int height);
 
 
 #endif
