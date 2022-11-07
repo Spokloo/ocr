@@ -186,12 +186,14 @@ int main()
     {
         arr_input[i] = 0;
     }
+    int sample[8]={0,0,1,0,0,1,1,1};
     double e = 1;
     double expected;
     double seuil = 0.001;
-    while (w<1000 && ((e > seuil && e > 0) || (e < -seuil && e < 0)))
+    while ((e > seuil && e > 0) || (e < -seuil && e < 0))
     {
-        //generate(arr_input);
+        arr_input[0]=sample[w%4];
+        arr_input[1]=sample[(w%4)+1];
         for (int k = 0; k < NB_INPUT; k++)
         {
             l1[k].value = arr_input[k];
