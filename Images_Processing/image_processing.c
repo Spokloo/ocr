@@ -2,7 +2,7 @@
 #include "../Tools/image.h"
 #include "include/grayscale.h"
 #include "include/normalize.h"
-//#include "include/contrast.h"
+#include "include/contrast.h"
 #include "include/blur.h"
 #include "include/morphological_ops.h"
 #include "include/canny.h"
@@ -21,13 +21,10 @@ void apply_filters(char *path, char *newName)
     printf("filter size : %d\n", filter_size);
     grayscale(&img);
     normalize(&img);
-
     gaussian_blur(&img, filter_size);
-    //contrast(&img, 32);
     dilation(&img, filter_size);
-    erosion(&img, filter_size);   
+    erosion(&img, filter_size);
     canny(&img);
-    //erosion(&img, filter_size);
     save_image(&img, newName);
     free_image(&img);
 }
@@ -51,17 +48,11 @@ void testall()
 
 int main(int argc, char **argv)
 {
-    /*unsigned char oui = 0;
-        for (size_t i = 0; i < 280; i++)
-        {
-            oui++;
-            printf("%d\n", oui);
-        }*/
     if(argc != 2)
         errx(1, "Give an image path or 'all' as arguments");
     if(strcmp(argv[1], "all") == 0)
         testall();
     else
-        apply_filters(argv[1], "result.jpg");
+        apply_filters(argv[1], "result.jpeg");
     return 0;
 }

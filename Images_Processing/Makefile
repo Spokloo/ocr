@@ -37,6 +37,6 @@ $(DIR_OBJ)/%.o: %.c $(INC_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:
-	rm -rf $(DIR_OBJ)
+	rm -fr $(DIR_OBJ)
 	rm -f $(EXEC)
-	rm -f result.jpg result_image_??.jpeg
+	rm -f result.jpeg result_image_??.jpeg

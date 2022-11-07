@@ -2,7 +2,9 @@
 #include "../Tools/image.h"
 #include "include/rotate.h"
 #include "include/perspective_correction.h"
+#include "include/split_grid.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <err.h>
 
@@ -12,15 +14,40 @@ int main(int argc, char **argv)
         errx(1, "Give an image path or 'all' as arguments");
     
     Image img = load_image(argv[1]);
-    rotate(&img, 90);
-    //int src[8] = {70, 65, 1940, 65, 2080, 1830, 40, 1900};
-    //correct_perspective(&img, src);
+
+    //- - - - - - Rotate - - - - -
+    //rotate(&img, 90);
+
+    //- - - - Correct perspective - - - - - - 
+    int src6[8] = {70, 65, 1940, 65, 2080, 1830, 40, 1900};
+    int src5[8] = {630, 180, 1365, 695, 849, 1435, 110, 915};
+    correct_perspective(&img, src6);
+
+    // - - - Extract each cells - - - - -
+    Image **cells = malloc(81 * sizeof(Image*));
+    get_cells(&img, cells);
+    char name[7] = "0i.jpeg";
+    for(unsigned char i = 0; i < 81; i++)
+    {
+        if(i < 10)
+            name[1] = i + '0';
+        else
+        {
+            name[0] = i / 10 + '0';
+            name[1] = i % 10 + '0';
+        }
+        save_image(cells[i], name);
+        free_image(cells[i]);
+        free(cells[i]);
+    }
+    free(cells);
+
     /*printf("width: %d and height: %d", img.width, img.height);
-    img.matrix[70][65] = (Pixel) {255, 0, 0}; //haut gauche
-    img.matrix[40][1900] = (Pixel) {255, 0, 0}; //bas gauche
-    img.matrix[1940][65] = (Pixel) {255, 0, 0}; //haut droite
-    img.matrix[2080][1830] = (Pixel) {255, 0, 0};*/ //bas droite
-    save_image(&img, "result.jpg");
+    img.matrix[630][180] = (Pixel) {255, 0, 0}; //haut gauche
+    img.matrix[110][915] = (Pixel) {255, 0, 0}; //bas gauche
+    img.matrix[849][1435] = (Pixel) {255, 0, 0}; //bas droite
+    img.matrix[1365][695] = (Pixel) {255, 0, 0};*/ //haut droite
+    save_image(&img, "result.jpeg");
     free_image(&img);
     return 0;
 }

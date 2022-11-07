@@ -28,7 +28,7 @@ void copy_image(Image *src, Image *dst);
  * Return sub image of src between (x1,y1) and (x2,y2) 
  * which are position of angle in a rectangle.
  */
-Image get_sub_image(Image *src, unsigned int x1, unsigned int y1,
+Image *get_sub_image(Image *src, unsigned int x1, unsigned int y1,
                                         unsigned int x2, unsigned int y2);
 
 /*
