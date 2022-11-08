@@ -1,4 +1,4 @@
-C = gcc
+CC = gcc
 CPPFLAGS =
 
 CFLAGS = -g -Wall -Wextra -fsanitize=address 
@@ -9,9 +9,9 @@ all : xornetwork
 
 SRC = xornetwork.c 
 OBJ = ${SRC:.c=.o}
-EXE = ${SRC:.c=}
+EXE = xornetwork 
 
-xor: xornetwork.o
+xor: ${OBJ}
 .PHONY: clean
 main:
 	xornetwork.o
