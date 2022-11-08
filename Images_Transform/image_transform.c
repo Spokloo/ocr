@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     // - - - Extract each cells - - - - -
     Image **cells = malloc(81 * sizeof(Image*));
     get_cells(&img, cells);
-    char name[7] = "0i.jpeg";
+    char name[8] = "0i.jpeg";
     for(unsigned char i = 0; i < 81; i++)
     {
         if(i < 10)

@@ -12,7 +12,7 @@ typedef struct Line {
 } Line;
 
 typedef struct Square {
-    unsigned int x1, x2, x3, x4;
+    Point p1, p2, p3, p4;
 } Square;
 
 
