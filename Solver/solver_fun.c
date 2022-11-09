@@ -20,7 +20,7 @@
 int** convert(char * filename) {
     
     FILE * fp = fopen(filename, "r");
-    char line[12]; // 9 numbers + 2 space + final character
+    char line[12]; // 9 numbers + 2 spaces + final character
 
     int **grid = malloc(sizeof(int*) *9);
     for (int j = 0; j < 9; j++) {
@@ -28,7 +28,7 @@ int** convert(char * filename) {
     }
     int y = 0, x;
 
-    // fgets put one line from filename in line each time it is called
+    // fgets put one line from filename in line(variable) each time it is called
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[0] != 10) { // char 10 is End Of Line
             x = 0;
