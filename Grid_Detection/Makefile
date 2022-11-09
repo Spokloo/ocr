@@ -4,7 +4,7 @@ LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 EXEC = main
 SRC = main.c houghtransform.c
-TOOLS = ../Preprocessing/tools/*
+TOOLS = ../Tools/*
 OBJ = ${SRC:.c=.o}
 
 all: ${EXEC}
