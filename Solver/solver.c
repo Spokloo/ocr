@@ -1,8 +1,10 @@
 #include "solver_fun.h"
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
 
-    if (argc == 2) {
+    if (argc == 2)
+    {
 
         // Converts the grid from the argv[1] file
         // Then solves it
