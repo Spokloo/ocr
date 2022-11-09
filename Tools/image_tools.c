@@ -4,6 +4,7 @@
 /*
  * Getting the w*w pixels values around the pixel at (x,y) and put them
  * into around_pixels list.
+ * Out of bound of matrix isn't manage!
  */
 void get_around_pixels(Image *img, unsigned int x, unsigned int y,
                                     unsigned char w, Pixel *around_pixels)
@@ -11,8 +12,6 @@ void get_around_pixels(Image *img, unsigned int x, unsigned int y,
     //for odd numbers
     unsigned char fix = 0;
     unsigned char index = 0;
-    int wi = img->width;
-    int h = img->height;
     if (w % 2 != 0)
         fix = 1;
     
@@ -20,10 +19,7 @@ void get_around_pixels(Image *img, unsigned int x, unsigned int y,
     {
         for(int j = y - w/2; j < (int) (y + w/2 + fix); j++)
         {
-            if(i >= 0 && j >= 0 && i < wi && j < h)
-                around_pixels[index] = img->matrix[i][j];
-            else
-                around_pixels[index] = (Pixel) {0, 0, 0};
+            around_pixels[index] = img->matrix[i][j];
             index++;
         }
     }

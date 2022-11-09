@@ -19,9 +19,9 @@ void gaussian_blur(Image *img, unsigned char filter_size)
     {
         copy_image(img, &original_image);
 
-        for(x = 0; x < img->width; x++)
+        for(x = 1; x < img->width-1; x++)
         {
-            for(y = 0; y < img->height; y++)
+            for(y = 1; y < img->height-1; y++)
             {
                 //Get pixels around (x,y) and the current pixel
                 get_around_pixels(&original_image, x, y, 

@@ -21,10 +21,10 @@ unsigned int **sobel(Image *img)
     float kernel_x[9] = {1, 0, -1, 2, 0, -2, 1, 0, -1};
     float kernel_y[9] = {1, 2, 1, 0, 0, 0, -1, -2, -1};
     
-    for(unsigned int x = 0; x < img->width; x++)
+    for(unsigned int x = 1; x < img->width-1; x++)
     {
         gradients_dirs[x] = malloc(img->height * sizeof(unsigned int));
-        for(unsigned int y = 0; y < img->height; y++)
+        for(unsigned int y = 1; y < img->height-1; y++)
         {
             //Get 8 pixels around (x,y) and the current pixel
             get_around_pixels(&original_image, x, y, 3, (Pixel*) &around_pixels);
@@ -84,16 +84,18 @@ void threashold(Image *img, unsigned int **grad_dirs,
     Pixel pixel;
     unsigned int grad_dir;
     unsigned int neighbours[2];
+    Pixel black = {0, 0, 0};
+    Pixel white = {255, 255, 255};
     //first loop to change pixels lower than tl and higher than th
-    for(unsigned int x = 0; x < img->width; x++)
+    for(unsigned int x = 1; x < img->width-1; x++)
     {
-        for(unsigned int y = 0; y < img->height; y++)
+        for(unsigned int y = 1; y < img->height-1; y++)
         {
             pixel = img->matrix[x][y];
             if(pixel.r > th)
-                img->matrix[x][y] = (Pixel) {255, 255, 255};
+                img->matrix[x][y] = white;
             else if (pixel.r < tl)
-                img->matrix[x][y] = (Pixel) {0, 0, 0};
+                img->matrix[x][y] = black;
         }
     }
     //second loop to determine pixels between tl and th
@@ -111,11 +113,22 @@ void threashold(Image *img, unsigned int **grad_dirs,
                                                 (unsigned int*) &neighbours);
             
                 if(neighbours[0] >= th && neighbours[1] >= th)
-                    img->matrix[x][y] = (Pixel) {255, 255, 255};
+                    img->matrix[x][y] = white;
                 else
-                    img->matrix[x][y] = (Pixel) {0, 0, 0};
+                    img->matrix[x][y] = black;
             }
         }
+    }
+    //black pixels in borders
+    for(unsigned int x = 0; x < img->width; x++)
+    {
+        img->matrix[x][0] = black;
+        img->matrix[x][img->height-1] = black;
+    }
+    for(unsigned int y = 0; y < img->height; y++)
+    {
+        img->matrix[0][y] = black;
+        img->matrix[img->width-1][y] = black;
     }
 }
 
@@ -174,7 +187,7 @@ void canny(Image *img)
     unsigned int th = compute_high_threashold(img);
     unsigned int tl = 0.5*th;
     threashold(img, gradients_dirs, tl, th);
-    for(unsigned int x = 0; x < img->width; x++)
+    for(unsigned int x = 1; x < img->width-1; x++)
         free(gradients_dirs[x]);
     free(gradients_dirs);
 }
