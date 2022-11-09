@@ -24,7 +24,10 @@ FLAGS = $(CPPFLAGS) $(CFLAGS) $(LDLIBS)
 
 
 ############## RULES
-all: sudocr-gui
+all: init sudocr-gui
+
+init:
+	mkdir -p obj
 
 $(ODIR)/%.o: %.c $(DEP)
 	$(CC) -c -o $@ $< $(FLAGS)
