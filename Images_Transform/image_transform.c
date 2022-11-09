@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     //- - - - Correct perspective - - - - - - 
     int src6[8] = {70, 65, 1940, 65, 2080, 1830, 40, 1900};
     int src5[8] = {630, 180, 1365, 695, 849, 1435, 110, 915};
-    correct_perspective(&img, src6);
+    correct_perspective(&img, src5);
 
     // - - - Extract each cells - - - - -
     Image **cells = malloc(81 * sizeof(Image*));

@@ -4,7 +4,6 @@
 #include "../../Tools/image_tools.h"
 #include <stdlib.h>
 #include <math.h>
-#include <stdio.h>
 
 /*
  * Applying the Sobel filter (edge detection).
@@ -174,7 +173,6 @@ void canny(Image *img)
     //non_maximum_suppression(img, gradients_dirs);
     unsigned int th = compute_high_threashold(img);
     unsigned int tl = 0.5*th;
-    printf("high: %d and low : %d\n", th, tl);
     threashold(img, gradients_dirs, tl, th);
     for(unsigned int x = 0; x < img->width; x++)
         free(gradients_dirs[x]);

@@ -7,10 +7,11 @@
 int main()
 {
     NeuralNetwork xor = new_xor();
-    // load_weights(xor);
+    load_weights(xor);
     double dk = 1, val = 0, diff = 1, expected;
     double precision = 0.01;
     char input[8] = {0, 0, 0, 1, 1, 0, 1, 1};
+    unsigned long iter = 0;
     while (((diff > 0 && diff > precision) || (diff < 0 && diff < -precision)))
     {
         diff = 0;
@@ -50,11 +51,12 @@ int main()
                 xor.hidden[0]->inputweights[i] +=
                     LEARNRATE *dk * xor.hidden[0]->inputlinks[i]->value;
             xor.hidden[0]->bias += LEARNRATE *dk;
+            iter++;
         }
         diff /= 4;
     }
     printf("= = = = = = = = = =\n");
-    printf("Final result :\n");
+    printf("Final result with %ld iterations:\n", iter);
     for (int i = 0; i < 8; i += 2)
     {
         xor.input[0]->value = input[i];
@@ -67,7 +69,7 @@ int main()
     }
 
     // print_xor(xor);
-    // save_weights(xor);
+    save_weights(xor);
     free_xor(xor);
     return 0;
 }

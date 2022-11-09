@@ -18,12 +18,16 @@ void apply_filters(char *path, char *newName)
         filter_size = img.width / 300;
     else
         filter_size = img.height / 300;
-    printf("filter size : %d\n", filter_size);
     grayscale(&img);
+    save_image(&img, "grayscale.jpeg");
     normalize(&img);
+    save_image(&img, "normalize.jpeg");
     gaussian_blur(&img, filter_size);
+    save_image(&img, "gaussian_blur.jpeg");
     dilation(&img, filter_size);
+    save_image(&img, "dilation.jpeg");
     erosion(&img, filter_size);
+    save_image(&img, "dilation+erosion.jpeg");
     canny(&img);
     save_image(&img, newName);
     free_image(&img);
@@ -36,12 +40,28 @@ void testall()
     path[28] = '\0';
     char newName[21] = "result_image_00.jpeg";
     newName[20] = '\0';
-    for(size_t i = 1; i <= 6; i++)
+    Image img;
+    char images[4] = {1, 2, 3, 5};
+    for(size_t i = 0; i < 4; i++)
     {
-        path[22] = i + '0';
-        newName[14] = i + '0';
+        path[22] = images[i] + '0';
+        newName[14] = images[i] + '0';
         printf("Work on %s\n", path);
-        apply_filters(path, newName);
+        img = load_image(path);
+        unsigned char filter_size = 0;
+        if(img.width > img.height)
+            filter_size = img.width / 300;
+        else
+            filter_size = img.height / 300;
+        grayscale(&img);
+        normalize(&img);
+        gaussian_blur(&img, filter_size);
+        dilation(&img, filter_size);
+        erosion(&img, filter_size);
+        canny(&img);
+        save_image(&img, newName);
+        free_image(&img);
+
         printf("==============================\n");
     }
 }
