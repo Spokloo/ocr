@@ -40,8 +40,8 @@ void testall()
     char newName[21] = "result_image_00.jpeg";
     newName[20] = '\0';
     Image img;
-    char images[4] = {1, 2, 3, 5};
-    for (size_t i = 0; i < 4; i++)
+    char images[5] = {1, 2, 3, 4, 6};
+    for (size_t i = 0; i < 5; i++)
     {
         path[22] = images[i] + '0';
         newName[14] = images[i] + '0';
