@@ -3,8 +3,8 @@
 
 #include "rotate.h"
 
-
-typedef struct GVariables {
+typedef struct GVariables
+{
 
     GtkWidget *parent_window;
     GtkWidget *former_image;
@@ -15,8 +15,7 @@ typedef struct GVariables {
 
 } GVariables;
 
-
-int load_gtk_image(GtkWidget *former_image, char *filename, int width, int height);
-
+int load_gtk_image(GtkWidget *former_image, char *filename, int width,
+                   int height);
 
 #endif

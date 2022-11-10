@@ -2,9 +2,9 @@
 
 #include "callbacks.h"
 
+int main(int argc, char **argv)
+{
 
-int main(int argc, char **argv) {
-    
     GtkBuilder *builder;
     GObject *window;
     GObject *save_button;
@@ -15,11 +15,11 @@ int main(int argc, char **argv) {
     GObject *solved_image;
     GError *error = NULL;
 
-    
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
-    if (gtk_builder_add_from_file(builder, "ui.glade", &error) == 0) {
+    if (gtk_builder_add_from_file(builder, "ui.glade", &error) == 0)
+    {
         g_printerr("Error loading file: %s\n", error->message);
         g_clear_error(&error);
         return 1;
@@ -31,31 +31,32 @@ int main(int argc, char **argv) {
     former_image = gtk_builder_get_object(builder, "former_image");
     solved_image = gtk_builder_get_object(builder, "solved_image");
 
-    GVariables var = {
-        .parent_window = GTK_WIDGET(window),
-        .former_image = GTK_WIDGET(former_image),
-        .solved_image = GTK_WIDGET(solved_image),
-        .filename_base = NULL,
-        .filename_rot = NULL,
-        .filename_solv = NULL
-    };
-
+    GVariables var = {.parent_window = GTK_WIDGET(window),
+                      .former_image = GTK_WIDGET(former_image),
+                      .solved_image = GTK_WIDGET(solved_image),
+                      .filename_base = NULL,
+                      .filename_rot = NULL,
+                      .filename_solv = NULL};
 
     save_button = gtk_builder_get_object(builder, "save_button");
-    g_signal_connect(save_button, "clicked", G_CALLBACK(on_save_button_clicked), &var);
+    g_signal_connect(save_button, "clicked", G_CALLBACK(on_save_button_clicked),
+                     &var);
 
     open_button = gtk_builder_get_object(builder, "open_button");
-    g_signal_connect(open_button, "clicked", G_CALLBACK(on_open_button_clicked), &var);
+    g_signal_connect(open_button, "clicked", G_CALLBACK(on_open_button_clicked),
+                     &var);
 
     solve_button = gtk_builder_get_object(builder, "solve_button");
-    g_signal_connect(solve_button, "clicked", G_CALLBACK(on_solve_button_clicked), &var);
+    g_signal_connect(solve_button, "clicked",
+                     G_CALLBACK(on_solve_button_clicked), &var);
 
     rotate_scale = gtk_builder_get_object(builder, "rotate_scale");
     gtk_range_set_range(GTK_RANGE(rotate_scale), 0, 360);
-    g_signal_connect(rotate_scale, "value-changed", G_CALLBACK(on_rotate_scale_value_changed), &var);
+    g_signal_connect(rotate_scale, "value-changed",
+                     G_CALLBACK(on_rotate_scale_value_changed), &var);
 
     // RESIZE WINDOW
-    //g_signal_connect(window, "size-allocate", G_CALLBACK(on_resize), &var);
+    // g_signal_connect(window, "size-allocate", G_CALLBACK(on_resize), &var);
 
     gtk_main();
 

@@ -13,5 +13,4 @@ void on_solve_button_clicked(GtkButton *button, gpointer user_data);
 
 void on_resize(GtkWindow *window, gpointer user_data);
 
-
 #endif
