@@ -148,25 +148,25 @@ void get_squares(unsigned int len, unsigned int diag, unsigned int** lines,
         Square* squares) {
     unsigned long m = 0;
     for (unsigned int i = 0; i < len; i++) {
-        if (lines[i][2] == 1) {
+        if (lines[i][2] == 2) {
             for (unsigned int j = 0; j < len; j++) {
-                if (lines[j][2] == 2) {
-                    for (unsigned int k = 0; k < len; k++) {
-                        if (i != k && lines[k][2] == 1) {
-                            for (unsigned int l = 0; l < len; l++) {
-                                if (j != l && lines[l][2] == 2) {
-                                    Point p1 = get_intersection(lines[l][0],
-                                            lines[l][1], lines[i][0],
+                if (lines[j][2] == 1) {
+                    for (unsigned int k = i + 1; k < len; k++) {
+                        if (lines[k][2] == 2) {
+                            for (unsigned int l = j + 1; l < len; l++) {
+                                if (lines[l][2] == 1) {
+                                    Point p1 = get_intersection(lines[j][0],
+                                            lines[j][1], lines[i][0],
                                             lines[i][1], diag);
                                     Point p2 = get_intersection(lines[i][0],
-                                            lines[i][1], lines[j][0],
-                                            lines[j][1], diag);
-                                    Point p3 = get_intersection(lines[j][0],
-                                            lines[j][1], lines[k][0],
+                                            lines[i][1], lines[l][0],
+                                            lines[l][1], diag);
+                                    Point p3 = get_intersection(lines[l][0],
+                                            lines[l][1], lines[k][0],
                                             lines[k][1], diag);
                                     Point p4 = get_intersection(lines[k][0],
-                                            lines[k][1], lines[l][0],
-                                            lines[l][1], diag);
+                                            lines[k][1], lines[j][0],
+                                            lines[j][1], diag);
 
                                     squares[m] = (Square) { p1, p2, p3, p4 };
                                     m++;
@@ -228,6 +228,11 @@ void draw_square(Image* img, Square square, Pixel color) {
 
 void draw_all_squares(Image* img, unsigned int nb_squares, Square* squares) {
     for (unsigned int i = 0; i < nb_squares; i++) {
+        if (squares[i].p1.x == nb_squares || squares[i].p1.y == nb_squares
+                || squares[i].p2.x == nb_squares || squares[i].p2.y == nb_squares
+                || squares[i].p3.x == nb_squares || squares[i].p3.y == nb_squares
+                || squares[i].p4.x == nb_squares || squares[i].p4.y == nb_squares)
+            continue;
         draw_square(img, squares[i], (Pixel) { 0, 255, 0 });
     }
 }
@@ -291,8 +296,11 @@ Square* draw_grid_square(Image* img, unsigned int nb_squares, Square* squares,
         int a2 = pow(maximum, 2);
 
         int diff = a2 - a1;
+        if (a2 == 0)
+            continue;
+
         int factor = (diff / a2) * a1;
-        int square_factor = a1 * 3 - factor * 10;
+        int square_factor = a1 * 3 - factor * 12;
 
         if (square_factor >= best_factor) {
             best_factor = square_factor;
@@ -498,13 +506,13 @@ void hough_transform(Image* img, double threshold) {
     gs = draw_grid_square(img, nb_squares, squares, gs);
     save_image(img, "main_grid_detection.jpeg");
 
-    int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
-        gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
+    //int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
+    //    gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
 
-    for (unsigned int i = 0; i < 8; i++) {
-        printf("%d\n", points[i]);
-    }
-    correct_perspective(img, points);
+    //for (unsigned int i = 0; i < 8; i++) {
+    //    printf("%d\n", points[i]);
+    //}
+    //correct_perspective(img, points);
 
-    extract_cells(img);
+    //extract_cells(img);
 }
