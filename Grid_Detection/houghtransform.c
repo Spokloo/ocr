@@ -3,6 +3,7 @@
 #include <math.h>
 #include "../Tools/image.h"
 #include "../Images_Transform/include/perspective_correction.h"
+#include "../Images_Transform/include/split_grid.h"
 #include "houghtransform.h"
 
 unsigned int max_dist(Image* img) {
@@ -208,19 +209,21 @@ void render_line(Image* img, int x0, int y0, int x1, int y1, Pixel color) {
 }
 
 void draw_square(Image* img, Square square, Pixel color) {
-    int x1 = square.p1.x;
-    int y1 = square.p1.y;
-    int x2 = square.p2.x;
-    int y2 = square.p2.y;
-    int x3 = square.p3.x;
-    int y3 = square.p3.y;
-    int x4 = square.p4.x;
-    int y4 = square.p4.y;
+    for (unsigned int i = 0; i < 5; i++) {
+        int x1 = square.p1.x - i;
+        int y1 = square.p1.y - i;
+        int x2 = square.p2.x - i;
+        int y2 = square.p2.y - i;
+        int x3 = square.p3.x - i;
+        int y3 = square.p3.y - i;
+        int x4 = square.p4.x - i;
+        int y4 = square.p4.y - i;
 
-    render_line(img, x1, y1, x2, y2, color);
-    render_line(img, x2, y2, x3, y3, color);
-    render_line(img, x3, y3, x4, y4, color);
-    render_line(img, x4, y4, x1, y1, color);
+        render_line(img, x1, y1, x2, y2, color);
+        render_line(img, x2, y2, x3, y3, color);
+        render_line(img, x3, y3, x4, y4, color);
+        render_line(img, x4, y4, x1, y1, color);
+    }
 }
 
 void draw_all_squares(Image* img, unsigned int nb_squares, Square* squares) {
@@ -495,9 +498,13 @@ void hough_transform(Image* img, double threshold) {
     gs = draw_grid_square(img, nb_squares, squares, gs);
     save_image(img, "main_grid_detection.jpeg");
 
-    //int points[8] = { gs->p4.x, gs->p4.y, gs->p3.x, gs->p3.y,
-    //    gs->p2.x, gs->p2.y, gs->p1.x, gs->p1.y };
-    //correct_perspective(img, points);
+    int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
+        gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
 
-    //extract_cells(img);
+    for (unsigned int i = 0; i < 8; i++) {
+        printf("%d\n", points[i]);
+    }
+    correct_perspective(img, points);
+
+    extract_cells(img);
 }
