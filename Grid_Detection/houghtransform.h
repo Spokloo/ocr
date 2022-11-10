@@ -17,6 +17,6 @@ typedef struct Square {
 
 
 
-void hough_transform(Image* img);
+void hough_transform(Image* img, double threshold);
 
 #endif
