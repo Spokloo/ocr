@@ -11,9 +11,9 @@ void dilation(Image *img, unsigned char filter_size)
     copy_image(img, &original_img);
     unsigned int min;
     Pixel around_pixels[filter_size * filter_size];
-    for (unsigned int x = filter_size; x < img->width-filter_size; x++)
+    for (unsigned int x = filter_size; x < img->width - filter_size; x++)
     {
-        for (unsigned int y = filter_size; y < img->height-filter_size; y++)
+        for (unsigned int y = filter_size; y < img->height - filter_size; y++)
         {
             min = 255;
             get_around_pixels(&original_img, x, y, filter_size,

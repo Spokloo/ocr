@@ -14,6 +14,6 @@ char inverse_mat(float mat[9][9], unsigned char size);
  * r2: number of rows in mat2
  */
 void mult_mat(float mat1[9][9], float mat2[9][9], float result[9][9],
-                        unsigned char r1, unsigned char c2, unsigned char r2);
+              unsigned char r1, unsigned char c2, unsigned char r2);
 
 #endif

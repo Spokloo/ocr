@@ -100,7 +100,7 @@ void cofactor(float num[9][9], float f)
 char inverse_mat(float mat[9][9], unsigned char size)
 {
     float d = determinant(mat, size);
-    if (d == 0) //impossible to inverse matrix
+    if (d == 0) // impossible to inverse matrix
         return -1;
     else
         cofactor(mat, size);
@@ -114,10 +114,12 @@ char inverse_mat(float mat[9][9], unsigned char size)
  * r2: number of rows in mat2
  */
 void mult_mat(float mat1[9][9], float mat2[9][9], float result[9][9],
-                        unsigned char r1, unsigned char c2, unsigned char r2)
+              unsigned char r1, unsigned char c2, unsigned char r2)
 {
-    for (int i = 0; i < r1; i++) {
-        for (int j = 0; j < c2; j++) {
+    for (int i = 0; i < r1; i++)
+    {
+        for (int j = 0; j < c2; j++)
+        {
             result[i][j] = 0;
             for (int k = 0; k < r2; k++)
                 result[i][j] += mat1[i][k] * mat2[k][j];

@@ -1,9 +1,10 @@
-#include <stdlib.h>
-#include <err.h>
-#include "houghtransform.h"
 #include "../Tools/image.h"
+#include "houghtransform.h"
+#include <err.h>
+#include <stdlib.h>
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     if (argc != 3)
         errx(1, "Usage: ./main <path to image> <threshold>");
 
