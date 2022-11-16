@@ -1,7 +1,7 @@
 #ifndef ROTATE_H
 #define ROTATE_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Rotate clockwise the image with the given angle in degrees.

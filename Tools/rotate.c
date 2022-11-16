@@ -1,5 +1,5 @@
-#include "../include/rotate.h"
-#include "../../Tools/image.h"
+#include "rotate.h"
+#include "image.h"
 #include <math.h>
 /*
  * Rotate clockwise the image with the given angle in degrees.

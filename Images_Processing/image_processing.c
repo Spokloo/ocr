@@ -40,11 +40,11 @@ void testall()
     char newName[21] = "result_image_00.jpeg";
     newName[20] = '\0';
     Image img;
-    char images[5] = {1, 2, 3, 4, 6};
-    for (size_t i = 0; i < 5; i++)
+    //char images[5] = {1, 2, 3, 4, 6};
+    for (size_t i = 1; i <= 6; i++)
     {
-        path[22] = images[i] + '0';
-        newName[14] = images[i] + '0';
+        path[22] = i + '0';
+        newName[14] = i + '0';
         printf("Work on %s\n", path);
         img = load_image(path);
         unsigned char filter_size = 0;

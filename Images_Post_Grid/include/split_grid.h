@@ -9,4 +9,10 @@
  */
 void get_cells(Image *img, Image **cells);
 
+/*
+ * Resize the image to fit the number or create a white 28*28 image if there is
+ * no number.
+ */
+Image *get_number_in_cell(Image *cell);
+
 #endif

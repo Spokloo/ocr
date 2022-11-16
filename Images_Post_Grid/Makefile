@@ -7,10 +7,10 @@ SRC_DIR = source
 SRC_TOOLS = Tools
 INC_DIR = include
 DIR_OBJ = obj
-EXEC = image_transform
+EXEC = image_post_grid
 
 #- - - - - - - - AUTOMATIC VARIABLES - - - - - - - -
-SRC = $(shell find $(SRC_DIR) -name "*.c") image_transform.c
+SRC = $(shell find $(SRC_DIR) -name "*.c") image_post_grid.c
 #SRC = $(shell find src -name "*.c" ! -name "main.c") image_processing.c
 TOOLS = $(shell find ../$(SRC_TOOLS) -name "*.c")
 OBJ = $(addprefix $(DIR_OBJ)/, $(SRC:c=o))
