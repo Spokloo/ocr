@@ -7,11 +7,10 @@
 int main()
 {
     NeuralNetwork xor = new_xor();
-    load_weights(xor);
+    // load_weights(xor);
     double dk = 1, val = 0, diff = 1, expected;
     double precision = 0.01;
     char input[8] = {0, 0, 0, 1, 1, 0, 1, 1};
-    unsigned long iter = 0;
     while (((diff > 0 && diff > precision) || (diff < 0 && diff < -precision)))
     {
         diff = 0;
@@ -26,6 +25,12 @@ int main()
                 update_activate_value(xor.hidden[i]);
             for (unsigned char i = 0; i < NB_OUTPUT; i++)
                 update_activate_value(xor.output[i]);
+            for (unsigned char i = 0; i < NB_HIDDEN; i++)
+                softmax(xor.hidden[i]);
+            for (unsigned char i = 0; i < NB_OUTPUT; i++)
+                softmax(xor.output[i]);
+  
+            
             expected =
                 calculate_expected(xor.input[0]->value, xor.input[1]->value);
             diff += fabs(expected - xor.output[0]->value);
@@ -51,12 +56,11 @@ int main()
                 xor.hidden[0]->inputweights[i] +=
                     LEARNRATE *dk * xor.hidden[0]->inputlinks[i]->value;
             xor.hidden[0]->bias += LEARNRATE *dk;
-            iter++;
         }
         diff /= 4;
     }
     printf("= = = = = = = = = =\n");
-    printf("Final result with %ld iterations:\n", iter);
+    printf("Final result :\n");
     for (int i = 0; i < 8; i += 2)
     {
         xor.input[0]->value = input[i];
@@ -69,7 +73,7 @@ int main()
     }
 
     // print_xor(xor);
-    save_weights(xor);
+    // save_weights(xor);
     free_xor(xor);
     return 0;
 }
@@ -80,7 +84,15 @@ void update_activate_value(unit *u)
     for (unsigned char i = 0; i < u->nb_input; i++)
         res += u->inputlinks[i]->value * u->inputweights[i];
     res += u->bias;
-    u->value = 1.0 / (1.0 + exp(-res));
+    u->value = res;
+}
+
+void softmax(unit *u)
+{
+    int sum=0;
+    for (int i=0;l[i];i++)
+        sum+=exp(l[i]->value);
+    u->value= exp(u->value)/sum;
 }
 
 double calculate_expected(int i1, int i2)
