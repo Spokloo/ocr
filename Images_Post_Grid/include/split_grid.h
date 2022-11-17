@@ -15,4 +15,9 @@ void get_cells(Image *img, Image **cells);
  */
 Image *get_number_in_cell(Image *cell);
 
+/*
+ * Resize the image to 28*28 pixels. 
+ */
+Image *resize_28(Image *img);
+
 #endif

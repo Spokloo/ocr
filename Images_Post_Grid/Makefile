@@ -39,5 +39,5 @@ $(DIR_OBJ)/%.o: %.c $(INC_DIR)
 clean:
 	rm -rf $(DIR_OBJ)
 	rm -f $(EXEC)
-	rm -f result.jpeg
-	rm -f ??.jpeg
+	rm -f result_image_??.jpeg
+	rm -f image_??_??.jpeg
