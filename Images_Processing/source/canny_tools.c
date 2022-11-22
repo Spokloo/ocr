@@ -28,8 +28,8 @@ unsigned int normalize_grad_dir(float dir)
  * neighbours[4] and neighbours[5] for blue
  * Consider that x and y are always correct.
  */
-void get_grad_neighbours(unsigned int grad_dir, Image *img,
-                    unsigned int x, unsigned int y, unsigned int *neighbours)
+void get_grad_neighbours(unsigned int grad_dir, Image *img, unsigned int x,
+                         unsigned int y, unsigned int *neighbours)
 {
     switch (grad_dir)
     {
@@ -39,7 +39,7 @@ void get_grad_neighbours(unsigned int grad_dir, Image *img,
         break;
 
     case 45:
-        neighbours[0] = img->matrix[x -1][y + 1].r;
+        neighbours[0] = img->matrix[x - 1][y + 1].r;
         neighbours[1] = img->matrix[x + 1][y - 1].r;
         break;
 

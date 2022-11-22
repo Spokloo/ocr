@@ -8,14 +8,12 @@
  * into around_pixels list.
  * Out of bound of matrix isn't manage!
  */
-void get_around_pixels(Image *matrix, unsigned int x, unsigned int y, 
-                                    unsigned char w, Pixel *around_pixels);
+void get_around_pixels(Image *matrix, unsigned int x, unsigned int y,
+                       unsigned char w, Pixel *around_pixels);
 
 /*
  * Compute the convolution product on red pixels. Not a matrix product!
  */
 float convolution_product(Pixel *pixels, float *kernel, unsigned char size);
-
-
 
 #endif

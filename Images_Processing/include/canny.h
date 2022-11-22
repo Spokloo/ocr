@@ -10,7 +10,7 @@
 unsigned int **sobel(Image *img);
 
 /*
- * Removal of non-maximums: remove all "weak" values by following the angle of 
+ * Removal of non-maximums: remove all "weak" values by following the angle of
  * their gradient.
  */
 unsigned int **non_maximum_suppression(Image *img, unsigned int **grad_dirs);
@@ -20,8 +20,8 @@ unsigned int **non_maximum_suppression(Image *img, unsigned int **grad_dirs);
  * Pixels under tl are black. Pixels under th are white.
  * Pixels between tl and th depend on neighboors.
  */
-void threashold(Image *img, unsigned int **grad_dirs, 
-                                            unsigned int tl, unsigned int th);
+void threashold(Image *img, unsigned int **grad_dirs, unsigned int tl,
+                unsigned int th);
 
 /*
  * Compute high threashold thanks to Otsu Algorithm.

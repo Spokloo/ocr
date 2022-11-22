@@ -17,7 +17,7 @@ unsigned int normalize_grad_dir(float dir);
  * neighbours[4] and neighbours[5] for blue
  * Consider that x and y are always correct.
  */
-void get_grad_neighbours(unsigned int grad_dir, Image *img,
-                    unsigned int x, unsigned int y, unsigned int *neighbours);
+void get_grad_neighbours(unsigned int grad_dir, Image *img, unsigned int x,
+                         unsigned int y, unsigned int *neighbours);
 
 #endif

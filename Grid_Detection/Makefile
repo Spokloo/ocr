@@ -4,7 +4,7 @@ LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 EXEC = main
 SRC = main.c houghtransform.c
-TOOLS = ../Tools/*
+TOOLS = ../Tools/* ../Images_Transform/include/* ../Images_Transform/source/*
 OBJ = ${SRC:.c=.o}
 
 all: ${EXEC}
@@ -15,4 +15,8 @@ ${EXEC}: ${OBJ}
 clean:
 	rm -f ${OBJ}
 	rm -f ${EXEC}
-	rm -f result_hough.jpg
+	rm -f result_hough.jpeg
+	rm -f hough_lines.jpeg
+	rm -f squares_detection.jpeg
+	rm -f main_grid_detection.jpeg
+	rm -f ??.jpeg
