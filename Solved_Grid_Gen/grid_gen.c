@@ -1,31 +1,25 @@
 #include "grid_gen.h"
 
-
-
 int is_pixel_same(Pixel *p1, Pixel *p2)
 {
     return (p1->r == p2->r && p1->g == p2->g && p1->b == p2->b);
 }
 
-
-
-
-
 void place_img(Image *dest, Pixel *color, int digit, int x, int y)
 {
-    char * path = malloc(17 * sizeof(char));
+    char *path = malloc(17 * sizeof(char));
     sprintf(path, "images/num_%d.png", digit);
 
     Image digit_img = load_image(path);
     unsigned int width = digit_img.width + x, height = digit_img.height + y;
-    Pixel * white = malloc(sizeof(Pixel));
+    Pixel *white = malloc(sizeof(Pixel));
     white->r = white->g = white->b = 255;
 
     for (unsigned int i = x; i < width; i++)
     {
         for (unsigned int j = y; j < height; j++)
         {
-            dest->matrix[i][j] = is_pixel_same(white, &digit_img.matrix[i-x][j-y]) ? *white : *color;
+            dest->matrix[i][j] = is_pixel_same(white, &digit_img.matrix[i - x][j - y]) ? *white : *color;
         }
     }
 
@@ -34,24 +28,15 @@ void place_img(Image *dest, Pixel *color, int digit, int x, int y)
     free(white);
 }
 
-
 void construct_grid(char *old_path, char *solved_path)
 {
-    int **old_grid = load_grid(old_path); 
+    int **old_grid = load_grid(old_path);
     int **solved_grid = load_grid(solved_path);
     Image grid_img = load_image("images/blank_grid.png");
     int x = 8, y = 8;
 
-    Pixel normal_color = {
-        .r = 0,
-        .g = 0,
-        .b = 0
-    };
-    Pixel new_color = {
-        .r = 255,
-        .g = 0,
-        .b = 0
-    };
+    Pixel normal_color = {.r = 0, .g = 0, .b = 0};
+    Pixel new_color = {.r = 255, .g = 0, .b = 0};
 
     for (unsigned int i = 0; i < 9; i++)
     {
@@ -64,17 +49,16 @@ void construct_grid(char *old_path, char *solved_path)
             else
                 place_img(&grid_img, &normal_color, solved_grid[i][j], x, y);
 
-
-            if (j == 2 || j == 5) 
+            if (j == 2 || j == 5)
             {
                 x += 4;
-            } 
+            }
             x += 104;
         }
-        if (i == 2 || i == 5) 
+        if (i == 2 || i == 5)
         {
             y += 4;
-        } 
+        }
         y += 104;
         x = 8;
     }
@@ -83,17 +67,16 @@ void construct_grid(char *old_path, char *solved_path)
     free_image(&grid_img);
 }
 
-
 void printHelp()
 {
     printf("Incorrect number of arguments\n");
     printf("Usage: ./grid_gen <old_grid> <solved_grid>\n");
 }
 
-
 int main(int argc, char *argv[])
 {
-    if (argc != 3) {
+    if (argc != 3)
+    {
         printHelp();
         return 1;
     }
