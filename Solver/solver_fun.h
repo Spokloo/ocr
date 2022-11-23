@@ -1,7 +1,7 @@
 #ifndef SOLVER_FUN_H
 #define SOLVER_FUN_H
 
-int **convert(char *filename);
+int **load_grid(char *filename);
 int check_line(int **grid, int line);
 int check_column(int **grid, int column);
 int check_square(int **grid, int start_x, int start_y);
