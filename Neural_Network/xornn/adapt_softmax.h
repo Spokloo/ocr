@@ -2,10 +2,9 @@
 #define ADAPT_SOFTMAX_H
 #include "xor.h"
 
-
 NeuralNetwork new_nn();
 
-void free_nn(Neural_Network nn);
+void free_nn(NeuralNetwork nn);
 
-
+#endif
 

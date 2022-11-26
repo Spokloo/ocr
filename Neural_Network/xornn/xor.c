@@ -1,5 +1,5 @@
 #include "xor.h"
-#include "xor_tools.h"
+#include "adapt_softmax.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
