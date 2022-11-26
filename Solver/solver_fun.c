@@ -16,7 +16,7 @@
  *          position either the numbers in the grid or 0 if no
  *          number was found
  */
-int **convert(char *filename)
+int **load_grid(char *filename)
 {
 
     FILE *fp = fopen(filename, "r");
