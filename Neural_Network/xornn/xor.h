@@ -3,7 +3,7 @@
 
 #define LEARNRATE 2
 #define NB_INPUT 2
-#define NB_HIDDEN 1
+#define NB_HIDDEN 2
 #define NB_OUTPUT 1
 
 typedef struct unit
@@ -23,7 +23,7 @@ typedef struct NeuralNetwork
 } NeuralNetwork;
 
 void update_activate_value(unit *u);
-
+void activate(unit *u);
 double calculate_expected(int i1, int i2);
 
 #endif

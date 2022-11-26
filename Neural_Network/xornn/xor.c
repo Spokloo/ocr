@@ -8,6 +8,8 @@ int main()
 {
     NeuralNetwork xor = new_xor();
     // load_weights(xor);
+    double sum_first=0;
+    double sum_second=0;
     double dk = 1, val = 0, diff = 1, expected;
     double precision = 0.01;
     char input[8] = {0, 0, 0, 1, 1, 0, 1, 1};
@@ -19,16 +21,25 @@ int main()
             // Give example
             xor.input[0]->value = input[nb];
             xor.input[1]->value = input[nb + 1];
-
+            sum_first=0;
+            sum_second=0;
             // Update activate value of hidden and output layer
             for (unsigned char i = 0; i < NB_HIDDEN; i++)
                 update_activate_value(xor.hidden[i]);
+            //for (int i=0;i<NB_HIDDEN;i++)
+            //    sum_first+=exp(xor.hidden[i]->value);
+            //for (unsigned char i = 0; i < NB_HIDDEN; i++)
+            //    xor.hidden[i]->value= exp(xor.hidden[i]->value)/sum_first;
+  
             for (unsigned char i = 0; i < NB_OUTPUT; i++)
+            {
                 update_activate_value(xor.output[i]);
-            for (unsigned char i = 0; i < NB_HIDDEN; i++)
-                softmax(xor.hidden[i]);
-            for (unsigned char i = 0; i < NB_OUTPUT; i++)
-                softmax(xor.output[i]);
+                activate(xor.output[i]);
+            }
+            //for (int i=0;i<NB_OUTPUT;i++)
+            //    sum_second+=exp(xor.output[i]->value);
+            //for (unsigned char i = 0; i < NB_OUTPUT; i++)
+            //    xor.output[i]->value= exp(xor.output[i]->value)/sum_second;
   
             
             expected =
@@ -87,12 +98,9 @@ void update_activate_value(unit *u)
     u->value = res;
 }
 
-void softmax(unit *u)
+void activate(unit *u)
 {
-    int sum=0;
-    for (int i=0;l[i];i++)
-        sum+=exp(l[i]->value);
-    u->value= exp(u->value)/sum;
+    u->value= 1/(1+exp(-(u->value)));
 }
 
 double calculate_expected(int i1, int i2)
