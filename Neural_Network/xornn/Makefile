@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 LDLIBS = -lm
 
-SRC = xor.c xor_tools.c
+SRC = adapt_softmax.c xor.c xor_tools.c
 OBJ = ${SRC:c=o}
 EXEC = xor
 
