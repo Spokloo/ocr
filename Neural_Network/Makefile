@@ -1,22 +1,18 @@
 CC = gcc
-CPPFLAGS =
-
-CFLAGS = -g -Wall -Wextra -fsanitize=address 
-LDFLAGS= -fsanitize=address
+CFLAGS = -Wall -Wextra -g -fsanitize=address
 LDLIBS = -lm
 
-all : xornetwork
+SRC = nn.c nn_tools.c weights.c
+OBJ = ${SRC:c=o}
+EXEC = NeuralNetwork
 
-SRC = xornetwork.c 
-OBJ = ${SRC:.c=.o}
-EXE = xornetwork 
+all: ${EXEC}
 
-xor: ${OBJ}
-.PHONY: clean
-main:
-	xornetwork.o
+${EXEC}: ${OBJ}
+	${CC} $^ -o $@ ${CFLAGS} ${LDLIBS} 
+
+%.o: %.c $(SRC)
+	${CC} -c $< -o $@ ${CFLAGS} ${LDLIBS}
+
 clean:
-	${RM} ${OBJ}
-	${RM} ${EXE}
-
-# END
+	${RM} ${OBJ} ${EXEC} weights
