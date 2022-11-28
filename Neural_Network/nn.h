@@ -28,7 +28,8 @@ typedef struct NeuralNetwork
  * precision is reached. Return the number of epoch.
  */
 unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],
-                    char expected[NB_TRAINING_SET], double precision);
+                    char expected[NB_TRAINING_SET][NB_OUTPUT],
+                    double precision);
 
 /*
  * Give input array to the Neural Network and return its result.

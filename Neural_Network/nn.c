@@ -7,10 +7,10 @@
 int main()
 {
     NeuralNetwork nn = new_nn();
-    // load_weights(&nn);
+    load_weights(&nn);
 
     char input[NB_TRAINING_SET][NB_INPUT] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-    char expected[NB_TRAINING_SET] = {0, 1, 1, 0};
+    char expected[NB_TRAINING_SET][NB_OUTPUT] = {{0}, {1}, {1}, {0}};
 
     unsigned long epoch = train(&nn, input, expected, 0.01);
 
@@ -20,10 +20,10 @@ int main()
     {
         res = get_output(&nn, input[i]);
         printf("%d and %d -> %f (%d)\n", input[i][0], input[i][1], res,
-               expected[i]);
+               expected[i][0]);
     }
     // print_nn(&nn);
-    // save_weights(&nn);
+    save_weights(&nn);
     free_nn(&nn);
     return 0;
 }
@@ -33,11 +33,12 @@ int main()
  * precision is reached. Return the number of epoch.
  */
 unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],
-                    char expected[NB_TRAINING_SET], double precision)
+                    char expected[NB_TRAINING_SET][NB_OUTPUT], double precision)
 {
-    double grad = 1, val = 0, diff = 1, err, gradsave;
+    double grad = 1, val = 0, diff = 1, err, sum;
     double delta[NB_HIDDEN + 1];
     double delta2[NB_INPUT * NB_HIDDEN + NB_HIDDEN];
+    double grad_output[NB_OUTPUT];
     unsigned int delta_i = 0;
     unsigned long epoch = 0;
     while (diff > precision)
@@ -57,16 +58,17 @@ unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],
 
             // Compute expected
             printf("%.f and %.f -> %f (%d)\n", nn->input[0]->value,
-                   nn->input[1]->value, nn->output[0]->value, expected[nb]);
+                   nn->input[1]->value, nn->output[0]->value, expected[nb][0]);
 
             // Compute weights correction between hidden and output
             for (unsigned int i = 0; i < NB_OUTPUT; i++)
             {
                 // Compute error between example and output
-                val = nn->output[0]->value;
-                err = expected[nb] - val;
+                val = nn->output[i]->value;
+                err = expected[nb][i] - val;
                 diff += (err * err); // only for precision
                 grad = err * val * (1.0 - val);
+                grad_output[i] = grad;
 
                 for (unsigned int j = 0; j < nn->output[i]->nb_input; j++)
                     delta[j] = LEARNRATE * nn->hidden[j]->value * grad;
@@ -74,13 +76,16 @@ unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],
             }
 
             // Compute weights correction between input and hidden
-            gradsave = grad;
             delta_i = 0;
             for (unsigned int i = 0; i < NB_HIDDEN; i++, delta_i++)
             {
+                // Compute sum of grad_output * inputweights
+                sum = 0;
+                for (unsigned int j = 0; j < NB_OUTPUT; j++)
+                    sum += grad_output[j] * nn->output[j]->inputweights[i];
+
                 val = nn->hidden[i]->value;
-                grad = val * (1.0 - val) * gradsave *
-                       nn->output[0]->inputweights[i];
+                grad = val * (1.0 - val) * sum;
 
                 for (unsigned int j = 0; j < nn->hidden[i]->nb_input;
                      j++, delta_i++)
@@ -123,12 +128,17 @@ double get_output(NeuralNetwork *nn, char input[NB_INPUT])
         activation(nn->output[i]);
 
     double max = nn->output[0]->value, val;
+    unsigned int index = 0;
     for (unsigned int i = 1; i < NB_OUTPUT; i++)
     {
         val = nn->output[i]->value;
         if (val > max)
+        {
             max = val;
+            index = i;
+        }
     }
+    // return index; // when image
     return max;
 }
 
