@@ -1,0 +1,116 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC = gcc$/;"	m
+CC	XOR/Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -Wall -Wextra -g -fsanitize=address$/;"	m
+CFLAGS	XOR/Makefile	/^CFLAGS = -Wall -Wextra$/;"	m
+EXEC	Makefile	/^EXEC = NeuralNetwork$/;"	m
+EXEC	XOR/Makefile	/^EXEC = xor$/;"	m
+LDLIBS	Makefile	/^LDLIBS = -lm$/;"	m
+LDLIBS	XOR/Makefile	/^LDLIBS = -lm$/;"	m
+LEARNRATE	XOR/xor.h	4;"	d
+LEARNRATE	nn.h	4;"	d
+NB_HIDDEN	XOR/xor.h	6;"	d
+NB_HIDDEN	nn.h	6;"	d
+NB_INPUT	XOR/xor.h	5;"	d
+NB_INPUT	nn.h	5;"	d
+NB_OUTPUT	XOR/xor.h	7;"	d
+NB_OUTPUT	nn.h	7;"	d
+NB_TRAINING_SET	nn.h	8;"	d
+NN_H	nn.h	2;"	d
+NN_LOAD_RESULT	nn_load_result.h	2;"	d
+NN_TOOLS_H	nn_tools.h	2;"	d
+NeuralNetwork	XOR/xor.h	/^typedef struct NeuralNetwork$/;"	s
+NeuralNetwork	XOR/xor.h	/^} NeuralNetwork;$/;"	t	typeref:struct:NeuralNetwork
+NeuralNetwork	nn.h	/^typedef struct NeuralNetwork$/;"	s
+NeuralNetwork	nn.h	/^} NeuralNetwork;$/;"	t	typeref:struct:NeuralNetwork
+NeuralNetwork::hidden	XOR/xor.h	/^    unit *hidden[NB_HIDDEN];$/;"	m	struct:NeuralNetwork	access:public
+NeuralNetwork::hidden	nn.h	/^    unit *hidden[NB_HIDDEN];$/;"	m	struct:NeuralNetwork	access:public
+NeuralNetwork::input	XOR/xor.h	/^    unit *input[NB_INPUT];$/;"	m	struct:NeuralNetwork	access:public
+NeuralNetwork::input	nn.h	/^    unit *input[NB_INPUT];$/;"	m	struct:NeuralNetwork	access:public
+NeuralNetwork::output	XOR/xor.h	/^    unit *output[NB_OUTPUT];$/;"	m	struct:NeuralNetwork	access:public
+NeuralNetwork::output	nn.h	/^    unit *output[NB_OUTPUT];$/;"	m	struct:NeuralNetwork	access:public
+OBJ	Makefile	/^OBJ = ${SRC:c=o}$/;"	m
+OBJ	XOR/Makefile	/^OBJ = ${SRC:c=o}$/;"	m
+SRC	Makefile	/^SRC = nn_load_result.c nn.c nn_tools.c weights.c$/;"	m
+SRC	XOR/Makefile	/^SRC = xor.c xor_tools.c$/;"	m
+WEIGHTS_H	weights.h	2;"	d
+XOR_H	XOR/xor.h	2;"	d
+XOR_TOOLS_H	XOR/xor_tools.h	2;"	d
+activate_function	nn.c	/^double activate_function(double n)$/;"	f	signature:(double n)
+activate_function	nn.h	/^double activate_function(double n);$/;"	p	signature:(double n)
+activation	nn.c	/^void activation(unit *u)$/;"	f	signature:(unit *u)
+activation	nn.h	/^void activation(unit *u);$/;"	p	signature:(unit *u)
+bias	XOR/xor.h	/^    double bias;$/;"	m	struct:unit	access:public
+bias	nn.h	/^    double bias;$/;"	m	struct:unit	access:public
+calculate_expected	XOR/xor.c	/^double calculate_expected(int i1, int i2)$/;"	f	signature:(int i1, int i2)
+calculate_expected	XOR/xor.h	/^double calculate_expected(int i1, int i2);$/;"	p	signature:(int i1, int i2)
+free_nn	nn_tools.c	/^void free_nn(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+free_nn	nn_tools.h	/^void free_nn(NeuralNetwork *nn);$/;"	p	signature:(NeuralNetwork *nn)
+free_xor	XOR/xor_tools.c	/^void free_xor(NeuralNetwork xor)$/;"	f	signature:(NeuralNetwork xor)
+free_xor	XOR/xor_tools.h	/^void free_xor(NeuralNetwork xor);$/;"	p	signature:(NeuralNetwork xor)
+generate_weigth	nn_tools.c	/^double generate_weigth(int nb_input)$/;"	f	signature:(int nb_input)
+generate_weigth	nn_tools.h	/^double generate_weigth(int nb_next);$/;"	p	signature:(int nb_next)
+get_output	nn.c	/^double get_output(NeuralNetwork *nn, char input[NB_INPUT])$/;"	f	signature:(NeuralNetwork *nn, char input[NB_INPUT])
+get_output	nn.h	/^double get_output(NeuralNetwork *nn, char input[NB_INPUT]);$/;"	p	signature:(NeuralNetwork *nn, char input[NB_INPUT])
+hidden	XOR/xor.h	/^    unit *hidden[NB_HIDDEN];$/;"	m	struct:NeuralNetwork	access:public
+hidden	nn.h	/^    unit *hidden[NB_HIDDEN];$/;"	m	struct:NeuralNetwork	access:public
+im_to_int	nn_load_result.h	/^int * im_to_int(Image im,NeuralNetwork nn);$/;"	p	signature:(Image im,NeuralNetwork nn)
+im_to_int	nn_tools.c	/^char *im_to_int(Image *im)$/;"	f	signature:(Image *im)
+im_to_int	nn_tools.h	/^char *im_to_int (Image *im);$/;"	p	signature:(Image *im)
+input	XOR/xor.h	/^    unit *input[NB_INPUT];$/;"	m	struct:NeuralNetwork	access:public
+input	nn.h	/^    unit *input[NB_INPUT];$/;"	m	struct:NeuralNetwork	access:public
+inputlinks	XOR/xor.h	/^    struct unit **inputlinks;$/;"	m	struct:unit	typeref:struct:unit::unit	access:public
+inputlinks	nn.h	/^    struct unit **inputlinks;$/;"	m	struct:unit	typeref:struct:unit::unit	access:public
+inputweights	XOR/xor.h	/^    double *inputweights;$/;"	m	struct:unit	access:public
+inputweights	nn.h	/^    double *inputweights;$/;"	m	struct:unit	access:public
+load_weights	XOR/xor_tools.c	/^void load_weights(NeuralNetwork nn)$/;"	f	signature:(NeuralNetwork nn)
+load_weights	XOR/xor_tools.h	/^void load_weights(NeuralNetwork nn);$/;"	p	signature:(NeuralNetwork nn)
+load_weights	weights.c	/^void load_weights(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+load_weights	weights.h	/^void load_weights(NeuralNetwork *nn);$/;"	p	signature:(NeuralNetwork *nn)
+main	XOR/xor.c	/^int main()$/;"	f
+main	nn.c	/^int main()$/;"	f
+nb_input	XOR/xor.h	/^    unsigned char nb_input;$/;"	m	struct:unit	access:public
+nb_input	nn.h	/^    unsigned char nb_input;$/;"	m	struct:unit	access:public
+new_nn	nn_tools.c	/^NeuralNetwork new_nn()$/;"	f
+new_nn	nn_tools.h	/^NeuralNetwork new_nn();$/;"	p	signature:()
+new_xor	XOR/xor_tools.c	/^NeuralNetwork new_xor()$/;"	f
+new_xor	XOR/xor_tools.h	/^NeuralNetwork new_xor();$/;"	p	signature:()
+output	XOR/xor.h	/^    unit *output[NB_OUTPUT];$/;"	m	struct:NeuralNetwork	access:public
+output	nn.h	/^    unit *output[NB_OUTPUT];$/;"	m	struct:NeuralNetwork	access:public
+print_nn	nn_tools.c	/^void print_nn(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+print_nn	nn_tools.h	/^void print_nn(NeuralNetwork *nn);$/;"	p	signature:(NeuralNetwork *nn)
+print_unit	XOR/xor_tools.c	/^void print_unit(unit *n)$/;"	f	signature:(unit *n)
+print_unit	XOR/xor_tools.h	/^void print_unit(unit *n);$/;"	p	signature:(unit *n)
+print_unit	nn_tools.c	/^void print_unit(unit *n)$/;"	f	signature:(unit *n)
+print_unit	nn_tools.h	/^void print_unit(unit *n);$/;"	p	signature:(unit *n)
+print_xor	XOR/xor_tools.c	/^void print_xor(NeuralNetwork xor)$/;"	f	signature:(NeuralNetwork xor)
+print_xor	XOR/xor_tools.h	/^void print_xor(NeuralNetwork xor);$/;"	p	signature:(NeuralNetwork xor)
+save_weights	XOR/xor_tools.c	/^void save_weights(NeuralNetwork xor)$/;"	f	signature:(NeuralNetwork xor)
+save_weights	XOR/xor_tools.h	/^void save_weights(NeuralNetwork xor);$/;"	p	signature:(NeuralNetwork xor)
+save_weights	weights.c	/^void save_weights(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+save_weights	weights.h	/^void save_weights(NeuralNetwork *nn);$/;"	p	signature:(NeuralNetwork *nn)
+train	nn.c	/^unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],$/;"	f	signature:(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT], char expected[NB_TRAINING_SET][NB_OUTPUT], double precision)
+train	nn.h	/^unsigned long train(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT],$/;"	p	signature:(NeuralNetwork *nn, char input[NB_TRAINING_SET][NB_INPUT], char expected[NB_TRAINING_SET][NB_OUTPUT], double precision)
+unit	XOR/xor.h	/^typedef struct unit$/;"	s
+unit	XOR/xor.h	/^} unit;$/;"	t	typeref:struct:unit
+unit	nn.h	/^typedef struct unit$/;"	s
+unit	nn.h	/^} unit;$/;"	t	typeref:struct:unit
+unit::bias	XOR/xor.h	/^    double bias;$/;"	m	struct:unit	access:public
+unit::bias	nn.h	/^    double bias;$/;"	m	struct:unit	access:public
+unit::inputlinks	XOR/xor.h	/^    struct unit **inputlinks;$/;"	m	struct:unit	typeref:struct:unit::unit	access:public
+unit::inputlinks	nn.h	/^    struct unit **inputlinks;$/;"	m	struct:unit	typeref:struct:unit::unit	access:public
+unit::inputweights	XOR/xor.h	/^    double *inputweights;$/;"	m	struct:unit	access:public
+unit::inputweights	nn.h	/^    double *inputweights;$/;"	m	struct:unit	access:public
+unit::nb_input	XOR/xor.h	/^    unsigned char nb_input;$/;"	m	struct:unit	access:public
+unit::nb_input	nn.h	/^    unsigned char nb_input;$/;"	m	struct:unit	access:public
+unit::value	XOR/xor.h	/^    double value;$/;"	m	struct:unit	access:public
+unit::value	nn.h	/^    double value;$/;"	m	struct:unit	access:public
+update_activate_value	XOR/xor.c	/^void update_activate_value(unit *u)$/;"	f	signature:(unit *u)
+update_activate_value	XOR/xor.h	/^void update_activate_value(unit *u);$/;"	p	signature:(unit *u)
+value	XOR/xor.h	/^    double value;$/;"	m	struct:unit	access:public
+value	nn.h	/^    double value;$/;"	m	struct:unit	access:public

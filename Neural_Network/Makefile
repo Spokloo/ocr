@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -g -fsanitize=address
 LDLIBS = -lm
 
-SRC = nn.c nn_tools.c weights.c
+SRC = nn_load_result.c nn.c nn_tools.c weights.c
 OBJ = ${SRC:c=o}
 EXEC = NeuralNetwork
 

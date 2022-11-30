@@ -1,4 +1,5 @@
 #include "nn_tools.h"
+#include "../Tools/image.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -126,4 +127,19 @@ void print_nn(NeuralNetwork *nn)
         print_unit(nn->input[i]);
         printf("\n");
     }
+}
+
+char *im_to_int(Image *im)
+{
+    char *res= malloc(784*sizeof(char));
+    int ind=0;
+    for (int i=0;i<28;i++)
+    {
+        for (int j=0;j<28;j++)
+        {
+            res[ind]=im->matrix[i][j].r/255;
+            ind++;
+        }
+    }
+    return res;
 }

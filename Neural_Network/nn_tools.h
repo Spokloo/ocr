@@ -2,7 +2,7 @@
 #define NN_TOOLS_H
 
 #include "nn.h"
-
+#include "../Tools/image.h"
 /*
  * Create a new Neural Network depending on constants in nn.h.
  */
@@ -27,5 +27,9 @@ void print_unit(unit *n);
  * Print each unit of the Neural Network with value, biais and weights.
  */
 void print_nn(NeuralNetwork *nn);
+/*
+ * transform an binarized image to unidimensional matrix
+ */
 
+char *im_to_int (Image *im);
 #endif
