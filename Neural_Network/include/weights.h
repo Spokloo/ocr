@@ -1,7 +1,7 @@
 #ifndef WEIGHTS_H
 #define WEIGHTS_H
 
-#include "nn.h"
+#include "../nn.h"
 
 /*
  * Save all weights of a neural network in a file 'weights' in current
