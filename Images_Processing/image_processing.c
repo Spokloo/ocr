@@ -28,7 +28,7 @@ void apply_filters(char *path, char *newName)
     //save_image(&img, "dilation.jpeg");
     erosion(&img, filter_size);
     //save_image(&img, "dilation+erosion.jpeg");
-    //canny(&img);
+    canny(&img);
     save_image(&img, newName);
     free_image(&img);
 }
