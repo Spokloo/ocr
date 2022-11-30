@@ -1,4 +1,4 @@
-#include "weights.h"
+#include "../include/weights.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,20 +10,20 @@
 void save_weights(NeuralNetwork *nn)
 {
     FILE *save = fopen("weights", "w");
-    for (unsigned char i = 0; i < NB_HIDDEN; i++)
+    for (unsigned int i = 0; i < NB_HIDDEN; i++)
     {
         fprintf(save, "%f\n", nn->hidden[i]->value);
         fprintf(save, "%f\n", nn->hidden[i]->bias);
-        for (unsigned char j = 0; j < nn->hidden[i]->nb_input; j++)
+        for (unsigned int j = 0; j < nn->hidden[i]->nb_input; j++)
         {
             fprintf(save, "%f\n", nn->hidden[i]->inputweights[j]);
         }
     }
-    for (unsigned char i = 0; i < NB_OUTPUT; i++)
+    for (unsigned int i = 0; i < NB_OUTPUT; i++)
     {
         fprintf(save, "%f\n", nn->output[i]->value);
         fprintf(save, "%f\n", nn->output[i]->bias);
-        for (unsigned char j = 0; j < nn->output[i]->nb_input; j++)
+        for (unsigned int j = 0; j < nn->output[i]->nb_input; j++)
         {
             fprintf(save, "%f\n", nn->output[i]->inputweights[j]);
         }
@@ -43,7 +43,7 @@ void load_weights(NeuralNetwork *nn)
         char *line = NULL;
         size_t len;
 
-        for (unsigned char i = 0; i < NB_HIDDEN; i++)
+        for (unsigned int i = 0; i < NB_HIDDEN; i++)
         {
             if (getline(&line, &len, data) == -1)
                 errx(1, "Invalid weights file");
@@ -51,14 +51,14 @@ void load_weights(NeuralNetwork *nn)
             if (getline(&line, &len, data) == -1)
                 errx(1, "Invalid weights file");
             nn->hidden[i]->bias = strtod(line, NULL);
-            for (unsigned char j = 0; j < nn->hidden[i]->nb_input; j++)
+            for (unsigned int j = 0; j < nn->hidden[i]->nb_input; j++)
             {
                 if (getline(&line, &len, data) == -1)
                     errx(1, "Invalid weights file");
                 nn->hidden[i]->inputweights[j] = strtod(line, NULL);
             }
         }
-        for (unsigned char i = 0; i < NB_OUTPUT; i++)
+        for (unsigned int i = 0; i < NB_OUTPUT; i++)
         {
             if (getline(&line, &len, data) == -1)
                 errx(1, "Invalid weights file");
@@ -66,7 +66,7 @@ void load_weights(NeuralNetwork *nn)
             if (getline(&line, &len, data) == -1)
                 errx(1, "Invalid weights file");
             nn->output[i]->bias = strtod(line, NULL);
-            for (unsigned char j = 0; j < nn->output[i]->nb_input; j++)
+            for (unsigned int j = 0; j < nn->output[i]->nb_input; j++)
             {
                 if (getline(&line, &len, data) == -1)
                     errx(1, "Invalid weights file");

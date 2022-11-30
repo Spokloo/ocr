@@ -1,7 +1,7 @@
 #ifndef NN_TOOLS_H
 #define NN_TOOLS_H
 
-#include "nn.h"
+#include "../nn.h"
 
 /*
  * Create a new Neural Network depending on constants in nn.h.
