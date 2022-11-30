@@ -1,0 +1,19 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+files_nb	nn_load_data.c	/^unsigned int files_nb(char *path)$/;"	f	signature:(char *path)
+free_data	nn_load_data.c	/^void free_data(NnDatas *data)$/;"	f	signature:(NnDatas *data)
+free_nn	nn_tools.c	/^void free_nn(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+generate_weigth	nn_tools.c	/^double generate_weigth(int nb_input)$/;"	f	signature:(int nb_input)
+get_examples_size	nn_load_data.c	/^unsigned int get_examples_size(char *path)$/;"	f	signature:(char *path)
+load_data	nn_load_data.c	/^void load_data(char *path, NnDatas *data)$/;"	f	signature:(char *path, NnDatas *data)
+load_training_images	nn_load_data.c	/^NnDatas load_training_images(char *path)$/;"	f	signature:(char *path)
+load_weights	weights.c	/^void load_weights(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+new_nn	nn_tools.c	/^NeuralNetwork new_nn()$/;"	f
+print_nn	nn_tools.c	/^void print_nn(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+print_unit	nn_tools.c	/^void print_unit(unit *n)$/;"	f	signature:(unit *n)
+save_weights	weights.c	/^void save_weights(NeuralNetwork *nn)$/;"	f	signature:(NeuralNetwork *nn)
+verif_format	nn_load_data.c	/^void verif_format(char *path)$/;"	f	signature:(char *path)
