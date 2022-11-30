@@ -20,7 +20,7 @@ void apply_filters(char *path, char *newName)
         filter_size = img.height / 300;
     grayscale(&img);
     //save_image(&img, "grayscale.jpeg");
-    normalize(&img);
+    //normalize(&img);
     //save_image(&img, "normalize.jpeg");
     gaussian_blur(&img, filter_size);
     //save_image(&img, "gaussian_blur.jpeg");
