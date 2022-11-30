@@ -48,7 +48,7 @@ void verif_format(char *path)
 
 /*
  * Return the number of files inside a folder.
-*/
+ */
 unsigned int files_nb(char *path)
 {
     unsigned int res = 0;
@@ -58,7 +58,10 @@ unsigned int files_nb(char *path)
     if (dp != NULL)
     {
         while ((ep = readdir(dp)) != NULL)
-            res++;
+        {
+            if(ep->d_name[0] != '.')
+                res++;
+        }
         closedir(dp);
         return res;
     }
@@ -86,7 +89,7 @@ unsigned int get_examples_size(char *path)
     for (char i = 0; i < NB_TRAINING_SET; i++)
     {
         subpath[n] = i + '0';
-        nb = files_nb((char *)subpath) - 2; // remove . and ..
+        nb = files_nb((char *)subpath); // remove . and ..
         if (nb < min)
             min = nb;
     }
@@ -94,12 +97,12 @@ unsigned int get_examples_size(char *path)
 }
 
 /*
- * Load images matrix and expected results into variables. 
+ * Load images matrix and expected results into variables.
  */
 void load_data(char *path, NnDatas *data)
 {
     unsigned int n = strlen(path), sum = 0;
-    unsigned long i_input = 0, i_expected = 0;
+    unsigned long i_input = 0;
     char subpath[128];
     strncpy(subpath, path, n);
     subpath[n] = '/';
@@ -108,25 +111,38 @@ void load_data(char *path, NnDatas *data)
     DIR *dp = NULL;
     struct dirent *ep = NULL;
 
+    //fill expected array
+    for (unsigned int nb = 0; nb < NB_TRAINING_SET; nb++)
+    {
+        for (unsigned char i = 0; i < NB_OUTPUT; i++)
+        {
+            if (i == nb)
+                data->expected[nb][i] = 1;
+            else
+                data->expected[nb][i] = 0;
+        }
+    }
+
+    //fill input and expected arrays
     for (unsigned int nb = 0; nb < NB_TRAINING_SET; nb++) // each numbers
     {
         sum = 0;
         i_input = 0;
-        i_expected = 0;
         subpath[n] = nb + '0';
         subpath[n + 2] = '\0';
         dp = opendir(subpath);
         if (dp != NULL)
         {
-            while (sum < data->size && (ep = readdir(dp)) != NULL)
+            while (sum < data->max_ex && (ep = readdir(dp)) != NULL)
             {                             // each files in number folder
                 if (ep->d_name[0] != '.') // avoid cached files
                 {
                     subpath[n + 2] = '\0';
                     strcat(subpath, ep->d_name);
-                    printf("%s\n", subpath);
+                    //printf("%s\n", subpath);
                     sum++;
-
+                    data->total++;
+                    
                     Image img = load_image(subpath);
                     if (img.width != 28 || img.height != 28)
                         errx(1, "Wrong image format when training the Neural "
@@ -135,13 +151,6 @@ void load_data(char *path, NnDatas *data)
                     {
                         for (unsigned char k = 0; k < 28; k++, i_input++)
                             data->input[nb][i_input] = img.matrix[k][j].r / 255;
-                    }
-                    for (unsigned char j = 0; j < NB_OUTPUT; j++, i_expected++)
-                    {
-                        if (j == nb)
-                            data->expected[nb][i_expected] = 1;
-                        else
-                            data->expected[nb][i_expected] = 0;
                     }
                     free_image(&img);
                 }
@@ -157,7 +166,7 @@ void load_data(char *path, NnDatas *data)
 }
 
 /*
- * Free training data. 
+ * Free training data.
  */
 void free_data(NnDatas *data)
 {
@@ -178,13 +187,14 @@ NnDatas load_training_images(char *path)
     NnDatas data;
     verif_format(path);
     unsigned int len = get_examples_size(path);
-    data.size = 1;
+    data.total = 0;
+    data.max_ex = len;
     data.input = malloc(NB_TRAINING_SET * sizeof(char *));
     data.expected = malloc(NB_TRAINING_SET * sizeof(char *));
     for (unsigned char i = 0; i < NB_TRAINING_SET; i++)
     {
         data.input[i] = malloc(len * NB_INPUT * sizeof(char));
-        data.expected[i] = malloc(len * NB_OUTPUT * sizeof(char));
+        data.expected[i] = malloc(NB_OUTPUT * sizeof(char));
     }
     load_data(path, &data);
     /*for (unsigned int i = 0; i < 10; i++)
@@ -195,6 +205,6 @@ NnDatas load_training_images(char *path)
         }
         printf("\n");
     }*/
-    //free_data(input, expected);
+    // free_data(input, expected);
     return data;
 }

@@ -1,45 +1,71 @@
 #include "include/nn_load_data.h"
 #include "include/nn_tools.h"
 #include "include/weights.h"
+#include <err.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+void print_input(NnDatas *data, unsigned int nb)
 {
-    NeuralNetwork nn = new_nn();
-    //load_weights(&nn);
-    printf("NN created\n");
-    NnDatas data = load_training_images("training_test");
-    printf("Datas loaded\n");
-    unsigned long epoch = train(&nn, &data);
+    for (unsigned int ex = 0; ex < data->max_ex; ex++)
+    {
+        printf("%d : ", nb);
+        for (unsigned int j = 0; j < NB_INPUT; j++)
+        {
+            if (j % 28 == 0)
+                printf("\n");
+            printf("%d ", data->input[nb][ex * NB_INPUT + j]);
+        }
+        printf("\n");
+    }
+}
 
-    double res;
-    printf("\n%ld epoch : \n", epoch);
-    for (unsigned int ex = 0; ex < data.size; ex++)
+void print_expected(NnDatas *data, unsigned int nb)
+{
+    for (unsigned int ex = 0; ex < data->max_ex; ex++)
+    {
+        printf("%d : ", nb);
+        for (unsigned int j = 0; j < NB_OUTPUT; j++)
+        {
+            printf("%d ", data->expected[nb][j]);
+        }
+    }
+    printf("\n");
+}
+
+int main(int argc, char **argv)
+{
+    if (argc != 2)
+        errx(1, "Specify the folder for training.");
+
+    NeuralNetwork nn = new_nn();
+    // load_weights(&nn);
+    NnDatas data = load_training_images(argv[1]);
+
+    train(&nn, &data);
+
+    /*double res;
+    for (unsigned int ex = 0; ex < data.max_ex; ex++)
     {
         for (unsigned int nb = 0; nb < NB_TRAINING_SET; nb++)
         {
             res = get_output(&nn, data.input[nb], ex * NB_INPUT);
             printf("Give : %d and received %f\n", nb, res);
         }
-    }
-    /*for (unsigned int ex = 0; ex < data.size; ex++)
+    }*/
+    /*for (unsigned int i = 0; i < NB_TRAINING_SET; i++)
     {
-        for (unsigned int i = 0; i < NB_TRAINING_SET; i++)
-        {
-            printf("%d : \n", i);
-            for (unsigned int j = 0; j < NB_OUTPUT; j++)
-            {
-                printf("%d ", data.expected[i][ex * 10 + j]);
-            }
-            printf("\n");
-        }
+        print_input(&data, i);
+    }
+    for (unsigned int i = 0; i < NB_TRAINING_SET; i++)
+    {
+        print_expected(&data, i);
     }*/
     free_data(&data);
 
     // print_nn(&nn);
-    //save_weights(&nn);
+    // save_weights(&nn);
     free_nn(&nn);
     return 0;
 }
@@ -48,31 +74,27 @@ int main()
  * Training of the Neural Network with input values and expected results until
  * precision is reached. Return the number of epoch.
  */
-unsigned long train(NeuralNetwork *nn, NnDatas *data)
+void train(NeuralNetwork *nn, NnDatas *data)
 {
-    double grad = 1, val = 0, diff = 0, err, sum;
-    double delta[NB_HIDDEN + 1];
-    double delta2[NB_INPUT * NB_HIDDEN + NB_HIDDEN];
+    double grad = 1, val = 0, err, sum, tmp = 0, tmp2 = 0, max = 0, precision = 1;
+    double delta_output[NB_OUTPUT * NB_HIDDEN + NB_OUTPUT];
+    double delta_hidden[NB_INPUT * NB_HIDDEN + NB_HIDDEN];
     double grad_output[NB_OUTPUT];
-    unsigned int delta_i = 0;
-    unsigned long epoch = 0;
-    double tmp = 0, tmp2 = 0, max = 0;
-    while (diff != 1)
+    unsigned int delta_output_i = 0, delta_hidden_i = 0;
+    unsigned long epoch = 0, sucess = 0;
+    // after 10 correct iterations on each example, stop
+    while (sucess == 0 || precision < 0.95)
     {
-        diff = 1;
-        for (unsigned int ex = 0; ex < data->size; ex++)
-        { // foreach exaemplary of numbers
+        sucess = 0;
+        // foreach exaemplary of numbers
+        for (unsigned int ex = 0; ex < data->max_ex; ex++)
+        {
+            // for example n°ex of each numbers
             for (unsigned int nb = 0; nb < NB_TRAINING_SET; nb++)
-            { // for example n°ex of each numbers
-                //printf("ex n°%d with nb°%d\n", ex, nb);
-
+            {
                 // Give example
                 for (unsigned int i = 0; i < NB_INPUT; i++)
-                {
                     nn->input[i]->value = data->input[nb][ex * NB_INPUT + i];
-                    //printf("%.f ", nn->input[i]->value);
-                }
-                //printf("\n");
 
                 // Update activate value of hidden and output layer
                 for (unsigned int i = 0; i < NB_HIDDEN; i++)
@@ -86,7 +108,7 @@ unsigned long train(NeuralNetwork *nn, NnDatas *data)
                 for (unsigned char i = 1; i < NB_OUTPUT; i++)
                 {
                     tmp = nn->output[i]->value;
-                    //printf("%f ", tmp);
+                    // printf("%f ", tmp);
                     if (tmp > tmp2)
                     {
                         tmp2 = tmp;
@@ -94,26 +116,31 @@ unsigned long train(NeuralNetwork *nn, NnDatas *data)
                     }
                 }
                 printf("Give : %d and received %f\n", nb, max);
-                diff = (max - nb == 0) && diff; // only for precision
+
+                // only for precision
+                if (max - nb == 0)
+                    sucess++;
+
                 // Compute weights correction between hidden and output
-                for (unsigned int i = 0; i < NB_OUTPUT; i++)
+                delta_output_i = 0;
+                for (unsigned int i = 0; i < NB_OUTPUT; i++, delta_output_i++)
                 {
                     // Compute error between example and output
                     val = nn->output[i]->value;
-                    err = data->expected[nb][ex * NB_OUTPUT + i] - val;
-                    //printf("%d ", data->expected[nb][ex * NB_OUTPUT + i]);
+                    err = data->expected[nb][i] - val;
                     grad = err * val * (1.0 - val);
                     grad_output[i] = grad;
 
-                    for (unsigned int j = 0; j < nn->output[i]->nb_input; j++)
-                        delta[j] = LEARNRATE * nn->hidden[j]->value * grad;
-                    delta[NB_HIDDEN] = LEARNRATE * grad; // biais
+                    for (unsigned int j = 0; j < nn->output[i]->nb_input;
+                         j++, delta_output_i++)
+                        delta_output[delta_output_i] =
+                            LEARNRATE * nn->hidden[j]->value * grad;
+                    delta_output[delta_output_i] = LEARNRATE * grad; // biais
                 }
-                //printf("\n");
 
                 // Compute weights correction between input and hidden
-                delta_i = 0;
-                for (unsigned int i = 0; i < NB_HIDDEN; i++, delta_i++)
+                delta_hidden_i = 0;
+                for (unsigned int i = 0; i < NB_HIDDEN; i++, delta_hidden_i++)
                 {
                     // Compute sum of grad_output * inputweights
                     sum = 0;
@@ -124,35 +151,44 @@ unsigned long train(NeuralNetwork *nn, NnDatas *data)
                     grad = val * (1.0 - val) * sum;
 
                     for (unsigned int j = 0; j < nn->hidden[i]->nb_input;
-                         j++, delta_i++)
-                        delta2[delta_i] =
+                         j++, delta_hidden_i++)
+                        delta_hidden[delta_hidden_i] =
                             LEARNRATE * nn->input[j]->value * grad;
 
-                    delta2[delta_i] = LEARNRATE * grad; // biais
+                    delta_hidden[delta_hidden_i] = LEARNRATE * grad; // biais
                 }
 
                 // Update weights betweenn hidden and output
-                for (unsigned int i = 0; i < NB_OUTPUT; i++)
+                delta_output_i = 0;
+                for (unsigned int i = 0; i < NB_OUTPUT; i++, delta_output_i++)
                 {
-                    for (unsigned int j = 0; j < nn->output[i]->nb_input; j++)
-                        nn->output[i]->inputweights[j] += delta[j];
-                    nn->output[i]->bias += delta[NB_HIDDEN];
+                    for (unsigned int j = 0; j < nn->output[i]->nb_input;
+                         j++, delta_output_i++)
+                        nn->output[i]->inputweights[j] +=
+                            delta_output[delta_output_i];
+                    nn->output[i]->bias += delta_output[delta_output_i];
                 }
 
                 // Update weights betweenn input and hidden
-                delta_i = 0;
-                for (unsigned int i = 0; i < NB_HIDDEN; i++, delta_i++)
+                delta_hidden_i = 0;
+                for (unsigned int i = 0; i < NB_HIDDEN; i++, delta_hidden_i++)
                 {
                     for (unsigned int j = 0; j < nn->hidden[i]->nb_input;
-                         j++, delta_i++)
-                        nn->hidden[i]->inputweights[j] += delta2[delta_i];
-                    nn->hidden[i]->bias += delta2[delta_i];
+                         j++, delta_hidden_i++)
+                        nn->hidden[i]->inputweights[j] +=
+                            delta_hidden[delta_hidden_i];
+                    nn->hidden[i]->bias += delta_hidden[delta_hidden_i];
                 }
             }
         }
+        
+        // only for stop condition
+        precision = sucess / (float) data->total;
         epoch++;
     }
-    return epoch;
+    printf("\nEnd of training :\n");
+    printf("    - %ld epoch \n", epoch);
+    printf("    - %f of precision (%ld / %ld)\n", precision, sucess, data->total);
 }
 
 /*
