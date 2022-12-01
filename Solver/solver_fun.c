@@ -326,7 +326,10 @@ void write_grid(int **grid, char *filename)
             {
                 fputc(' ', fp);
             }
-            fputc(grid[i][j] + '0', fp);
+            if (grid[i][j] == 0)
+                fputc('.', fp);
+            else
+                fputc(grid[i][j] + '0', fp);
         }
         if (i == 2 || i == 5)
         {

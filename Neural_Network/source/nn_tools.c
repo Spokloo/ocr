@@ -1,5 +1,9 @@
+<<<<<<< HEAD:Neural_Network/nn_tools.c
 #include "nn_tools.h"
 #include "../Tools/image.h"
+=======
+#include "../include/nn_tools.h"
+>>>>>>> 91e96214fcd9fe662c3bb8a9eb91d30c90d7b4b6:Neural_Network/source/nn_tools.c
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,7 +103,7 @@ void print_unit(unit *n)
     printf("value : %f\n", n->value);
     printf("bias : %f\n", n->bias);
     printf("nbinput : %d\n", n->nb_input);
-    for (int i = 0; i < n->nb_input; i++)
+    for (unsigned int i = 0; i < n->nb_input; i++)
         printf("value : %f and weight : %f\n", n->inputlinks[i]->value,
                n->inputweights[i]);
 }
@@ -109,19 +113,19 @@ void print_unit(unit *n)
  */
 void print_nn(NeuralNetwork *nn)
 {
-    for (int i = 0; i < NB_OUTPUT; i++)
+    for (unsigned int i = 0; i < NB_OUTPUT; i++)
     {
         printf("output n°%d : \n", i);
         print_unit(nn->output[i]);
         printf("\n");
     }
-    for (int i = 0; i < NB_HIDDEN; i++)
+    for (unsigned int i = 0; i < NB_HIDDEN; i++)
     {
         printf("hidden n°%d: \n", i);
         print_unit(nn->hidden[i]);
         printf("\n");
     }
-    for (int i = 0; i < NB_INPUT; i++)
+    for (unsigned int i = 0; i < NB_INPUT; i++)
     {
         printf("input n°%d : \n", i);
         print_unit(nn->input[i]);
