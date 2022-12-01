@@ -129,18 +129,24 @@ void print_nn(NeuralNetwork *nn)
     }
 }
 
-char * image_to_int(char *path)
+/*
+ * Convert an image at path to a 1D array of 0 and 1.
+ */
+char *image_to_int(char *path)
 {
-    Image im=load_image(path);
-    int index=0;
-    char * res = malloc(784*sizeof(char));
-    for (int i=0;i<28;i++)
+    Image im = load_image(path);
+    if(im.height != 28 || im.width != 28)
+        errx(1, "Wrong image format. It should be 28*28 pixels.");
+    unsigned int index = 0;
+    char *res = malloc(784 * sizeof(char));
+    for (unsigned char i = 0; i < 28; i++)
     {
-        for (int j=0;j<28;j++)
+        for (unsigned char j = 0; j < 28; j++)
         {
-            res[index]=im.matrix[i][j].r/255;
+            res[index] = im.matrix[j][i].r / 255;
             index++;
         }
     }
+    free_image(&im);
     return res;
 }

@@ -13,7 +13,7 @@ void apply_filters(char *path, char *newName)
     int src1[8] = {0, 0, 1000, 0, 1000, 1000, 0, 1000};
     int src2[8] = {343, 216, 1149, 212, 1159, 1027, 348, 1026};
     int src3[8] = {130, 89, 650, 89, 650, 609, 130, 609};
-    int src4[8] = {416, 162, 1545, 180, 1540, 1306, 423, 1308};
+    int src4[8] = {57, 63, 367, 54, 390, 392, 29, 384};
     int src5[8] = {630, 180, 1365, 695, 849, 1435, 110, 915};
     int src6[8] = {70, 65, 1940, 65, 2080, 1830, 40, 1900};
     int *src[8] = {src1, src2, src3, src4, src5, src6};
@@ -68,17 +68,17 @@ void apply_filters(char *path, char *newName)
 
 void testall()
 {
-    // char path[29] = "../Images_Test/image_00.jpeg";
-    // path[28] = '\0';
-    char path[42] = "../Images_Processing/result_image_00.jpeg";
-    path[41] = '\0';
+    char path[29] = "../Images_Test/image_00.jpeg";
+    path[28] = '\0';
+    //char path[42] = "../Images_Processing/result_image_00.jpeg";
+    //path[41] = '\0';
     char newName[21] = "result_image_00.jpeg";
     newName[20] = '\0';
 
     for (size_t i = 1; i <= 6; i++)
     {
-        // path[22] = i + '0';
-        path[35] = i + '0';
+        path[22] = i + '0';
+        //path[35] = i + '0';
         newName[14] = i + '0';
         printf("Work on %s\n", path);
 

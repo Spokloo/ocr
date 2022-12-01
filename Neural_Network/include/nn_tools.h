@@ -1,6 +1,7 @@
 #ifndef NN_TOOLS_H
 #define NN_TOOLS_H
 
+#include "../../Tools/image.h"
 #include "../nn.h"
 
 /*
@@ -27,5 +28,10 @@ void print_unit(unit *n);
  * Print each unit of the Neural Network with value, biais and weights.
  */
 void print_nn(NeuralNetwork *nn);
+
+/*
+ * Convert an image at path to a 1D array of 0 and 1.
+ */
+char *image_to_int(char *path);
 
 #endif
