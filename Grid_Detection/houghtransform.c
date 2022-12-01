@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int theta_val = 180;
+
 int max_dist(Image *img)
 {
     return round(sqrt(pow(img->height, 2) + pow(img->width, 2)));
@@ -168,18 +170,18 @@ Point get_intersection(int r1, int t1, int r2, int t2)
     return (Point){x, y};
 }
 
-void get_squares(unsigned int hori_len, unsigned int verti_len,
+void get_squares(int hori_len, int verti_len,
                  int **hori_lines, int **verti_lines,
                  Square *squares)
 {
     unsigned long m = 0;
-    for (unsigned int i = 0; i < hori_len - 1; i++)
+    for (int i = 0; i < hori_len - 1; i++)
     {
-        for (unsigned int j = 1; j < verti_len; j++)
+        for (int j = 1; j < verti_len; j++)
         {
-            for (unsigned int k = i + 1; k < hori_len; k++)
+            for (int k = i + 1; k < hori_len; k++)
             {
-                for (unsigned int l = 0; l < j; l++)
+                for (int l = 0; l < j; l++)
                 {
                     Point p1 = get_intersection(
                             verti_lines[l][0], verti_lines[l][1], hori_lines[i][0],
@@ -492,10 +494,10 @@ void extract_cells(Image *img)
     free(cells);
 }
 
-void sort_lines(int** lines, unsigned int len)
+void sort_lines(int** lines, int len)
 {
-    for (unsigned int i = 0; i < len - 1; i++) {
-        for (unsigned int j = 0; j < len - 1; j++) {
+    for (int i = 0; i < len - 1; i++) {
+        for (int j = 0; j < len - 1; j++) {
             if (abs(lines[j][0]) > abs(lines[j + 1][0])) {
                 int* temp = lines[j];
                 lines[j] = lines[j + 1];
@@ -512,7 +514,7 @@ int is_in_list(int *arr, unsigned int len, int element) {
     return -1;
 }
 
-int auto_rotate(int **lines, unsigned int len, int theta)
+int get_rotated_angle(int **lines, unsigned int len, int theta)
 {
     int nb_thetas = len;
     int *total_thetas = malloc(sizeof(int) * nb_thetas);
@@ -546,7 +548,7 @@ int auto_rotate(int **lines, unsigned int len, int theta)
     }
 
     int angle = total_thetas[max];
-    if (angle < 10)
+    if (angle < 10 || abs(angle - 90) < 10 || abs(angle - 180) < 10)
         return 0;
 
     /*
@@ -576,15 +578,12 @@ int auto_rotate(int **lines, unsigned int len, int theta)
     return angle;
 }
 
-void hough_transform(Image *img)
+void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
 {
-    Image copy_img;
-    copy_image(img, &copy_img);
-
     // Initializing accumulator
     int diag = max_dist(img);
     int rho = 2 * diag;
-    int theta = 180;
+    int theta = theta_val;
     unsigned int len = rho * theta;
 
     printf("%d * %d = %d\n", rho, theta, len);
@@ -612,7 +611,7 @@ void hough_transform(Image *img)
     get_lines(rho, theta, accumulator, lines);
 
     // Eliminating false lines
-    unsigned int lines_len = 0;
+    *lines_len = 0;
     for (unsigned int i = 0; i < len; i++)
     {
         if (lines[i][0] == 0 && lines[i][1] == 0)
@@ -622,80 +621,90 @@ void hough_transform(Image *img)
         }
 
         if (lines[i][0] < rho && lines[i][1] < theta)
-            lines_len++;
+            (*lines_len)++;
     }
 
     // Reducing lines
-    int **real_lines = malloc(sizeof(int*) * lines_len);
-    for (unsigned int i = 0; i < lines_len; i++)
-        real_lines[i] = malloc(sizeof(int) * 3);
+    *real_lines = malloc(sizeof(int*) * (*lines_len));
+    for (unsigned int i = 0; i < *lines_len; i++)
+        (*real_lines)[i] = malloc(sizeof(int) * 3);
 
     unsigned int j = 0;
     for (unsigned int i = 0; i < len; i++)
     {
         if (lines[i][0] < rho && lines[i][1] < theta)
         {
-            real_lines[j][0] = lines[i][0];
-            real_lines[j][1] = lines[i][1];
-            real_lines[j][2] = lines[i][2];
+            (*real_lines)[j][0] = lines[i][0];
+            (*real_lines)[j][1] = lines[i][1];
+            (*real_lines)[j][2] = lines[i][2];
             j++;
         }
     }
 
     // Drawing lines
-    draw_lines(img, lines_len, diag, real_lines);
-    save_image(img, "hough_lines.jpeg");
+    draw_lines(img, *lines_len, diag, *real_lines);
+}
 
+void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***real_lines)
+{
     // Auto rotating the image
-    int angle = auto_rotate(real_lines, lines_len, theta);
+    int theta = theta_val;
+    int angle = get_rotated_angle(*real_lines, *lines_len, theta);
 
     if (angle != 0)
     {
-        rotate(&copy_img, -angle);
-        save_image(&copy_img, "hough_rotated.jpeg");
-        copy_image(&copy_img, img);
-        free(&copy_img);
+        rotate(copy_img, -angle);
+
+        hough_transform(copy_img, lines_len, real_lines);
+        copy_image(copy_img, img);
+
+        save_image(copy_img, "hough_rotated.jpeg");
+        free_image(copy_img);
     }
+}
 
+void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **gs)
+{
     // Separate lines into 2 categories: horizontal and vertical lines
-    unsigned int nb_hori_lines = 0;
-    unsigned int nb_verti_lines = 0;
+    int nb_hori_lines = 0;
+    int nb_verti_lines = 0;
 
-    for (unsigned int i = 0; i < lines_len; i++)
+    for (unsigned int i = 0; i < *lines_len; i++)
     {
-        if (real_lines[i][2] == 1)
+        if ((*real_lines)[i][2] == 1)
             nb_verti_lines++;
-        if (real_lines[i][2] == 2)
+        if ((*real_lines)[i][2] == 2)
             nb_hori_lines++;
     }
 
     int **hori_lines = malloc(sizeof(int*) * nb_hori_lines);
-    for (unsigned int i = 0; i < nb_hori_lines; i++)
+    for (int i = 0; i < nb_hori_lines; i++)
         hori_lines[i] = malloc(sizeof(int) * 2);
 
     int **verti_lines = malloc(sizeof(int*) * nb_verti_lines);
-    for (unsigned int i = 0; i < nb_verti_lines; i++)
+    for (int i = 0; i < nb_verti_lines; i++)
         verti_lines[i] = malloc(sizeof(int) * 2);
 
+    int diag = max_dist(img);
     unsigned int h = 0;
     unsigned int v = 0;
-    for (unsigned int i = 0; i < lines_len; i++) {
-        if (real_lines[i][2] == 1) {
-            verti_lines[v][0] = real_lines[i][0] - diag;
-            verti_lines[v][1] = real_lines[i][1];
+    for (unsigned int i = 0; i < *lines_len; i++) {
+        if ((*real_lines)[i][2] == 1) {
+            verti_lines[v][0] = (*real_lines)[i][0] - diag;
+            verti_lines[v][1] = (*real_lines)[i][1];
             v++;
         }
-        if (real_lines[i][2] == 2) {
-            hori_lines[h][0] = real_lines[i][0] - diag;
-            hori_lines[h][1] = real_lines[i][1];
+        if ((*real_lines)[i][2] == 2) {
+            hori_lines[h][0] = (*real_lines)[i][0] - diag;
+            hori_lines[h][1] = (*real_lines)[i][1];
             h++;
         }
     }
 
-    for (unsigned int i = 0; i < nb_hori_lines; i++) {
+    for (int i = 0; i < nb_hori_lines; i++) {
         printf("r: %d / t: %d / HORI\n", hori_lines[i][0], hori_lines[i][1]);
     }
-    for (unsigned int i = 0; i < nb_verti_lines; i++) {
+    for (int i = 0; i < nb_verti_lines; i++) {
         printf("r: %d / t: %d / VERTI\n", verti_lines[i][0], verti_lines[i][1]);
     }
 
@@ -720,13 +729,15 @@ void hough_transform(Image *img)
     save_image(img, "squares_detection.jpeg");
 
     // Getting main square
-    Square *gs = NULL;
-    gs = draw_grid_square(img, nb_squares, squares, gs);
+    *gs = draw_grid_square(img, nb_squares, squares, *gs);
     save_image(img, "main_grid_detection.jpeg");
+}
 
+void perspective(Image *img, Square **gs)
+{
     // Perspective correction
-    int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
-        gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
+    int points[8] = { (*gs)->p1.x, (*gs)->p1.y, (*gs)->p2.x, (*gs)->p2.y,
+        (*gs)->p3.x, (*gs)->p3.y, (*gs)->p4.x, (*gs)->p4.y };
 
     correct_perspective(img, points);
 

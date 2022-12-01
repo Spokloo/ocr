@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void print_input(NnDatas *data, unsigned int nb)
 {
@@ -34,36 +35,39 @@ void print_expected(NnDatas *data, unsigned int nb)
     printf("\n");
 }
 
+void print_help()
+{
+    printf("Neural Network usage:\n");
+    printf("    - ./neural_network train folder_path\n");
+    printf("    - ./neural_network test image_path\n");
+}
+
 int main(int argc, char **argv)
 {
-    if (argc != 2)
-        errx(1, "Specify the folder for training.");
-
+    if (argc != 3)
+    {
+        print_help();
+        return -1;
+    }
+    printf("\e[?25l"); //hide cursor
     NeuralNetwork nn = new_nn();
     // load_weights(&nn);
-    NnDatas data = load_training_images(argv[1]);
-
-    train(&nn, &data);
-
-    /*double res;
-    for (unsigned int ex = 0; ex < data.max_ex; ex++)
+    if (strcmp(argv[1], "train") == 0)
     {
-        for (unsigned int nb = 0; nb < NB_TRAINING_SET; nb++)
-        {
-            res = get_output(&nn, data.input[nb], ex * NB_INPUT);
-            printf("Give : %d and received %f\n", nb, res);
-        }
-    }*/
-    /*for (unsigned int i = 0; i < NB_TRAINING_SET; i++)
-    {
-        print_input(&data, i);
+        NnDatas data = load_training_images(argv[2]);
+        train(&nn, &data);
+        free_data(&data);
     }
-    for (unsigned int i = 0; i < NB_TRAINING_SET; i++)
+    else if (strcmp(argv[1], "test") == 0)
     {
-        print_expected(&data, i);
-    }*/
-    free_data(&data);
-
+        // Samuel
+    }
+    else
+    {
+        print_help();
+        return -1;
+    }
+    printf("\e[?25h"); //reshow cursor
     // print_nn(&nn);
     // save_weights(&nn);
     free_nn(&nn);
@@ -72,11 +76,12 @@ int main(int argc, char **argv)
 
 /*
  * Training of the Neural Network with input values and expected results until
- * precision is reached. Return the number of epoch.
+ * precision is reached.
  */
 void train(NeuralNetwork *nn, NnDatas *data)
 {
-    double grad = 1, val = 0, err, sum, tmp = 0, tmp2 = 0, max = 0, precision = 1;
+    double grad = 1, val = 0, err, sum, tmp = 0, tmp2 = 0, max = 0,
+           precision = 1;
     double delta_output[NB_OUTPUT * NB_HIDDEN + NB_OUTPUT];
     double delta_hidden[NB_INPUT * NB_HIDDEN + NB_HIDDEN];
     double grad_output[NB_OUTPUT];
@@ -86,6 +91,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
     while (sucess == 0 || precision < 0.95)
     {
         sucess = 0;
+        epoch++;
         // foreach exaemplary of numbers
         for (unsigned int ex = 0; ex < data->max_ex; ex++)
         {
@@ -115,11 +121,14 @@ void train(NeuralNetwork *nn, NnDatas *data)
                         max = i;
                     }
                 }
-                printf("Give : %d and received %f\n", nb, max);
-
                 // only for precision
                 if (max - nb == 0)
                     sucess++;
+
+                precision = sucess / (float)data->total;
+                // printf("Give : %d and received %f\n", nb, max);
+                printf("\rEpoch n°%ld -> %f%% (%ld / %ld)", epoch, precision*100,
+                       sucess, data->total);
 
                 // Compute weights correction between hidden and output
                 delta_output_i = 0;
@@ -181,14 +190,11 @@ void train(NeuralNetwork *nn, NnDatas *data)
                 }
             }
         }
-        
-        // only for stop condition
-        precision = sucess / (float) data->total;
-        epoch++;
     }
     printf("\nEnd of training :\n");
     printf("    - %ld epoch \n", epoch);
-    printf("    - %f of precision (%ld / %ld)\n", precision, sucess, data->total);
+    printf("    - %f of precision (%ld / %ld)\n", precision, sucess,
+           data->total);
 }
 
 /*
