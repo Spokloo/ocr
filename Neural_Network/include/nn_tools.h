@@ -36,5 +36,14 @@ void print_nn(NeuralNetwork *nn);
  * transform an binarized image to unidimensional matrix
  */
 
+<<<<<<< HEAD
 char *im_to_int (Image *im);
 #endif
+=======
+/*
+ * Convert an image at path to a 1D array of 0 and 1.
+ */
+char *image_to_int(char *path);
+
+#endif
+>>>>>>> e306382875effd7e72ef5681afcf5cee5626be3d

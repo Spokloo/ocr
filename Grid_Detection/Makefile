@@ -4,7 +4,7 @@ LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
 EXEC = main
 SRC = main.c houghtransform.c
-TOOLS = ../Tools/* ../Images_Transform/include/* ../Images_Transform/source/*
+TOOLS = ../Tools/* ../Images_Post_Grid/include/* ../Images_Post_Grid/source/*
 OBJ = ${SRC:.c=.o}
 
 all: ${EXEC}

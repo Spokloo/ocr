@@ -1,11 +1,11 @@
 #ifndef NN_H
 #define NN_H
 
-#define LEARNRATE 0.01
+#define LEARNRATE 0.1
 #define NB_INPUT 784
-#define NB_HIDDEN 50
+#define NB_HIDDEN 15
 #define NB_OUTPUT 10
-#define NB_TRAINING_SET 5
+#define NB_TRAINING_SET 10
 
 typedef struct unit
 {
@@ -27,19 +27,20 @@ typedef struct NnDatas
 {
     char **input;
     char **expected;
-    unsigned int size;
+    unsigned int max_ex;
+    unsigned long total;
 } NnDatas;
 
 /*
  * Training of the Neural Network with input values and expected results until
- * precision is reached. Return the number of epoch.
+ * precision is reached.
  */
-unsigned long train(NeuralNetwork *nn, NnDatas *data);
+void train(NeuralNetwork *nn, NnDatas *data);
 
 /*
  * Give input array to the Neural Network and return its result.
  */
-double get_output(NeuralNetwork *nn, char *input, unsigned long shift);
+char get_output(NeuralNetwork *nn, char *input, unsigned long shift);
 
 /*
  * Compute the new value of u depending on its links and weights.

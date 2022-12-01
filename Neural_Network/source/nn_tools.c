@@ -3,7 +3,11 @@
 #include "../Tools/image.h"
 =======
 #include "../include/nn_tools.h"
+<<<<<<< HEAD
 >>>>>>> 91e96214fcd9fe662c3bb8a9eb91d30c90d7b4b6:Neural_Network/source/nn_tools.c
+=======
+#include "../../Tools/image.h"
+>>>>>>> e306382875effd7e72ef5681afcf5cee5626be3d
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -133,6 +137,7 @@ void print_nn(NeuralNetwork *nn)
     }
 }
 
+<<<<<<< HEAD
 char *im_to_int(Image *im)
 {
     char *res= malloc(784*sizeof(char));
@@ -145,5 +150,26 @@ char *im_to_int(Image *im)
             ind++;
         }
     }
+=======
+/*
+ * Convert an image at path to a 1D array of 0 and 1.
+ */
+char *image_to_int(char *path)
+{
+    Image im = load_image(path);
+    if(im.height != 28 || im.width != 28)
+        errx(1, "Wrong image format. It should be 28*28 pixels.");
+    unsigned int index = 0;
+    char *res = malloc(784 * sizeof(char));
+    for (unsigned char i = 0; i < 28; i++)
+    {
+        for (unsigned char j = 0; j < 28; j++)
+        {
+            res[index] = im.matrix[j][i].r / 255;
+            index++;
+        }
+    }
+    free_image(&im);
+>>>>>>> e306382875effd7e72ef5681afcf5cee5626be3d
     return res;
 }

@@ -5,7 +5,7 @@
 
 typedef struct Point
 {
-    unsigned int x, y;
+    int x, y;
 } Point;
 
 typedef struct Line
@@ -18,6 +18,9 @@ typedef struct Square
     Point p1, p2, p3, p4;
 } Square;
 
-void hough_transform(Image *img, double threshold);
+void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines);
+void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***real_lines);
+void squares(Image *img, unsigned int *lines_len, int ***real_lines, Square **gs);
+void perspective(Image *img, Square **gs);
 
 #endif
