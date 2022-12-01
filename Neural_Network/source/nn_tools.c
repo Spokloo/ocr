@@ -147,5 +147,6 @@ char *image_to_int(char *path)
             index++;
         }
     }
+    free_image(&im);
     return res;
 }

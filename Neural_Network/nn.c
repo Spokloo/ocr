@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25l"); //hide cursor
     NeuralNetwork nn = new_nn();
-    load_weights(&nn);
+    // load_weights(&nn);
     if (strcmp(argv[1], "train") == 0)
     {
         NnDatas data = load_training_images(argv[2]);
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25h"); //reshow cursor
     // print_nn(&nn);
-    save_weights(&nn);
+    // save_weights(&nn);
     free_nn(&nn);
     return 0;
 }
@@ -129,7 +129,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
 
                 precision = sucess / (float)data->total;
                 // printf("Give : %d and received %f\n", nb, max);
-                printf("\rEpoch n°%ld -> %f%% (%ld / %ld)", epoch, precision*100,
+                printf("\rEpoch n°%ld -> %.2f%% (%ld / %ld)", epoch, precision*100,
                        sucess, data->total);
 
                 // Compute weights correction between hidden and output
@@ -196,7 +196,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
     }
     printf("\nEnd of training :\n");
     printf("    - %ld epoch \n", epoch);
-    printf("    - %f of precision (%ld / %ld)\n", precision, sucess,
+    printf("    - %.2f of precision (%ld / %ld)\n", precision*100, sucess,
            data->total);
 }
 
