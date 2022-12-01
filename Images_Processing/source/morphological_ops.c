@@ -1,6 +1,4 @@
-#include "../include/morphological_ops.h"
-#include "../../Tools/image.h"
-#include "../../Tools/image_tools.h"
+#include "morphological_ops.h"
 
 /*
  * Expand shapes in image.

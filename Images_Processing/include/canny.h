@@ -1,7 +1,8 @@
 #ifndef CANNY_H
 #define CANNY_H
 
-#include "../../Tools/image.h"
+#include "image.h"
+#include "image_tools.h"
 
 /*
  * Applying the Sobel filter (edge detection).

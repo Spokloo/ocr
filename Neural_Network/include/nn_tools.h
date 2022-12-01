@@ -1,8 +1,8 @@
 #ifndef NN_TOOLS_H
 #define NN_TOOLS_H
 
-#include "../../Tools/image.h"
-#include "../nn.h"
+#include "image.h"
+#include "nn.h"
 
 /*
  * Create a new Neural Network depending on constants in nn.h.
@@ -30,8 +30,8 @@ void print_unit(unit *n);
 void print_nn(NeuralNetwork *nn);
 
 /*
- * Convert an image at path to a 1D array of 0 and 1.
+ * Convert an image to a 1D array of 0 and 1.
  */
-char *image_to_int(char *path);
+char *image_to_int(Image *im);
 
 #endif

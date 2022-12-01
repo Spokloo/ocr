@@ -14,10 +14,10 @@ init:
 
 tools: $(INC)
 	$(CC) $(CFLAGS) -c ../Tools/image.c	-o obj/image.o $(LDLIBS)
-	$(CC) $(CFLAGS) -c ../Solver/src/solver_fun.c -o obj/solver_fun.o $(LDLIBS)
+	$(CC) $(CFLAGS) -c ../Solver/source/solver_fun.c -o obj/solver_fun.o $(LDLIBS)
 
 grid_gen:
-	$(CC) $(CFLAGS) $(addprefix obj/, $(shell ls obj)) -Iinclude -I../Tools -I../Solver/include src/grid_gen.c main.c $(LDLIBS) -o $(EXE)
+	$(CC) $(CFLAGS) $(addprefix obj/, $(shell ls obj)) -Iinclude -I../Tools -I../Solver/include source/grid_gen.c main.c $(LDLIBS) -o $(EXE)
 
 obj/%.o: %.c
 	$(CC) $(CFLAGS) -Iinclude -I../Solver/include -I../Tools -c $< -o $@ $(LDLIBS)

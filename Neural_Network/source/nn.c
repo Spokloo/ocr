@@ -1,80 +1,10 @@
-#include "include/nn_load_data.h"
-#include "include/nn_tools.h"
-#include "include/weights.h"
+#include "nn.h"
+#include "nn_load_data.h"
+#include "nn_tools.h"
+#include "weights.h"
 #include <err.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-void print_input(NnDatas *data, unsigned int nb)
-{
-    for (unsigned int ex = 0; ex < data->max_ex; ex++)
-    {
-        printf("%d : ", nb);
-        for (unsigned int j = 0; j < NB_INPUT; j++)
-        {
-            if (j % 28 == 0)
-                printf("\n");
-            printf("%d ", data->input[nb][ex * NB_INPUT + j]);
-        }
-        printf("\n");
-    }
-}
-
-void print_expected(NnDatas *data, unsigned int nb)
-{
-    for (unsigned int ex = 0; ex < data->max_ex; ex++)
-    {
-        printf("%d : ", nb);
-        for (unsigned int j = 0; j < NB_OUTPUT; j++)
-        {
-            printf("%d ", data->expected[nb][j]);
-        }
-    }
-    printf("\n");
-}
-
-void print_help()
-{
-    printf("Neural Network usage:\n");
-    printf("    - ./neural_network train folder_path\n");
-    printf("    - ./neural_network test image_path\n");
-}
-
-int main(int argc, char **argv)
-{
-    if (argc != 3)
-    {
-        print_help();
-        return -1;
-    }
-    printf("\e[?25l"); //hide cursor
-    NeuralNetwork nn = new_nn();
-    load_weights(&nn);
-    if (strcmp(argv[1], "train") == 0)
-    {
-        NnDatas data = load_training_images(argv[2]);
-        train(&nn, &data);
-        free_data(&data);
-    }
-    else if (strcmp(argv[1], "test") == 0)
-    {
-        char *input = image_to_int(argv[2]);
-        printf("%d\n", get_output(&nn, input, 0));
-        free(input);
-    }
-    else
-    {
-        print_help();
-        return -1;
-    }
-    printf("\e[?25h"); //reshow cursor
-    // print_nn(&nn);
-    save_weights(&nn);
-    free_nn(&nn);
-    return 0;
-}
 
 /*
  * Training of the Neural Network with input values and expected results until

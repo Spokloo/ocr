@@ -1,7 +1,8 @@
 #ifndef BLUR_H
 #define BLUR_H
 
-#include "../../Tools/image.h"
+#include "image.h"
+#include "image_tools.h"
 
 /*
  * Applying a gaussian blur with a convolution matrix.

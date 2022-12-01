@@ -1,5 +1,4 @@
-#include "../include/nn_tools.h"
-#include "../../Tools/image.h"
+#include "nn_tools.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -130,23 +129,23 @@ void print_nn(NeuralNetwork *nn)
 }
 
 /*
- * Convert an image at path to a 1D array of 0 and 1.
+ * Convert an image to a 1D array of 0 and 1.
  */
-char *image_to_int(char *path)
+char *image_to_int(Image *im)
 {
-    Image im = load_image(path);
-    if(im.height != 28 || im.width != 28)
+    if(im->height != 28 || im->width != 28)
         errx(1, "Wrong image format. It should be 28*28 pixels.");
+
     unsigned int index = 0;
     char *res = malloc(784 * sizeof(char));
     for (unsigned char i = 0; i < 28; i++)
     {
         for (unsigned char j = 0; j < 28; j++)
         {
-            res[index] = im.matrix[j][i].r / 255;
+            res[index] = im->matrix[j][i].r / 255;
             index++;
         }
     }
-    free_image(&im);
+
     return res;
 }

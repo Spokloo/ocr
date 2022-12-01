@@ -1,7 +1,5 @@
-#include "../include/canny.h"
-#include "../../Tools/image.h"
-#include "../../Tools/image_tools.h"
-#include "../include/canny_tools.h"
+#include "canny.h"
+#include "canny_tools.h"
 #include <math.h>
 #include <stdlib.h>
 

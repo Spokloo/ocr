@@ -1,7 +1,7 @@
 #ifndef GRAYSCALE_H
 #define GRAYSCALE_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Apply grayscale filter into image.

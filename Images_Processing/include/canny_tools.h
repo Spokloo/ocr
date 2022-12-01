@@ -1,7 +1,7 @@
 #ifndef CANNY_TOOLS_H
 #define CANNY_TOOLS_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Normalize and convert gradient direction into degrees.

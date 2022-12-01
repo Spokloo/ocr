@@ -1,4 +1,4 @@
-#include "../include/matrix_tools.h"
+#include "matrix_tools.h"
 #include <math.h>
 
 /*For calculating determinant of the matrix */

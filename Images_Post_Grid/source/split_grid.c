@@ -1,5 +1,4 @@
-#include "../include/split_grid.h"
-#include "../../Tools/image.h"
+#include "split_grid.h"
 #include <stdlib.h>
 #include <err.h>
 

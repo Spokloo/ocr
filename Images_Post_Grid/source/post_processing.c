@@ -1,5 +1,4 @@
-#include "../include/post_processing.h"
-#include "../../Tools/image.h"
+#include "post_processing.h"
 
 /*
  * Compute a threashold with Otsü algorithm.

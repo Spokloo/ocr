@@ -1,7 +1,7 @@
 #ifndef POST_PROCESSING_H
 #define POST_PROCESSING_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Apply a binarization on a cell.
