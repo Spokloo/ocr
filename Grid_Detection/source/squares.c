@@ -290,13 +290,13 @@ void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **gs
 
     // Storing image
     (*result_imgs)[2] = img;
-    save_image(img, "squares_detection.jpeg");
+    save_image(img, "results/step_02_squares_detection.jpeg");
 
     // Getting main square
     *gs = draw_grid_square(img, nb_squares, squares, *gs);
 
     // Storing image
     (*result_imgs)[3] = img;
-    save_image(img, "main_grid_detection.jpeg");
+    save_image(img, "results/step_03_main_grid_detection.jpeg");
 }
 

@@ -3,6 +3,6 @@
 
 #include "../../Tools/image.h"
 
-void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines, Image ***result_imgs);
+void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines);
 
 #endif

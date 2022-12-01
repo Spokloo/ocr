@@ -2,6 +2,7 @@
 #include "../include/houghtransform.h"
 #include "../../Tools/image.h"
 #include "../../Tools/rotate.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 int is_in_list(int *arr, unsigned int len, int element) {
@@ -56,19 +57,23 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
     // Auto rotating the image
     int theta = 180;
     int angle = get_rotated_angle(*real_lines, *lines_len, theta);
+    char *path = "results/step_01b_auto_rotation.jpeg";
 
     if (angle != 0)
     {
         rotate(copy_img, -angle);
 
-        hough_transform(copy_img, lines_len, real_lines, result_imgs);
+        hough_transform(copy_img, lines_len, real_lines);
         copy_image(copy_img, img);
 
         // Storing image
         (*result_imgs)[1] = copy_img;
-        save_image(copy_img, "hough_rotated.jpeg");
+        save_image(copy_img, path);
         free_image(copy_img);
     } else
+    {
+        remove(path);
         (*result_imgs)[1] = NULL;
+    }
 }
 

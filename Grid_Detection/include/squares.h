@@ -8,6 +8,11 @@ typedef struct Point
     int x, y;
 } Point;
 
+typedef struct Line
+{
+    unsigned int rho, theta;
+} Line;
+
 typedef struct Square
 {
     Point p1, p2, p3, p4;

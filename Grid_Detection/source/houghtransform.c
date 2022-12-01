@@ -1,7 +1,6 @@
 #include "../include/houghtransform.h"
 #include "../../Tools/image.h"
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 int theta_val = 180;
@@ -125,7 +124,7 @@ void get_lines(int rho, int theta, unsigned int acc[],
     }
 }
 
-void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines, Image ***result_imgs)
+void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
 {
     // Initializing accumulator
     int diag = max_dist(img);
@@ -133,7 +132,6 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines, Ima
     int theta = theta_val;
     unsigned int len = rho * theta;
 
-    printf("%d * %d = %d\n", rho, theta, len);
     unsigned int accumulator[len];
 
     for (unsigned int i = 0; i < len; i++)
@@ -190,8 +188,5 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines, Ima
 
     // Drawing lines
     draw_lines(img, *lines_len, diag, *real_lines);
-
-    // Storing image
-    (*result_imgs)[0] = img;
 }
 

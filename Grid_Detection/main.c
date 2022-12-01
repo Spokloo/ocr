@@ -23,8 +23,9 @@ int main(int argc, char **argv)
     Image **result_imgs = malloc(sizeof(Image*) * 5);
 
     time_t start = time(NULL);
-    hough_transform(&img, &lines_len, &real_lines, &result_imgs);
-    save_image(&img, "hough_lines.jpeg");
+    hough_transform(&img, &lines_len, &real_lines);
+    result_imgs[0] = &img;
+    save_image(&img, "results/step_01a_hough_lines.jpeg");
 
     auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
     squares(&img, &lines_len, &real_lines, &gs, &result_imgs);

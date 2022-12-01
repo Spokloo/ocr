@@ -8,16 +8,17 @@ void extract_cells(Image *img)
 {
     Image **cells = malloc(81 * sizeof(Image *));
     get_cells(img, cells);
-    char name[8] = "0i.jpeg";
+    char name[22] = "results/cells/0i.jpeg";
     for (unsigned char i = 0; i < 81; i++)
     {
         if (i < 10)
-            name[1] = i + '0';
+            name[15] = i + '0';
         else
         {
-            name[0] = i / 10 + '0';
-            name[1] = i % 10 + '0';
+            name[14] = i / 10 + '0';
+            name[15] = i % 10 + '0';
         }
+
         save_image(cells[i], name);
         free_image(cells[i]);
         free(cells[i]);
@@ -35,9 +36,9 @@ void perspective(Image *img, Square **gs, Image ***result_imgs)
 
     // Storing image
     (*result_imgs)[4] = img;
-    save_image(img, "corrected_perspective.jpeg");
+    save_image(img, "results/step_04_perspective_correction.jpeg");
 
     // Extracting the 81 cells
-    // extract_cells(img);
+    extract_cells(img);
 }
 
