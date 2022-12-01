@@ -1,5 +1,8 @@
 #include "../Tools/image.h"
-#include "houghtransform.h"
+#include "include/houghtransform.h"
+#include "include/auto_rotation.h"
+#include "include/squares.h"
+#include "include/perspective.h"
 #include <err.h>
 #include <time.h>
 #include <stdio.h>
@@ -17,18 +20,18 @@ int main(int argc, char **argv)
     int **real_lines = NULL;
     unsigned int lines_len = 0;
     Square *gs = NULL;
+    Image **result_imgs = malloc(sizeof(Image*) * 5);
 
     time_t start = time(NULL);
-    hough_transform(&img, &lines_len, &real_lines);
+    hough_transform(&img, &lines_len, &real_lines, &result_imgs);
     save_image(&img, "hough_lines.jpeg");
 
-    auto_rotation(&img, &copy_img, &lines_len, &real_lines);
-    squares(&img, &lines_len, &real_lines, &gs);
-    perspective(&img, &gs);
+    auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
+    squares(&img, &lines_len, &real_lines, &gs, &result_imgs);
+    perspective(&img, &gs, &result_imgs);
     time_t end = time(NULL);
 
     printf("Execution took %lds.\n", (unsigned long) difftime(end, start));
 
-    save_image(&img, "result_hough.jpeg");
     free_image(&img);
 }
