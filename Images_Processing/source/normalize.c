@@ -1,5 +1,4 @@
-#include "../include/normalize.h"
-#include "../../Tools/image.h"
+#include "normalize.h"
 
 /*
  * Normalize image luminosity between 0 and 255.

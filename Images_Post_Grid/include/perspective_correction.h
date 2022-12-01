@@ -1,7 +1,7 @@
 #ifndef PERSP_CORRECT_H
 #define PERSP_CORRECT_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Correct perspective on image depending on grid position in src.

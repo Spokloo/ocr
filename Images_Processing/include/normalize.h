@@ -1,7 +1,7 @@
 #ifndef NORMALIZE_H
 #define NORMALIZE_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Normalize image luminosity between 0 and 255.

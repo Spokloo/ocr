@@ -1,7 +1,7 @@
 #ifndef SPLIT_GRID_H
 #define SPLIT_GRID_H
 
-#include "../../Tools/image.h"
+#include "image.h"
 
 /*
  * Split image in 81 to get each cells of Sudoku.

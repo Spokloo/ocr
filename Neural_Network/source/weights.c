@@ -1,4 +1,4 @@
-#include "../include/weights.h"
+#include "weights.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>

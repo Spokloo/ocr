@@ -1,5 +1,4 @@
-#include "../include/grayscale.h"
-#include "../../Tools/image.h"
+#include "grayscale.h"
 
 /*
  * Apply grayscale filter into image.

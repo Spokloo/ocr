@@ -1,5 +1,4 @@
-#include "../include/nn_load_data.h"
-#include "../../Tools/image.h"
+#include "nn_load_data.h"
 #include <dirent.h>
 #include <err.h>
 #include <stdio.h>

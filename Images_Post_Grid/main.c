@@ -1,8 +1,7 @@
-#include "image_post_grid.h"
-#include "../Tools/image.h"
-#include "include/perspective_correction.h"
-#include "include/post_processing.h"
-#include "include/split_grid.h"
+#include "image.h"
+#include "perspective_correction.h"
+#include "post_processing.h"
+#include "split_grid.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>

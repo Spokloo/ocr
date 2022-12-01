@@ -1,7 +1,8 @@
 #ifndef MORPHOLOGICAL_OPS_H
 #define MORPHOLOGICAL_OPS_H
 
-#include "../../Tools/image.h"
+#include "image.h"
+#include "image_tools.h"
 
 /*
  * Expand shapes in image.

@@ -1,7 +1,8 @@
 #ifndef NN_LOAD_DATA_H
 #define NN_LOAD_DATA_H
 
-#include "../nn.h"
+#include "nn.h"
+#include "image.h"
 
 /*
  * Free training data. 

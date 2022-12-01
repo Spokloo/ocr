@@ -1,11 +1,9 @@
-#include "image_processing.h"
-#include "../Tools/image.h"
-#include "include/blur.h"
-#include "include/canny.h"
-#include "include/contrast.h"
-#include "include/grayscale.h"
-#include "include/morphological_ops.h"
-#include "include/normalize.h"
+#include "image.h"
+#include "blur.h"
+#include "canny.h"
+#include "grayscale.h"
+#include "morphological_ops.h"
+#include "normalize.h"
 #include <err.h>
 #include <stdio.h>
 #include <string.h>
