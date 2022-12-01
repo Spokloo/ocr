@@ -40,7 +40,7 @@ void train(NeuralNetwork *nn, NnDatas *data);
 /*
  * Give input array to the Neural Network and return its result.
  */
-double get_output(NeuralNetwork *nn, char *input, unsigned long shift);
+char get_output(NeuralNetwork *nn, char *input, unsigned long shift);
 
 /*
  * Compute the new value of u depending on its links and weights.

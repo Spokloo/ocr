@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25l"); //hide cursor
     NeuralNetwork nn = new_nn();
-    // load_weights(&nn);
+    load_weights(&nn);
     if (strcmp(argv[1], "train") == 0)
     {
         NnDatas data = load_training_images(argv[2]);
@@ -60,7 +60,9 @@ int main(int argc, char **argv)
     }
     else if (strcmp(argv[1], "test") == 0)
     {
-        // Samuel
+        char *input = image_to_int(argv[2]);
+        printf("%d\n", get_output(&nn, input, 0));
+        free(input);
     }
     else
     {
@@ -69,7 +71,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25h"); //reshow cursor
     // print_nn(&nn);
-    // save_weights(&nn);
+    save_weights(&nn);
     free_nn(&nn);
     return 0;
 }
@@ -190,6 +192,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
                 }
             }
         }
+        printf("\n");
     }
     printf("\nEnd of training :\n");
     printf("    - %ld epoch \n", epoch);
@@ -200,7 +203,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
 /*
  * Give input array to the Neural Network and return its result.
  */
-double get_output(NeuralNetwork *nn, char *input, unsigned long shift)
+char get_output(NeuralNetwork *nn, char *input, unsigned long shift)
 {
     for (unsigned int i = 0; i < NB_INPUT; i++)
         nn->input[i]->value = input[i + shift];

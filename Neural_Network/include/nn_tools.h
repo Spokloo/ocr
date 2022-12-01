@@ -28,4 +28,9 @@ void print_unit(unit *n);
  */
 void print_nn(NeuralNetwork *nn);
 
+/*
+ * Convert an image at path to a 1D array of 0 and 1.
+ */
+char *image_to_int(char *path);
+
 #endif
