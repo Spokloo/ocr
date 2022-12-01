@@ -2,10 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-SRC = grid_gen.c
-OBJ = $(SRC:.c=.o)
-INC = ../Tools
-OBJ_DIR = $(patsubst %,obj/%,$(OBJ))
+INC = ../Tools include
 EXE = grid_gen
 
 
@@ -17,16 +14,16 @@ init:
 
 tools: $(INC)
 	$(CC) $(CFLAGS) -c ../Tools/image.c	-o obj/image.o $(LDLIBS)
-	$(CC) $(CFLAGS) -c ../Solver/solver_fun.c -o obj/solver_fun.o $(LDLIBS)
+	$(CC) $(CFLAGS) -c ../Solver/src/solver_fun.c -o obj/solver_fun.o $(LDLIBS)
 
-grid_gen: $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(addprefix obj/, $(shell ls obj)) $(LDLIBS) -o $(EXE)
+grid_gen:
+	$(CC) $(CFLAGS) $(addprefix obj/, $(shell ls obj)) -Iinclude -I../Tools -I../Solver/include src/grid_gen.c main.c $(LDLIBS) -o $(EXE)
 
 obj/%.o: %.c
-	$(CC) $(CFLAGS) -I../Solver -I$(INC) -c $< -o $@ $(LDLIBS)
+	$(CC) $(CFLAGS) -Iinclude -I../Solver/include -I../Tools -c $< -o $@ $(LDLIBS)
 
 
 clean:
-	rm -r obj
-	rm $(EXE)
-	rm res.png
+	${RM} -r obj
+	${RM} $(EXE)
+	${RM} res.png

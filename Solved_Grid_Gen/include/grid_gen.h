@@ -9,5 +9,6 @@
 
 void place_image(Image *dest, int digit, int x, int y);
 void printHelp();
+void construct_grid(char *old_path, char *solved_path);
 
 #endif
