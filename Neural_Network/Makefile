@@ -3,17 +3,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 LDLIBS = `pkg-config --libs sdl2` -lSDL2_image -lm
 
-<<<<<<< HEAD
-SRC = nn_load_result.c nn.c nn_tools.c weights.c
-OBJ = ${SRC:c=o}
-EXEC = NeuralNetwork
-=======
 SRC_DIR = source
 SRC_TOOLS = Tools
 INC_DIR = include
 DIR_OBJ = obj
 EXEC = neural_network
->>>>>>> 91e96214fcd9fe662c3bb8a9eb91d30c90d7b4b6
 
 #- - - - - - - - AUTOMATIC VARIABLES - - - - - - - -
 SRC = $(shell find $(SRC_DIR) -name "*.c") nn.c
