@@ -15,7 +15,7 @@ void get_cells(Image *img, Image **cells)
     {
         for (unsigned int y = 0; y < img->height - step; y += step)
         {
-            cells[index] = get_sub_image(img, x, y, x + step, y + step);
+            cells[index] = get_sub_image(img, y, x, y + step, x + step);
             index++;
         }
     }

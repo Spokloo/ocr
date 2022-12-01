@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25l"); //hide cursor
     NeuralNetwork nn = new_nn();
-    // load_weights(&nn);
+    load_weights(&nn);
     if (strcmp(argv[1], "train") == 0)
     {
         NnDatas data = load_training_images(argv[2]);
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     }
     printf("\e[?25h"); //reshow cursor
     // print_nn(&nn);
-    // save_weights(&nn);
+    save_weights(&nn);
     free_nn(&nn);
     return 0;
 }
