@@ -3,7 +3,7 @@
 /*
  * Compute a threashold with Otsü algorithm.
  */
-unsigned int compute_high_threashold(Image *img)
+unsigned int compute_high_threashold2(Image *img)
 {
     // https://www.ipol.im/pub/art/2016/158/article_lr.pdf
     // build image histogram
@@ -49,7 +49,7 @@ unsigned int compute_high_threashold(Image *img)
  */
 void post_processing(Image *cell)
 {
-    unsigned int t = compute_high_threashold(cell);
+    unsigned int t = compute_high_threashold2(cell);
     Pixel white = {255, 255, 255};
     Pixel black = {0, 0, 0};
     for (unsigned int x = 0; x < cell->width; x++)

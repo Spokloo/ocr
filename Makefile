@@ -8,7 +8,7 @@ INC_DIR = include
 DIR_OBJ = obj
 
 #- - - - - - - - AUTOMATIC VARIABLES - - - - - - - -
-SRC = $(shell find -name "*.c")
+SRC = $(shell find -name "*.c" -not -path '*main.c*')
 INC = $(shell find -name "*.h")
 
 OBJ = $(addprefix $(DIR_OBJ)/, $(SRC:c=o))
@@ -24,16 +24,7 @@ init:
 	@mkdir -p $(addprefix $(DIR_OBJ)/, $(shell find -type d -not -path '*/.*'))
 
 clear:
-	find $(DIR_OBJ) -type d -empty -delete
-print:
-	echo C FILES
-	@$(foreach file25, $(SRC), echo -e "$(file25)\n")
-	echo HEADER
-	@$(foreach file25, $(INC), echo -e "$(file25)\n")
-	echo INCLUDE
-	@$(foreach file25, $(INC_DIR_ARG), echo -e "$(file25)\n")
-	echo OBJ
-	@$(foreach file25, $(OBJ), echo -e "$(file25)\n")
+	@find $(DIR_OBJ) -type d -empty -delete
 
 sudoku-ocr: $(OBJ)
 	$(CC) $^ -o $@ $(FLAGS)

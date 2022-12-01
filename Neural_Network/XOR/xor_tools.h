@@ -13,20 +13,8 @@ NeuralNetwork new_xor();
  */
 void free_xor(NeuralNetwork xor);
 
-void print_unit(unit *n);
+void print_xor_unit(unit *n);
 
 void print_xor(NeuralNetwork xor);
-
-/*
- * Save all weights of a neural network in a file 'weights' in current
- * directory.
- */
-void save_weights(NeuralNetwork xor);
-
-/*
- * Load all weights saved in a file 'weights' (if exists) to the neural network.
- * Throw an error if the 'weights' file is invalid.
- */
-void load_weights(NeuralNetwork nn);
 
 #endif

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+void launch_xor()
 {
     NeuralNetwork xor = new_xor();
     // load_weights(xor);
@@ -67,9 +67,7 @@ int main()
     }
 
     // print_xor(xor);
-    // save_weights(xor);
     free_xor(xor);
-    return 0;
 }
 
 void update_activate_value(unit *u)

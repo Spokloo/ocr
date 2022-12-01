@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 LDLIBS = -lm
 
-SRC = xor.c xor_tools.c
+SRC = xor.c xor_tools.c main.c
 OBJ = ${SRC:c=o}
 EXEC = xor
 

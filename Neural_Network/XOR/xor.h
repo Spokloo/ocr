@@ -22,6 +22,8 @@ typedef struct NeuralNetwork
     unit *output[NB_OUTPUT];
 } NeuralNetwork;
 
+void launch_xor();
+
 void update_activate_value(unit *u);
 
 double calculate_expected(int i1, int i2);
