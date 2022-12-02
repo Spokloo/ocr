@@ -1,4 +1,4 @@
-#include <gtk/gtk.h>
+#include "callbacks.h"
 
 int main(void)
 {
@@ -6,7 +6,7 @@ int main(void)
     
     GtkBuilder *builder = gtk_builder_new();
     GError *error = NULL;
-    if (gtk_builder_add_from_file(builder, "source/main.glade", &error) == 0)
+    if (gtk_builder_add_from_file(builder, "assets/main.glade", &error) == 0)
     {
         g_printerr("Error loading builder: %s\n", error->message);
         g_clear_error(&error);
