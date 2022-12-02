@@ -3,4 +3,6 @@
 
 #include <gtk/gtk.h>
 
+#include "image.h"
+
 #endif
