@@ -1,8 +1,8 @@
 #ifndef GRIDOKUCR_H
 #define GRIDOKUCR_H
 
-#include "callbacks.h"
-
+#include <gtk/gtk.h>
+#include "image.h"
 
 typedef struct step {
     GtkViewport *viewport;
@@ -30,7 +30,7 @@ typedef struct ui {
     GtkWindow *window;
     GtkStack *stack;
 
-    Step steps[10];
+    Step *steps[10];
     Header *header;
     Progress *progress;
 
@@ -40,10 +40,12 @@ typedef struct ui {
 
 
 
-
-
-
-int launch_gui(int argc, char **argv);
+// CUSTOM FUNCTIONS //
 UI * init_ui(GtkBuilder *builder);
+
+// CALLBACKS //
+
+// MAIN //
+int launch_gui(int argc, char **argv);
 
 #endif
