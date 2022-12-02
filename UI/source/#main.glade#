@@ -10,7 +10,6 @@
         <property name="can-focus">False</property>
         <child>
           <object class="GtkBox" id="steps">
-            <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
               <!-- n-columns=2 n-rows=8 -->
