@@ -19,7 +19,9 @@ int main(int argc, char **argv)
 
     int **real_lines = NULL;
     unsigned int lines_len = 0;
+    Square *sq = NULL;
     Square *gs = NULL;
+
     Image **result_imgs = malloc(sizeof(Image*) * 5);
     for (int i = 0; i < 5; i++)
         result_imgs[i] = NULL;
@@ -30,7 +32,7 @@ int main(int argc, char **argv)
     save_image(&img, "results/step_01a_hough_lines.jpeg");
 
     auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
-    squares(&img, &lines_len, &real_lines, &gs, &result_imgs);
+    squares(&img, &lines_len, &real_lines, &sq, &gs, &result_imgs);
     perspective(&img, &gs, &result_imgs);
     time_t end = time(NULL);
 
@@ -40,6 +42,7 @@ int main(int argc, char **argv)
         free(real_lines[i]);
     free(real_lines);
 
+    free(sq);
     free(result_imgs);
     free_image(&img);
 }

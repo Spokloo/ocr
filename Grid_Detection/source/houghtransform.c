@@ -132,8 +132,7 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
     int theta = theta_val;
     unsigned int len = rho * theta;
 
-    unsigned int accumulator[len];
-
+    unsigned int *accumulator = malloc(sizeof(unsigned int) * len);
     for (unsigned int i = 0; i < len; i++)
         accumulator[i] = 0;
 
@@ -197,9 +196,11 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
     // Drawing lines
     draw_lines(img, *lines_len, diag, *real_lines);
 
-    // Freeing lines
+    // Freeing arrays
     for (unsigned int i = 0; i < len; i++)
         free(lines[i]);
     free(lines);
+
+    free(accumulator);
 }
 

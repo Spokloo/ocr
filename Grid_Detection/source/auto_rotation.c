@@ -67,6 +67,7 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
     {
         rotate(copy_img, -angle);
 
+        // Recomputing the lines on rotated image
         int **tmp_lines = NULL;
         hough_transform(copy_img, lines_len, &tmp_lines);
 
@@ -81,12 +82,14 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
             free(tmp_lines[i]);
         free(tmp_lines);
 
+        free_image(img);
         copy_image(copy_img, img);
 
         // Storing image
-        (*result_imgs)[1] = copy_img;
+        (*result_imgs)[1] = img;
         save_image(copy_img, path);
-    } else
+    }
+    else
     {
         remove(path);
         (*result_imgs)[1] = NULL;

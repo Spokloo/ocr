@@ -234,7 +234,7 @@ Square *draw_grid_square(Image *img, int nb_squares, Square *squares,
     return grid_square;
 }
 
-void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **gs, Image ***result_imgs)
+void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **squares, Square **gs, Image ***result_imgs)
 {
     // Separate lines into 2 categories: horizontal and vertical lines
     int nb_hori_lines = 0;
@@ -278,25 +278,25 @@ void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **gs
     // Getting squares
     int nb_squares = pow((nb_hori_lines - 1), 2) * pow((nb_verti_lines - 1), 2);
 
-    Square *squares = malloc(sizeof(Square) * nb_squares);
+    *squares = malloc(sizeof(Square) * nb_squares);
     for (int i = 0; i < nb_squares; i++)
     {
-        squares[i].p1 = (Point){nb_squares, nb_squares};
-        squares[i].p2 = (Point){nb_squares, nb_squares};
-        squares[i].p3 = (Point){nb_squares, nb_squares};
-        squares[i].p4 = (Point){nb_squares, nb_squares};
+        (*squares)[i].p1 = (Point){nb_squares, nb_squares};
+        (*squares)[i].p2 = (Point){nb_squares, nb_squares};
+        (*squares)[i].p3 = (Point){nb_squares, nb_squares};
+        (*squares)[i].p4 = (Point){nb_squares, nb_squares};
     }
 
-    get_squares(nb_hori_lines, nb_verti_lines, hori_lines, verti_lines, squares);
+    get_squares(nb_hori_lines, nb_verti_lines, hori_lines, verti_lines, *squares);
 
-    draw_all_squares(img, nb_squares, squares);
+    draw_all_squares(img, nb_squares, *squares);
 
     // Storing image
     (*result_imgs)[2] = img;
     save_image(img, "results/step_02_squares_detection.jpeg");
 
     // Getting main square
-    *gs = draw_grid_square(img, nb_squares, squares, *gs);
+    *gs = draw_grid_square(img, nb_squares, *squares, *gs);
 
     // Storing image
     (*result_imgs)[3] = img;
