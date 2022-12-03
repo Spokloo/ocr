@@ -21,6 +21,8 @@ int main(int argc, char **argv)
     unsigned int lines_len = 0;
     Square *gs = NULL;
     Image **result_imgs = malloc(sizeof(Image*) * 5);
+    for (int i = 0; i < 5; i++)
+        result_imgs[i] = NULL;
 
     time_t start = time(NULL);
     hough_transform(&img, &lines_len, &real_lines);
@@ -34,5 +36,10 @@ int main(int argc, char **argv)
 
     printf("Execution took %lds.\n", (unsigned long) difftime(end, start));
 
+    for (unsigned int i = 0; i < lines_len; i++)
+        free(real_lines[i]);
+    free(real_lines);
+
+    free(result_imgs);
     free_image(&img);
 }
