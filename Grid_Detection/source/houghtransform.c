@@ -59,7 +59,7 @@ void draw_lines(Image *img, unsigned int len, int diag, int **lines)
 void get_lines(int rho, int theta, unsigned int acc[],
                int **lines)
 {
-    double threshold = max_value(rho * theta, acc) * 0.5 + 50;
+    double threshold = max_value(rho * theta, acc) * 0.5 + 55;
 
     int rho_min_dist = 20;
     int rho_vertical = 0;
@@ -150,7 +150,11 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
     // Initializing lines
     int **lines = malloc(sizeof(int*) * len);
     for (unsigned int i = 0; i < len; i++)
+    {
         lines[i] = malloc(sizeof(int) * 3);
+        for (unsigned int j = 0; j < 3; j++)
+            lines[i][j] = 0;
+    }
 
     // Getting lines
     get_lines(rho, theta, accumulator, lines);
@@ -172,7 +176,11 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
     // Reducing lines
     *real_lines = malloc(sizeof(int*) * (*lines_len));
     for (unsigned int i = 0; i < *lines_len; i++)
+    {
         (*real_lines)[i] = malloc(sizeof(int) * 3);
+        for (unsigned int j = 0; j < 3; j++)
+            (*real_lines)[i][j] = 0;
+    }
 
     unsigned int j = 0;
     for (unsigned int i = 0; i < len; i++)
@@ -188,5 +196,10 @@ void hough_transform(Image *img, unsigned int *lines_len, int ***real_lines)
 
     // Drawing lines
     draw_lines(img, *lines_len, diag, *real_lines);
+
+    // Freeing lines
+    for (unsigned int i = 0; i < len; i++)
+        free(lines[i]);
+    free(lines);
 }
 

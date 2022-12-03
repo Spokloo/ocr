@@ -65,7 +65,10 @@ void render_line(Image *img, int x0, int y0, int x1, int y1, Pixel color)
 
     while (1)
     {
-        img->matrix[x0][y0] = color;
+        if (x0 >= 0 && x0 < (int) img->width
+                && y0 >= 0 && y0 < (int) img->height)
+            img->matrix[x0][y0] = color;
+
         if (x0 == x1 && y0 == y1)
             break;
         int e2 = 2 * error;
@@ -298,5 +301,14 @@ void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **gs
     // Storing image
     (*result_imgs)[3] = img;
     save_image(img, "results/step_03_main_grid_detection.jpeg");
+
+    // Freeing arrays
+    for (int i = 0; i < nb_hori_lines; i++)
+        free(hori_lines[i]);
+    free(hori_lines);
+
+    for (int i = 0; i < nb_verti_lines; i++)
+        free(verti_lines[i]);
+    free(verti_lines);
 }
 
