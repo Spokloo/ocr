@@ -20,7 +20,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
     unsigned int delta_output_i = 0, delta_hidden_i = 0;
     unsigned long epoch = 0, sucess = 0;
     // after 10 correct iterations on each example, stop
-    while (sucess == 0 || precision < 0.95)
+    while ((sucess == 0 || precision < 0.95) && epoch < 10)
     {
         sucess = 0;
         epoch++;
@@ -126,7 +126,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
     }
     printf("\nEnd of training :\n");
     printf("    - %ld epoch \n", epoch);
-    printf("    - %.2f of precision (%ld / %ld)\n", precision*100, sucess,
+    printf("    - %.2f%% of precision (%ld / %ld)\n", precision*100, sucess,
            data->total);
 }
 
