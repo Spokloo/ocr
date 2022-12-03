@@ -78,4 +78,6 @@ void load_weights(NeuralNetwork *nn)
         free(line);
         fclose(data);
     }
+    else
+        printf("No weights file.");
 }

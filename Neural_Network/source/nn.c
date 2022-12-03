@@ -5,6 +5,7 @@
 #include <err.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /*
  * Training of the Neural Network with input values and expected results until
@@ -59,8 +60,8 @@ void train(NeuralNetwork *nn, NnDatas *data)
 
                 precision = sucess / (float)data->total;
                 // printf("Give : %d and received %f\n", nb, max);
-                printf("\rEpoch n°%ld -> %.2f%% (%ld / %ld)", epoch, precision*100,
-                       sucess, data->total);
+                printf("\rEpoch n°%ld -> %.2f%% (%ld / %ld)", epoch,
+                       precision * 100, sucess, data->total);
 
                 // Compute weights correction between hidden and output
                 delta_output_i = 0;
@@ -126,7 +127,7 @@ void train(NeuralNetwork *nn, NnDatas *data)
     }
     printf("\nEnd of training :\n");
     printf("    - %ld epoch \n", epoch);
-    printf("    - %.2f%% of precision (%ld / %ld)\n", precision*100, sucess,
+    printf("    - %.2f%% of precision (%ld / %ld)\n", precision * 100, sucess,
            data->total);
 }
 
@@ -180,4 +181,34 @@ double activate_function(double n)
     else
         return 0.01*n;*/
     return 1 / (1 + exp(-n));
+}
+
+/*
+ * Train nn from A to Z.
+ */
+void train_neural_network(char *path)
+{
+    NeuralNetwork nn = new_nn();
+    NnDatas data = load_training_images(path);
+    printf("\e[?25l"); // hide cursor
+    train(&nn, &data);
+    free_data(&data);
+    printf("\e[?25h"); // reshow cursor
+    save_weights(&nn);
+    free_nn(&nn);
+}
+
+/*
+ * Test nn on an image.
+ */
+void test_neural_network(char *path)
+{
+    NeuralNetwork nn = new_nn();
+    load_weights(&nn);
+    Image img = load_image(path);
+    char *input = image_to_int(&img);
+    printf("%d\n", get_output(&nn, input, 0));
+    free_image(&img);
+    free(input);
+    free_nn(&nn);
 }

@@ -31,6 +31,10 @@ typedef struct NnDatas
     unsigned long total;
 } NnDatas;
 
+#include "nn_tools.h"
+#include "nn_load_data.h"
+#include "weights.h"
+
 /*
  * Training of the Neural Network with input values and expected results until
  * precision is reached.
@@ -51,5 +55,15 @@ void activation(unit *u);
  * Activate function used to compute value of each neuron.
  */
 double activate_function(double n);
+
+/*
+ * Train nn from A to Z.
+ */
+void train_neural_network(char *path);
+
+/*
+ * Test nn on an image.
+ */
+void test_neural_network(char *path);
 
 #endif

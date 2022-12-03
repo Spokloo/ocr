@@ -1,5 +1,5 @@
 #- - - - - - - - VARIABLES - - - - - - - -
-CC = gcc
+CC = gcc -fsanitize=address -g
 CFLAGS = -Wall -Wextra `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2`
 LDLIBS = `pkg-config --libs gtk+-3.0 ` `pkg-config --libs sdl2` -lSDL2_image -lm
 
@@ -8,16 +8,16 @@ INC_DIR = include
 DIR_OBJ = obj
 
 #- - - - - - - - AUTOMATIC VARIABLES - - - - - - - -
-SRC = $(shell find -name "*.c" -not -path '*main.c*')
+SRC = $(shell find -name "*.c" -not -path '*main.c*' | sed 's/.\///')
 INC = $(shell find -name "*.h")
 
 OBJ = $(addprefix $(DIR_OBJ)/, $(SRC:c=o))
-INC_DIR_ARG = $(addprefix -I, $(shell find -type d -name $(INC_DIR) -not -path '*obj*')) -ITools/
+INC_DIR_ARG = $(addprefix -I, $(shell find -type d -name $(INC_DIR) -not -path '*obj*' | sed 's/.\///')) -ITools/
 
 FLAGS = $(INC_DIR_ARG) $(CFLAGS) $(LDLIBS)
 
 #- - - - - - - - RULES - - - - - - - -
-all: init sudoku-ocr clear
+all: init gridoku-ocr clear
 
 init:
 	@mkdir -p $(DIR_OBJ)
@@ -26,7 +26,7 @@ init:
 clear:
 	@find $(DIR_OBJ) -type d -empty -delete
 
-sudoku-ocr: $(OBJ)
+gridoku-ocr: $(OBJ)
 	$(CC) $^ -o $@ $(FLAGS)
 
 $(DIR_OBJ)/%.o: %.c $(INC)
@@ -34,4 +34,4 @@ $(DIR_OBJ)/%.o: %.c $(INC)
 
 clean:
 	rm -fr $(DIR_OBJ)
-	rm -f sudoku-ocr
+	rm -f gridoku-ocr
