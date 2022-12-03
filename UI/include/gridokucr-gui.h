@@ -14,6 +14,7 @@ typedef struct step {
     GtkEntry **entries;
     GtkWidget **scales;
     Image **images;
+    char **paths;
 } Step;
 
 typedef struct progress {
@@ -59,6 +60,9 @@ void set_step(UI *ui, int num);
  *         *user_data -> pointer to the ui struct
  */
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);
+void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void cancel_select(GtkButton *button, gpointer user_data);
+void confirm_select(GtkButton *button, gpointer user_data);
 
 // MAIN //
 
