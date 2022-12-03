@@ -12,7 +12,6 @@ UI * init_ui(GtkBuilder *builder)
     /* STEP 1 */
     Step *step1 = malloc(sizeof(Step));
     step1->file_chooser_button = malloc(sizeof(GtkFileChooserButton *));
-    step1->paths = malloc(sizeof(char *));
 
     step1->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step1"));
     step1->file_chooser_button = GTK_FILE_CHOOSER_BUTTON(gtk_builder_get_object(builder, "file_chooser_button"));
@@ -22,9 +21,10 @@ UI * init_ui(GtkBuilder *builder)
     step2->buttons = malloc(sizeof(GtkButton *) *2);
     step2->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step2->labels = malloc(sizeof(GtkLabel *));
-    step2->paths = malloc(sizeof(char *));
-    step2->images = malloc(sizeof(Image *) * 8);
+    step2->images = malloc(sizeof(Image *));
+    step2->images[0] = malloc(sizeof(Image));
 
+    step2->curr_img = 0;
     step2->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step2"));
     step2->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "select_button_step2"));
     step2->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_button_step2"));
@@ -36,8 +36,12 @@ UI * init_ui(GtkBuilder *builder)
     step3->buttons = malloc(sizeof(GtkButton *) * 3);
     step3->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step3->labels = malloc(sizeof(GtkLabel *));
-    step3->paths = malloc(sizeof(char *));
-
+    step3->images = malloc(sizeof(Image *) * 8);
+    for (int i = 0; i < 8; i++)
+        step3->images[i] = malloc(sizeof(Image));
+    
+    step3->curr_img = 0;
+    step3->sub_step = 0;
     step3->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step3"));
     step3->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "previous_step3"));
     step3->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "next_step3"));
@@ -50,7 +54,6 @@ UI * init_ui(GtkBuilder *builder)
     step4->buttons = malloc(sizeof(GtkButton *));
     step4->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step4->scales = malloc(sizeof(GtkWidget *) * 2);
-    step4->paths = malloc(sizeof(char *));
 
     step4->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step4"));
     step4->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "comfirm_rotation_step4"));
@@ -62,7 +65,6 @@ UI * init_ui(GtkBuilder *builder)
     Step *step5 = malloc(sizeof(Step));
     step5->buttons = malloc(sizeof(GtkButton *));
     step5->draw_areas = malloc(sizeof(GtkDrawingArea *));
-    step5->paths = malloc(sizeof(char *));
 
     step5->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step5"));
     step5->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "grid_detect_step5"));
@@ -73,7 +75,6 @@ UI * init_ui(GtkBuilder *builder)
     step6->buttons = malloc(sizeof(GtkButton *));
     step6->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step6->event_box = malloc(sizeof(GtkEventBox *));
-    step6->paths = malloc(sizeof(char *));
 
     step6->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step6"));
     step6->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_crop_step6"));
@@ -84,7 +85,6 @@ UI * init_ui(GtkBuilder *builder)
     Step *step7 = malloc(sizeof(Step));
     step7->buttons = malloc(sizeof(GtkButton *));
     step7->draw_areas = malloc(sizeof(GtkDrawingArea *));
-    step7->paths = malloc(sizeof(char *));
 
     step7->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step7"));
     step7->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "digit_recog_step7"));
@@ -95,7 +95,6 @@ UI * init_ui(GtkBuilder *builder)
     step8->buttons = malloc(sizeof(GtkButton *) * 2);
     step8->draw_areas = malloc(sizeof(GtkDrawingArea *) * 2);
     step8->entries = malloc(sizeof(GtkEntry *) * 3);
-    step8->paths = malloc(sizeof(char *) * 2);
 
     step8->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step8"));
     step8->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "place_digit_step8"));
@@ -110,7 +109,6 @@ UI * init_ui(GtkBuilder *builder)
     Step *step9 = malloc(sizeof(Step));
     step9->buttons = malloc(sizeof(GtkButton *));
     step9->draw_areas = malloc(sizeof(GtkDrawingArea *));
-    step9->paths = malloc(sizeof(char *));
 
     step9->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step9"));
     step9->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "launch_solver_step9"));
@@ -172,11 +170,12 @@ void connect_signals(UI *ui)
     g_signal_connect(ui->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(ui->steps[0]->file_chooser_button, "file-set", G_CALLBACK(on_file_set), ui);
 
-    g_signal_connect(ui->steps[1]->draw_areas[0], "draw", G_CALLBACK(draw_image), ui);
+    g_signal_connect(ui->steps[1]->draw_areas[0], "draw", G_CALLBACK(on_draw_step2), ui);
     g_signal_connect(ui->steps[1]->buttons[0], "clicked", G_CALLBACK(cancel_select), ui);
     g_signal_connect(ui->steps[1]->buttons[1], "clicked", G_CALLBACK(confirm_select), ui);
 
-    g_signal_connect(ui->steps[2]->draw_areas[0], "draw", G_CALLBACK(draw_image), ui);
+    g_signal_connect(ui->steps[2]->draw_areas[0], "draw", G_CALLBACK(on_draw_step3), ui);
+    g_signal_connect(ui->steps[2]->buttons[1], "clicked", G_CALLBACK(next_sub_step), ui);
 }
 
 void set_step(UI *ui, int num)
@@ -185,15 +184,69 @@ void set_step(UI *ui, int num)
     ui->curr_step = num;
 }
 
-void display_image(GtkDrawingArea *draw_area, Image *img, UI *ui)
+void display_image(GtkDrawingArea *draw_area, Image *img, UI *ui, int step, int image)
 {
-    copy_image(img, ui->curr_img);
+    copy_image(img, ui->steps[step]->images[image]);
     gtk_widget_queue_draw(GTK_WIDGET(draw_area));
 }
 
+GdkPixbuf * Image_to_pixbuf(Image *img)
+{
+    GdkPixbuf *pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, img->width, img->height);
 
+    int width = gdk_pixbuf_get_width(pixbuf);
+    int height = gdk_pixbuf_get_height(pixbuf);
 
+    int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
+    int rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+    guchar *pixels = gdk_pixbuf_get_pixels(pixbuf);
 
+    for (int x = 0; x < width; x++)
+    {
+        for (int y = 0; y < height; y++)
+        {
+            guchar *p = pixels + y * rowstride + x * n_channels;
+            p[0] = img->matrix[x][y].r;
+            p[1] = img->matrix[x][y].g;
+            p[2] = img->matrix[x][y].b;
+            p[3] = 255;
+        }
+    }
+
+    return pixbuf;
+}
+
+void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img)
+{
+    GdkPixbuf *pixbuf = Image_to_pixbuf(ui->steps[step]->images[img]);
+
+    // Scaling coords and image size //
+    gint width = gtk_widget_get_allocated_width(GTK_WIDGET(draw_area));
+    gint height = gtk_widget_get_allocated_height(GTK_WIDGET(draw_area));
+    gint image_w = ui->steps[step]->images[img]->width;
+    gint image_h = ui->steps[step]->images[img]->height;
+
+    gdouble tmp_x = (gdouble) width / image_w;
+    gdouble tmp_y = (gdouble) height / image_h;
+    gdouble scale = MIN(tmp_x, tmp_y);
+
+    gint image_w_res = image_w * scale;
+    gint image_h_res = image_h * scale;
+    gint x = (width - image_w_res) /2;
+    gint y = (height - image_h_res) /2;
+    /////
+
+    pixbuf = gdk_pixbuf_scale_simple(pixbuf, image_w_res, image_h_res, GDK_INTERP_BILINEAR);
+
+    cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
+
+    cairo_set_source_surface(cr, surface, x, y);
+    cairo_rectangle(cr, x, y, image_w_res, image_h_res);
+
+    cairo_fill(cr);
+
+    g_object_unref(pixbuf);
+}
 ////////////
 
 
@@ -214,56 +267,15 @@ void on_file_set(GtkFileChooserButton *button, gpointer user_data)
     
     Image img = load_image(path);
 
-    display_image(ui->steps[1]->draw_areas[0], &img, ui);
+    display_image(ui->steps[1]->draw_areas[0], &img, ui, 1, 0);
 
-    g_print("File selected.\nPath: %s\n", ui->curr_img->path);
+    g_print("File selected.\nPath: %s\n", ui->steps[1]->images[0]->path);
 
     gchar buffer[200];
     g_snprintf(buffer, 200, "Image path: %s", path);
     gtk_label_set_text(ui->steps[1]->labels[0], buffer);
 
     set_step(ui, 1);
-}
-
-void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
-{
-    UI *ui = user_data;
-    GError *error = NULL;
-
-    // Scaling coords and image size //
-    gint width = gtk_widget_get_allocated_width(GTK_WIDGET(draw_area));
-    gint height = gtk_widget_get_allocated_height(GTK_WIDGET(draw_area));
-    gint image_w = ui->curr_img->width;
-    gint image_h = ui->curr_img->height;
-
-    gdouble tmp_x = (gdouble) width / image_w;
-    gdouble tmp_y = (gdouble) height / image_h;
-    gdouble scale = MIN(tmp_x, tmp_y);
-
-    gint image_w_res = image_w * scale;
-    gint image_h_res = image_h * scale;
-    gint x = (width - image_w_res) /2;
-    gint y = (height - image_h_res) /2;
-
-
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(ui->curr_img->path, &error);
-    if (pixbuf == NULL)
-    {
-        g_printerr("Error creating pixbuf: %s\n", error->message);
-        g_clear_error(&error);
-    } else {
-
-        pixbuf = gdk_pixbuf_scale_simple(pixbuf, image_w_res, image_h_res, GDK_INTERP_BILINEAR);
-
-        cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
-
-        cairo_set_source_surface(cr, surface, x, y);
-        cairo_rectangle(cr, x, y, image_w_res, image_h_res);
-
-        cairo_fill(cr);
-    }
-
-    g_print("Drawing image!\n");
 }
 
 void cancel_select(GtkButton *button, gpointer user_data)
@@ -278,8 +290,66 @@ void confirm_select(GtkButton *button, gpointer user_data)
     UI *ui = user_data;
     gtk_button_get_label(button); // prevent unused param
     set_step(ui, 2);
-    display_image(ui->steps[2]->draw_areas[0], ui->curr_img, ui);
+    display_image(ui->steps[2]->draw_areas[0], ui->steps[1]->images[0], ui, 2, 0);
 }
+
+
+/* STEP 2 */
+void next_sub_step(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    ++ui->steps[2]->sub_step;
+    g_print("Clicked: curr sub step: %d\n", ui->steps[2]->sub_step);
+
+    switch (ui->steps[2]->sub_step)
+    {
+        case 1:
+        {
+            Image gray_scale;
+            copy_image(ui->steps[2]->images[0], &gray_scale);
+            ++ui->steps[2]->curr_img;
+
+            grayscale(&gray_scale);
+            copy_image(&gray_scale, ui->steps[2]->images[1]);
+
+            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+            g_print("Displaying gray_scale!\n");
+            break;
+        }
+
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+    }
+
+
+    gtk_button_get_label(button); // prevent unused param
+
+}
+
+void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
+{
+    UI *ui = user_data;
+    draw_image(draw_area, cr, ui, 1, 0);
+}
+
+void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
+{
+    UI *ui = user_data;
+    draw_image(draw_area, cr, ui, 2, ui->steps[2]->curr_img);
+}
+
+
+
 
 ////////////
 

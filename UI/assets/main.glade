@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkApplicationWindow" id="org.gtk.gridokucr">
@@ -653,7 +653,7 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                                   <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Last step</property>
+                                    <property name="label" translatable="yes">Skip steps</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
