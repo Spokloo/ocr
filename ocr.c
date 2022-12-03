@@ -1,8 +1,10 @@
 #include "image_processing.h"
 #include "grid_detection.h"
+#include "images_post_grid.h"
 #include "nn.h"
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -138,9 +140,78 @@ void img_args(int argc, char **argv)
     }
 
     // - - - - - - - - - - GRID DETECTION - - - - - - - - - -
+    Image copy_img;
+    copy_image(&img, &copy_img);
 
+    int **real_lines = NULL;
+    unsigned int lines_len = 0;
+    Square *sq = NULL;
+    Square *gs = NULL;
+
+    Image **result_imgs = malloc(sizeof(Image*) * 5);
+    for (int i = 0; i < 5; i++)
+        result_imgs[i] = NULL;
+
+    if(verbose)
+        printf("Hough transform...\n");
+    hough_transform(&img, &lines_len, &real_lines);
+    result_imgs[0] = &img;
+    if(save_inter)
+    {
+        tmppath[n+1] = '\0';
+        strcat(tmppath, "2.0-hough_lines.png");
+        save_image(&img, tmppath);
+    }
+
+    auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
+    if(verbose && result_imgs[1] != NULL)
+        printf("Auto-rotation...\n");
+    if(save_inter && result_imgs[1] != NULL)
+    {
+        tmppath[n+1] = '\0';
+        strcat(tmppath, "2.1-auto_rotate.png");
+        save_image(&img, tmppath);
+    }
+
+    if(verbose)
+    {
+        printf("Detecting all squares...\n");
+        printf("Getting the grid square...\n");
+    }
+    squares(&img, &lines_len, &real_lines, &sq, &gs, &result_imgs);
+    if(save_inter)
+    {
+        tmppath[n+1] = '\0';
+        strcat(tmppath, "2.2-all_squares.png");
+        save_image(result_imgs[2], tmppath);
+        tmppath[n+1] = '\0';
+        strcat(tmppath, "2.3-main_grid_detection.png");
+        save_image(&img, tmppath);
+    }
+
+    if(verbose)
+        printf("Correcting perspective...\n");
+    int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
+        gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
+    correct_perspective(&img, points);
+    if(save_inter)
+    {
+        tmppath[n+1] = '\0';
+        strcat(tmppath, "2.4-corrected_perspective.png");
+        save_image(&img, tmppath);
+    }
+
+    for (unsigned int i = 0; i < lines_len; i++)
+        free(real_lines[i]);
+    free(real_lines);
+    free_image(result_imgs[2]);
+    free(result_imgs[2]);
+    free(result_imgs);
+    free(sq);
 
     // - - - - - - - - - - POST GRID PROCESSING - - - - - - - - - -
+
+    
 
     // - - - - - - - - - - NEURAL NETWORK - - - - - - - - - -
 
@@ -148,6 +219,9 @@ void img_args(int argc, char **argv)
 
     // - - - - - - - - - - SOLVED GRID GENERATION - - - - - - - - - -
 
+
+
+    
     // - - - - - - - - - - FINAL SAVE - - - - - - - - - -
     if(save_inter)
     {

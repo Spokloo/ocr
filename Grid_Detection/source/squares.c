@@ -292,15 +292,17 @@ void squares(Image* img, unsigned int *lines_len, int ***real_lines, Square **sq
     draw_all_squares(img, nb_squares, *squares);
 
     // Storing image
-    (*result_imgs)[2] = img;
-    save_image(img, "results/step_02_squares_detection.jpeg");
+    Image *tmp = malloc(sizeof(Image));
+    copy_image(img, tmp);
+    (*result_imgs)[2] = tmp;
+    //save_image(img, "results/step_02_squares_detection.jpeg");
 
     // Getting main square
     *gs = draw_grid_square(img, nb_squares, *squares, *gs);
 
     // Storing image
     (*result_imgs)[3] = img;
-    save_image(img, "results/step_03_main_grid_detection.jpeg");
+    //save_image(img, "results/step_03_main_grid_detection.jpeg");
 
     // Freeing arrays
     for (int i = 0; i < nb_hori_lines; i++)

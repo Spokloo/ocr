@@ -33,6 +33,7 @@ typedef struct NnDatas
 
 #include "nn_tools.h"
 #include "nn_load_data.h"
+#include "nn_load_result.h"
 #include "weights.h"
 
 /*
