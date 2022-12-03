@@ -2,6 +2,13 @@
 #define GRIDOKUCR_H
 
 #include <gtk/gtk.h>
+
+#include "blur.h"
+#include "canny.h"
+#include "canny_tools.h"
+#include "grayscale.h"
+#include "morphological_ops.h"
+#include "normalize.h"
 #include "image.h"
 
 typedef struct step {
@@ -14,7 +21,8 @@ typedef struct step {
     GtkEntry **entries;
     GtkWidget **scales;
     Image **images;
-    char **paths;
+    int curr_img;
+    int sub_step;
 } Step;
 
 typedef struct progress {
@@ -51,6 +59,7 @@ typedef struct ui {
 UI * init_ui(GtkBuilder *builder);
 void connect_signals(UI *ui);
 void set_step(UI *ui, int num);
+void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img);
 
 // CALLBACKS //
 
@@ -60,9 +69,11 @@ void set_step(UI *ui, int num);
  *         *user_data -> pointer to the ui struct
  */
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);
-void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void cancel_select(GtkButton *button, gpointer user_data);
 void confirm_select(GtkButton *button, gpointer user_data);
+void next_sub_step(GtkButton *button, gpointer user_data);
+void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 
 // MAIN //
 
