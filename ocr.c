@@ -1,4 +1,5 @@
 #include "image_processing.h"
+#include "grid_detection.h"
 #include "nn.h"
 #include <err.h>
 #include <stdio.h>
