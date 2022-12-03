@@ -17,6 +17,7 @@ typedef struct step {
 } Step;
 
 typedef struct progress {
+    GtkBox *box;
     GtkProgressBar *progress_bar;
     GtkButton **buttons;
 } Progress;
@@ -41,11 +42,29 @@ typedef struct ui {
 
 
 // CUSTOM FUNCTIONS //
+
+/*
+ * Initialise the whole UI with malloc
+ * @param: *builder -> pointer to builder
+ */
 UI * init_ui(GtkBuilder *builder);
+void connect_signals(UI *ui);
+void set_step(UI *ui, int num);
 
 // CALLBACKS //
 
+/*
+ * Callback for step1 file chooser button
+ * @param: *button -> the file chooser button,
+ *         *user_data -> pointer to the ui struct
+ */
+void on_file_set(GtkFileChooserButton *button, gpointer user_data);
+
 // MAIN //
+
+/*
+ * Main function of the gui, meant to be launched in the main function
+ */
 int launch_gui(int argc, char **argv);
 
 #endif

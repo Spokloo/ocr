@@ -136,6 +136,8 @@ UI * init_ui(GtkBuilder *builder)
 
     /* PROGRESS BAR */
     ui->progress = malloc(sizeof(Progress *));
+
+    ui->progress->box = GTK_BOX(gtk_builder_get_object(builder, "steps"));
     ui->progress->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
 
     ui->progress->buttons = malloc(sizeof(GtkButton *) * 8);
@@ -153,7 +155,17 @@ UI * init_ui(GtkBuilder *builder)
     return ui;
 }
 
+void connect_signals(UI *ui)
+{
+    g_signal_connect(ui->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(ui->steps[0]->file_chooser_button, "file-set", G_CALLBACK(on_file_set), ui);
+}
 
+void set_step(UI *ui, int num)
+{
+    gtk_stack_set_visible_child(ui->stack, GTK_WIDGET(ui->steps[num]->viewport));
+    ui->curr_step = num;
+}
 
 
 
@@ -165,6 +177,25 @@ UI * init_ui(GtkBuilder *builder)
 
 ///////////////////   CALLBACKS   ////////////////////////
 
+
+
+void on_file_set(GtkFileChooserButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(button));
+    char *path = g_file_get_path(file);
+    
+    Image img = load_image(path);
+    ui->curr_img = &img;
+
+    g_print("File selected.\nPath: %s\n", path);
+
+    gtk_label_set_text(ui->steps[1]->labels[0], path);
+
+    set_step(ui, 1);
+
+}
 
 ////////////
 
@@ -188,9 +219,9 @@ int launch_gui(int argc, char **argv)
     }
 
     UI *ui = init_ui(builder);
+    connect_signals(ui);
 
-    g_signal_connect(ui->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
+    gtk_header_bar_set_subtitle(ui->header->header_bar, "");
     gtk_widget_show(GTK_WIDGET(ui->window));
 
     gtk_main();
