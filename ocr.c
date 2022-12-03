@@ -1,4 +1,5 @@
 #include "grid_detection.h"
+#include "grid_gen.h"
 #include "image_processing.h"
 #include "images_post_grid.h"
 #include "nn.h"
@@ -88,7 +89,7 @@ void img_args(int argc, char **argv)
 
     grayscale(&img);
     if (verbose)
-        printf("Grayscale image ...\n");
+        printf("Grayscale image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -97,7 +98,7 @@ void img_args(int argc, char **argv)
     }
     normalize(&img);
     if (verbose)
-        printf("Normalize image ...\n");
+        printf("Normalize image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -106,7 +107,7 @@ void img_args(int argc, char **argv)
     }
     gaussian_blur(&img, filter_size);
     if (verbose)
-        printf("Gaussian blur image ...\n");
+        printf("Gaussian blur image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -115,7 +116,7 @@ void img_args(int argc, char **argv)
     }
     dilation(&img, filter_size);
     if (verbose)
-        printf("Dilation image ...\n");
+        printf("Dilation image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -124,7 +125,7 @@ void img_args(int argc, char **argv)
     }
     erosion(&img, filter_size);
     if (verbose)
-        printf("Erosion image ...\n");
+        printf("Erosion image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -135,7 +136,7 @@ void img_args(int argc, char **argv)
     copy_image(&img, &img_before_canny);
     canny(&img);
     if (verbose)
-        printf("Canny image ...\n");
+        printf("Canny image...\n");
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -226,19 +227,25 @@ void img_args(int argc, char **argv)
         printf("Cells trimming...\n");
         printf("Resizing each cells...\n");
     }
-    tmppath[n + 1] = '\0';
-    strcat(tmppath, "3.0-00.png");
+    if (save_inter)
+    {
+        tmppath[n + 1] = '\0';
+        strcat(tmppath, "3.0-00.png");
+    }
     for (unsigned char i = 0; i < 81; i++)
     {
-        if (i < 10)
+        if (save_inter)
         {
-            tmppath[n + 5] = '0';
-            tmppath[n + 6] = i + '0';
-        }
-        else
-        {
-            tmppath[n + 5] = i / 10 + '0';
-            tmppath[n + 6] = i % 10 + '0';
+            if (i < 10)
+            {
+                tmppath[n + 5] = '0';
+                tmppath[n + 6] = i + '0';
+            }
+            else
+            {
+                tmppath[n + 5] = i / 10 + '0';
+                tmppath[n + 6] = i % 10 + '0';
+            }
         }
         post_processing(cells[i]);
         tmp = get_number_in_cell(cells[i]);
@@ -278,33 +285,51 @@ void img_args(int argc, char **argv)
             free(grid[i]);
         free(grid);
         grid = load_grid(tmppath);
-        write_grid(solve(grid), strcat(tmppath, ".result"));
+        grid = solve(grid);
+        if(grid == NULL)
+            errx(1, "Grid isn't solvable.");
+        write_grid(grid, strcat(tmppath, ".result"));
     }
     else
-        solve(grid);
+    {
+        char tmp[12] = "grid";
+        write_grid(grid, tmp);
+        for (unsigned char i = 0; i < 9; i++)
+            free(grid[i]);
+        free(grid);
+        grid = load_grid(tmp);
+        grid = solve(grid);
+        if(grid == NULL)
+            errx(1, "Grid isn't solvable.");
+        write_grid(grid, strcat(tmp, ".result"));
+    }
     for (unsigned char i = 0; i < 9; i++)
         free(grid[i]);
     free(grid);
+
     // - - - - - - - - - - SOLVED GRID GENERATION - - - - - - - - - -
 
-    // - - - - - - - - - - FINAL SAVE - - - - - - - - - -
+    if (verbose)
+        printf("Generating solved Sudoku image...\n");
     if (save_inter)
     {
+        char tmppath2[128];
+        tmppath[n + 9] = '\0';
+        strcpy(tmppath2, tmppath);
         tmppath[n + 1] = '\0';
-        strcat(tmppath, "result.png");
-        save_image(&img, tmppath);
+        strcat(tmppath, "5.0-result.png");
+        construct_grid(tmppath2, "Solved_Grid_Gen/images/blank_grid.png",
+                       tmppath);
     }
-    else if (out)
-    {
-        tmppath[0] = '\0';
-        n = strlen(out_path);
-        strncpy(tmppath, out_path, n);
-        tmppath[n] = '/';
-        strcat(tmppath, "result.png");
-        save_image(&img, tmppath);
-    }
+    else if(out)
+        construct_grid("grid", "Solved_Grid_Gen/images/blank_grid.png",
+                       out_path);
     else
-        save_image(&img, "./result.png");
+        construct_grid("grid", "Solved_Grid_Gen/images/blank_grid.png",
+                       "result.png");
+    
+    remove("grid");
+    remove("grid.result");
     free_image(&img);
 }
 
