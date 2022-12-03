@@ -1,7 +1,8 @@
-#include "image_processing.h"
 #include "grid_detection.h"
+#include "image_processing.h"
 #include "images_post_grid.h"
 #include "nn.h"
+#include "solver_fun.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +32,7 @@ void nn_args(int argc, char **argv)
     if (argc == 2)
         print_help();
     if (strcmp(argv[2], "train") == 0 && argc == 4)
-        train_neural_network(argv[3]);
+        train_neural_network(argv[3], "Neural_Network/weights");
     else if (strcmp(argv[2], "test") == 0 && argc == 4)
         test_neural_network(argv[3]);
     else
@@ -69,9 +70,10 @@ void img_args(int argc, char **argv)
         print_help();
 
     char tmppath[128];
-    unsigned int n = strlen(inter_path);
+    unsigned int n;
     if (save_inter)
     {
+        n = strlen(inter_path);
         strncpy(tmppath, inter_path, n);
         tmppath[n] = '/';
     }
@@ -89,7 +91,7 @@ void img_args(int argc, char **argv)
         printf("Grayscale image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.0-grayscale.png");
         save_image(&img, tmppath);
     }
@@ -98,7 +100,7 @@ void img_args(int argc, char **argv)
         printf("Normalize image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.1-normalize.png");
         save_image(&img, tmppath);
     }
@@ -107,7 +109,7 @@ void img_args(int argc, char **argv)
         printf("Gaussian blur image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.2-gaussian_blur.png");
         save_image(&img, tmppath);
     }
@@ -116,7 +118,7 @@ void img_args(int argc, char **argv)
         printf("Dilation image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.3-dilation.png");
         save_image(&img, tmppath);
     }
@@ -125,16 +127,18 @@ void img_args(int argc, char **argv)
         printf("Erosion image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.4-dilation_erosion.png");
         save_image(&img, tmppath);
     }
+    Image img_before_canny;
+    copy_image(&img, &img_before_canny);
     canny(&img);
     if (verbose)
         printf("Canny image ...\n");
     if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "1.5-canny.png");
         save_image(&img, tmppath);
     }
@@ -148,55 +152,55 @@ void img_args(int argc, char **argv)
     Square *sq = NULL;
     Square *gs = NULL;
 
-    Image **result_imgs = malloc(sizeof(Image*) * 5);
+    Image **result_imgs = malloc(sizeof(Image *) * 5);
     for (int i = 0; i < 5; i++)
         result_imgs[i] = NULL;
 
-    if(verbose)
+    if (verbose)
         printf("Hough transform...\n");
     hough_transform(&img, &lines_len, &real_lines);
     result_imgs[0] = &img;
-    if(save_inter)
+    if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "2.0-hough_lines.png");
         save_image(&img, tmppath);
     }
 
     auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
-    if(verbose && result_imgs[1] != NULL)
+    if (verbose && result_imgs[1] != NULL)
         printf("Auto-rotation...\n");
-    if(save_inter && result_imgs[1] != NULL)
+    if (save_inter && result_imgs[1] != NULL)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "2.1-auto_rotate.png");
         save_image(&img, tmppath);
     }
 
-    if(verbose)
+    if (verbose)
     {
         printf("Detecting all squares...\n");
         printf("Getting the grid square...\n");
     }
     squares(&img, &lines_len, &real_lines, &sq, &gs, &result_imgs);
-    if(save_inter)
+    if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "2.2-all_squares.png");
         save_image(result_imgs[2], tmppath);
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "2.3-main_grid_detection.png");
         save_image(&img, tmppath);
     }
 
-    if(verbose)
+    if (verbose)
         printf("Correcting perspective...\n");
-    int points[8] = { gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
-        gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y };
+    int points[8] = {gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
+                     gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y};
     correct_perspective(&img, points);
-    if(save_inter)
+    if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "2.4-corrected_perspective.png");
         save_image(&img, tmppath);
     }
@@ -210,22 +214,83 @@ void img_args(int argc, char **argv)
     free(sq);
 
     // - - - - - - - - - - POST GRID PROCESSING - - - - - - - - - -
+    Image **cells = malloc(81 * sizeof(Image *));
+    Image *tmp;
+    if (verbose)
+        printf("Extracting 81 cells...\n");
+    get_cells(&img_before_canny, cells);
 
-    
+    if (verbose)
+    {
+        printf("Processing cells...\n");
+        printf("Cells trimming...\n");
+        printf("Resizing each cells...\n");
+    }
+    tmppath[n + 1] = '\0';
+    strcat(tmppath, "3.0-00.png");
+    for (unsigned char i = 0; i < 81; i++)
+    {
+        if (i < 10)
+        {
+            tmppath[n + 5] = '0';
+            tmppath[n + 6] = i + '0';
+        }
+        else
+        {
+            tmppath[n + 5] = i / 10 + '0';
+            tmppath[n + 6] = i % 10 + '0';
+        }
+        post_processing(cells[i]);
+        tmp = get_number_in_cell(cells[i]);
+        free(cells[i]);
+        cells[i] = tmp;
+        cells[i] = resize_28(cells[i]);
+        if (save_inter)
+            save_image(cells[i], tmppath);
+    }
+    free_image(&img_before_canny);
 
     // - - - - - - - - - - NEURAL NETWORK - - - - - - - - - -
+    if (verbose)
+        printf("Predicting number on each cells...\n");
+    NeuralNetwork nn = new_nn();
+    load_weights(&nn, "Neural_Network/weights");
+    int **grid = load_result(cells, &nn);
+    free_nn(&nn);
+
+    for (unsigned char i = 0; i < 81; i++)
+    {
+        free_image(cells[i]);
+        free(cells[i]);
+    }
+    free(cells);
 
     // - - - - - - - - - - SOLVER - - - - - - - - - -
+    if (verbose)
+        printf("Solving grid...\n");
 
+    if (save_inter)
+    {
+        tmppath[n + 1] = '\0';
+        strcat(tmppath, "4.0-grid");
+        write_grid(grid, tmppath);
+        for (unsigned char i = 0; i < 9; i++)
+            free(grid[i]);
+        free(grid);
+        grid = load_grid(tmppath);
+        write_grid(solve(grid), strcat(tmppath, ".result"));
+    }
+    else
+        solve(grid);
+    for (unsigned char i = 0; i < 9; i++)
+        free(grid[i]);
+    free(grid);
     // - - - - - - - - - - SOLVED GRID GENERATION - - - - - - - - - -
 
-
-
-    
     // - - - - - - - - - - FINAL SAVE - - - - - - - - - -
-    if(save_inter)
+    if (save_inter)
     {
-        tmppath[n+1] = '\0';
+        tmppath[n + 1] = '\0';
         strcat(tmppath, "result.png");
         save_image(&img, tmppath);
     }

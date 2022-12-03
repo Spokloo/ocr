@@ -3,16 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char **load_result(Image **im, NeuralNetwork *nn)
+int **load_result(Image **im, NeuralNetwork *nn)
 {
     int ind = 0;
-    char **res = malloc(9 * sizeof(char *));
+    int **res = malloc(9 * sizeof(int *));
+    char *tmp;
     for (int i = 0; i < 9; i++)
     {
-        res[i] = malloc(9 * sizeof(char));
+        res[i] = malloc(9 * sizeof(int));
         for (int j = 0; j < 9; j++)
         {
-            res[i][j] = get_output(nn, image_to_int(im[ind]), 0);
+            tmp = image_to_int(im[ind]);
+            res[i][j] = get_output(nn, tmp, 0);
+            free(tmp);
             ind++;
         }
     }

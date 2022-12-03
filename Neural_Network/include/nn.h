@@ -60,7 +60,7 @@ double activate_function(double n);
 /*
  * Train nn from A to Z.
  */
-void train_neural_network(char *path);
+void train_neural_network(char *path, char *weights_path);
 
 /*
  * Test nn on an image.

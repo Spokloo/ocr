@@ -43,6 +43,8 @@ int **load_grid(char *filename)
                     {                               // char 46 is .
                         grid[y][x] = line[i] - '0'; // char '0' is 48
                     }
+                    else
+                        grid[y][x] = 0;
                     x++;
                 }
             }
@@ -303,7 +305,7 @@ int **solve(int **grid)
  * Function: write_grid
  * --------------------
  *
- * Write the solved grid in the filename.result file
+ * Write the solved grid in the filename file
  *
  * grid: the solved grid
  * filename: the file where the unsolved grid is
@@ -312,11 +314,7 @@ int **solve(int **grid)
 void write_grid(int **grid, char *filename)
 {
 
-    char result[strlen(filename) + 6];
-    char *extension = ".result";
-    strcpy(result, filename);
-
-    FILE *fp = fopen(strcat(result, extension), "w");
+    FILE *fp = fopen(filename, "w");
 
     for (int i = 0; i < 9; i++)
     {
