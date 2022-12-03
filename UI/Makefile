@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2` -Wall -Wextra -Werror -pedantic-errors -g
+CFLAGS = `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2` -Wall -Wextra -Werror -g
 LDLIBS = `pkg-config --libs gtk+-3.0`  `pkg-config --libs sdl2` -lSDL2_image -lm
 
 SRC_DIR = source

@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
     NeuralNetwork nn = new_nn();
 
-    load_weights(&nn);
+    //load_weights(&nn);
 
     if (strcmp(argv[1], "train") == 0)
     {
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    save_weights(&nn);
+    //save_weights(&nn);
 
     free_nn(&nn);
 

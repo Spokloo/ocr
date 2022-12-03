@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.40.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkApplicationWindow" id="org.gtk.gridokucr">
@@ -220,7 +220,7 @@ Solved Grid</property>
                     <property name="can-focus">False</property>
                     <property name="margin-start">10</property>
                     <property name="margin-end">10</property>
-                    <property name="icon-name">widget-gtk-fixed</property>
+                    <property name="icon-name">edit-copy</property>
                     <property name="icon_size">5</property>
                   </object>
                   <packing>
@@ -248,7 +248,7 @@ Solved Grid</property>
                     <property name="can-focus">False</property>
                     <property name="margin-start">10</property>
                     <property name="margin-end">10</property>
-                    <property name="icon-name">widget-gtk-layout</property>
+                    <property name="icon-name">view-fullscreen</property>
                     <property name="icon_size">5</property>
                   </object>
                   <packing>
@@ -412,6 +412,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                       <object class="GtkDrawingArea" id="draw_area_step2">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -510,6 +514,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                       <object class="GtkDrawingArea" id="draw_area_step3">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -704,6 +712,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                       <object class="GtkDrawingArea" id="draw_area_step4">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -860,6 +872,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                       <object class="GtkDrawingArea" id="draw_area_step5">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -970,6 +986,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                           <object class="GtkDrawingArea" id="draw_area_step6">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="margin-start">10</property>
+                            <property name="margin-end">10</property>
+                            <property name="margin-top">20</property>
+                            <property name="margin-bottom">20</property>
                           </object>
                         </child>
                       </object>
@@ -1078,6 +1098,10 @@ If the detection is not correct, &lt;span weight="bold"&gt;crop it accordingly&l
                       <object class="GtkDrawingArea">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1208,6 +1232,8 @@ If the detection is not correct, &lt;span weight="bold"&gt;crop it accordingly&l
                               <object class="GtkDrawingArea" id="draw_area_det_step8">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="margin-start">10</property>
+                                <property name="margin-end">10</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -1257,6 +1283,8 @@ If the detection is not correct, &lt;span weight="bold"&gt;crop it accordingly&l
                               <object class="GtkDrawingArea" id="draw_area_gen_step8">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="margin-start">10</property>
+                                <property name="margin-end">10</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -1545,6 +1573,10 @@ If the recognition is not correct, &lt;span weight="bold"&gt;place the correct d
                       <object class="GtkDrawingArea" id="draw_area_step9">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1650,6 +1682,10 @@ If the recognition is not correct, &lt;span weight="bold"&gt;place the correct d
                       <object class="GtkDrawingArea" id="draw_area_step10">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
