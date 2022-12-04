@@ -19,6 +19,8 @@
 #include "squares.h"
 #include "perspective.h"
 
+#include "images_post_grid.h"
+
 
 typedef struct hs {
     int **real_lines;
@@ -41,6 +43,7 @@ typedef struct step {
     int curr_img;
     int sub_step;
     HoughS **hough_param;
+    gboolean is_display;
 } Step;
 
 typedef struct progress {
@@ -91,6 +94,7 @@ void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step4(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step8(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 
 // Buttons
 void cancel_select(GtkButton *button, gpointer user_data);
