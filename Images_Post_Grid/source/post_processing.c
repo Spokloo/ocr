@@ -57,9 +57,9 @@ void post_processing(Image *cell)
         for (unsigned int y = 0; y < cell->height; y++)
         {
             if (cell->matrix[x][y].r >= t)
-                cell->matrix[x][y] = white;
-            else
                 cell->matrix[x][y] = black;
+            else
+                cell->matrix[x][y] = white;
         }
     }
 }

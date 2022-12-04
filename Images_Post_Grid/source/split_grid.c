@@ -73,7 +73,7 @@ Image *get_number_in_cell(Image *cell)
         {
             for (int y = y_min_prev; y <= y_max_prev; y++)
             {
-                if (cell->matrix[x][y].r == 0)
+                if (cell->matrix[x][y].r == 255)
                 {
                     if (y < y_min)
                     {
@@ -144,11 +144,11 @@ Image *get_number_in_cell(Image *cell)
     {
         Image *nb = get_sub_image(cell, 0, 0, 28, 28);
         free_image(cell);
-        Pixel white = {255, 255, 255};
+        Pixel black = {0, 0, 0};
         for (unsigned int x = 0; x < nb->width; x++)
         {
             for (unsigned int y = 0; y < nb->height; y++)
-                nb->matrix[x][y] = white;
+                nb->matrix[x][y] = black;
         }
         return nb;
     }

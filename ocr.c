@@ -3,6 +3,7 @@
 #include "image_processing.h"
 #include "images_post_grid.h"
 #include "nn.h"
+#include "rotate.h"
 #include "solver_fun.h"
 #include <err.h>
 #include <stdio.h>
@@ -16,14 +17,17 @@ void print_help()
            "[OPTIONS]\n");
 
     printf("\nOptions ocr :\n");
-    printf("    -o <path> : save the result into <path>\n");
+    printf("    -o <file_path> : save the result into <file_path>\n");
     printf("    -v : print details of process\n");
     printf("    -s <folder> : save all intermediate image into <folder>\n");
+    printf("    -w <file_path> : specify the weights file for neural network\n");
 
     printf("\nOptions nn :\n");
-    printf("    -train <folder> : train the neural network with images in "
+    printf("    train <folder> : train the neural network with images in "
            "<folder>\n");
-    printf("    -test <image_path> : predict the number in image\n\n");
+    printf("    test <image_path> : predict the number in image\n");
+    printf(
+        "    -w <file_path> : specify the weights file (for testing or training)\n\n");
 
     errx(1, "Wrong arguments.");
 }
@@ -32,10 +36,24 @@ void nn_args(int argc, char **argv)
 {
     if (argc == 2)
         print_help();
-    if (strcmp(argv[2], "train") == 0 && argc == 4)
-        train_neural_network(argv[3], "Neural_Network/weights");
-    else if (strcmp(argv[2], "test") == 0 && argc == 4)
-        test_neural_network(argv[3]);
+    if (strcmp(argv[2], "train") == 0 && argc >= 4)
+    {
+        if (argc < 5)
+            train_neural_network(argv[3], "Neural_Network/weights");
+        else if (strcmp(argv[4], "-w") == 0 && argc == 6)
+            train_neural_network(argv[3], argv[5]);
+        else
+            print_help();
+    }
+    else if (strcmp(argv[2], "test") == 0 && argc >= 4)
+    {
+        if (argc < 5)
+            test_neural_network(argv[3], "Neural_Network/weights");
+        else if (strcmp(argv[4], "-w") == 0 && argc == 6)
+            test_neural_network(argv[3], argv[5]);
+        else
+            print_help();
+    }
     else
         print_help();
 }
@@ -44,10 +62,11 @@ void img_args(int argc, char **argv)
 {
     // parse arguments
     int opt;
-    char out = 0, save_inter = 0, verbose = 0;
-    char *out_path = NULL, *inter_path = NULL;
+    char out = 0, save_inter = 0, verbose = 0, weights = 0;
+    ;
+    char *out_path = NULL, *inter_path = NULL, *weights_path = NULL;
     char *img_path = argv[1];
-    while ((opt = getopt(argc, argv, "o:vs:")) != -1)
+    while ((opt = getopt(argc, argv, "o:vs:w:")) != -1)
     {
         switch (opt)
         {
@@ -61,6 +80,14 @@ void img_args(int argc, char **argv)
         case 's':
             save_inter = 1;
             inter_path = optarg;
+            FILE *f = fopen(inter_path, "r");
+            if (f == NULL)
+                print_help();
+            fclose(f);
+            break;
+        case 'w':
+            weights = 1;
+            weights_path = optarg;
             break;
         case '?':
             print_help();
@@ -87,56 +114,62 @@ void img_args(int argc, char **argv)
     else
         filter_size = img.height / 300;
 
-    grayscale(&img);
     if (verbose)
         printf("Grayscale image...\n");
+    grayscale(&img);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "1.0-grayscale.png");
         save_image(&img, tmppath);
     }
-    normalize(&img);
+
     if (verbose)
         printf("Normalize image...\n");
+    normalize(&img);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "1.1-normalize.png");
         save_image(&img, tmppath);
     }
-    gaussian_blur(&img, filter_size);
+
     if (verbose)
         printf("Gaussian blur image...\n");
+    gaussian_blur(&img, filter_size);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "1.2-gaussian_blur.png");
         save_image(&img, tmppath);
     }
-    dilation(&img, filter_size);
+
     if (verbose)
         printf("Dilation image...\n");
+    dilation(&img, filter_size);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "1.3-dilation.png");
         save_image(&img, tmppath);
     }
-    erosion(&img, filter_size);
+
     if (verbose)
         printf("Erosion image...\n");
+    erosion(&img, filter_size);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "1.4-dilation_erosion.png");
         save_image(&img, tmppath);
     }
+
     Image img_before_canny;
     copy_image(&img, &img_before_canny);
-    canny(&img);
+
     if (verbose)
         printf("Canny image...\n");
+    canny(&img);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -168,14 +201,19 @@ void img_args(int argc, char **argv)
         save_image(&img, tmppath);
     }
 
-    auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
-    if (verbose && result_imgs[1] != NULL)
-        printf("Auto-rotation...\n");
-    if (save_inter && result_imgs[1] != NULL)
+    int angle =
+        auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
+    if (result_imgs[1] != NULL)
     {
-        tmppath[n + 1] = '\0';
-        strcat(tmppath, "2.1-auto_rotate.png");
-        save_image(&img, tmppath);
+        rotate(&img_before_canny, -angle);
+        if (verbose)
+            printf("Auto-rotation...\n");
+        if (save_inter)
+        {
+            tmppath[n + 1] = '\0';
+            strcat(tmppath, "2.1-auto_rotate.png");
+            save_image(&img, tmppath);
+        }
     }
 
     if (verbose)
@@ -194,16 +232,17 @@ void img_args(int argc, char **argv)
         save_image(&img, tmppath);
     }
 
+    free_image(&img);
     if (verbose)
         printf("Correcting perspective...\n");
     int points[8] = {gs->p1.x, gs->p1.y, gs->p2.x, gs->p2.y,
                      gs->p3.x, gs->p3.y, gs->p4.x, gs->p4.y};
-    correct_perspective(&img, points);
+    correct_perspective(&img_before_canny, points);
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
         strcat(tmppath, "2.4-corrected_perspective.png");
-        save_image(&img, tmppath);
+        save_image(&img_before_canny, tmppath);
     }
 
     for (unsigned int i = 0; i < lines_len; i++)
@@ -261,7 +300,10 @@ void img_args(int argc, char **argv)
     if (verbose)
         printf("Predicting number on each cells...\n");
     NeuralNetwork nn = new_nn();
-    load_weights(&nn, "Neural_Network/weights");
+    if (weights)
+        load_weights(&nn, weights_path);
+    else
+        load_weights(&nn, "Neural_Network/weights");
     int **grid = load_result(cells, &nn);
     free_nn(&nn);
 
@@ -286,7 +328,7 @@ void img_args(int argc, char **argv)
         free(grid);
         grid = load_grid(tmppath);
         grid = solve(grid);
-        if(grid == NULL)
+        if (grid == NULL)
             errx(1, "Grid isn't solvable.");
         write_grid(grid, strcat(tmppath, ".result"));
     }
@@ -299,7 +341,7 @@ void img_args(int argc, char **argv)
         free(grid);
         grid = load_grid(tmp);
         grid = solve(grid);
-        if(grid == NULL)
+        if (grid == NULL)
             errx(1, "Grid isn't solvable.");
         write_grid(grid, strcat(tmp, ".result"));
     }
@@ -321,16 +363,15 @@ void img_args(int argc, char **argv)
         construct_grid(tmppath2, "Solved_Grid_Gen/images/blank_grid.png",
                        tmppath);
     }
-    else if(out)
+    else if (out)
         construct_grid("grid", "Solved_Grid_Gen/images/blank_grid.png",
                        out_path);
     else
         construct_grid("grid", "Solved_Grid_Gen/images/blank_grid.png",
                        "result.png");
-    
+
     remove("grid");
     remove("grid.result");
-    free_image(&img);
 }
 
 int main(int argc, char **argv)
