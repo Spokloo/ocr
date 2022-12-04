@@ -78,56 +78,92 @@ UI * init_ui(GtkBuilder *builder)
 
     /* STEP 6 */
     Step *step6 = malloc(sizeof(Step));
-    step6->buttons = malloc(sizeof(GtkButton *));
+    step6->buttons = malloc(sizeof(GtkButton *) * 4);
     step6->draw_areas = malloc(sizeof(GtkDrawingArea *));
-    step6->event_box = malloc(sizeof(GtkEventBox *));
-
-    step6->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step6"));
-    step6->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_crop_step6"));
-    step6->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step6"));
-    step6->event_box = GTK_EVENT_BOX(gtk_builder_get_object(builder, "crop_box_step6"));
+    step6->labels = malloc(sizeof(GtkLabel *));
+    step6->images = malloc(sizeof(Image *) * 5);
+    for (int i = 0; i < 5; i++)
+        step6->images[i] = malloc(sizeof(Image));
+    step6->hough_param = malloc(sizeof(HoughS *) * 4);
+    for (int j = 0; j < 4; j++)
+    {
+        step6->hough_param[j] = malloc(sizeof(HoughS));
+        step6->hough_param[j]->result_imgs = malloc(sizeof(Image *) * 5);
+        for (int i = 0; i < 5; i++)
+            step6->hough_param[j]->result_imgs[i] = NULL;
+    }
     
+    step6->curr_img = 0;
+    step6->sub_step = 0;
+    step6->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step6"));
+    step6->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "previous_step6"));
+    step6->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "next_step6"));
+    step6->buttons[2] = GTK_BUTTON(gtk_builder_get_object(builder, "last_step6"));
+    step6->buttons[3] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_detect_step6"));
+    step6->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step6"));
+    step6->labels[0] = GTK_LABEL(gtk_builder_get_object(builder, "sub_step_name_step6"));
+    for (int i = 0; i < 4; i++)
+    {
+        step6->hough_param[i]->real_lines = NULL;
+        step6->hough_param[i]->lines_len = 0;
+        step6->hough_param[i]->sq = NULL;
+        step6->hough_param[i]->gs = NULL;
+    }
+
     /* STEP 7 */
     Step *step7 = malloc(sizeof(Step));
     step7->buttons = malloc(sizeof(GtkButton *));
     step7->draw_areas = malloc(sizeof(GtkDrawingArea *));
+    step7->event_box = malloc(sizeof(GtkEventBox *));
+    step7->images = malloc(sizeof(Image *));
+    step7->images[0] = malloc(sizeof(Image));
 
     step7->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step7"));
-    step7->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "digit_recog_step7"));
+    step7->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_crop_step7"));
     step7->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step7"));
-
+    step7->event_box = GTK_EVENT_BOX(gtk_builder_get_object(builder, "crop_box_step7"));
+    
     /* STEP 8 */
     Step *step8 = malloc(sizeof(Step));
-    step8->buttons = malloc(sizeof(GtkButton *) * 2);
-    step8->draw_areas = malloc(sizeof(GtkDrawingArea *) * 2);
-    step8->entries = malloc(sizeof(GtkEntry *) * 3);
+    step8->buttons = malloc(sizeof(GtkButton *));
+    step8->draw_areas = malloc(sizeof(GtkDrawingArea *));
 
     step8->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step8"));
-    step8->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "place_digit_step8"));
-    step8->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "comfirm_recog_step8"));
-    step8->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_det_step8"));
-    step8->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_gen_step8"));
-    step8->entries[0] = GTK_ENTRY(gtk_builder_get_object(builder, "line_entry_step8"));
-    step8->entries[1] = GTK_ENTRY(gtk_builder_get_object(builder, "column_entry_step8"));
-    step8->entries[2] = GTK_ENTRY(gtk_builder_get_object(builder, "digit_entry_step8"));
+    step8->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "digit_recog_step8"));
+    step8->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step8"));
 
     /* STEP 9 */
     Step *step9 = malloc(sizeof(Step));
-    step9->buttons = malloc(sizeof(GtkButton *));
-    step9->draw_areas = malloc(sizeof(GtkDrawingArea *));
+    step9->buttons = malloc(sizeof(GtkButton *) * 2);
+    step9->draw_areas = malloc(sizeof(GtkDrawingArea *) * 2);
+    step9->entries = malloc(sizeof(GtkEntry *) * 3);
 
     step9->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step9"));
-    step9->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "launch_solver_step9"));
-    step9->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step9"));
-   
+    step9->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "place_digit_step9"));
+    step9->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "comfirm_recog_step9"));
+    step9->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_det_step9"));
+    step9->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_gen_step9"));
+    step9->entries[0] = GTK_ENTRY(gtk_builder_get_object(builder, "line_entry_step9"));
+    step9->entries[1] = GTK_ENTRY(gtk_builder_get_object(builder, "column_entry_step9"));
+    step9->entries[2] = GTK_ENTRY(gtk_builder_get_object(builder, "digit_entry_step9"));
+
     /* STEP 10 */
     Step *step10 = malloc(sizeof(Step));
     step10->buttons = malloc(sizeof(GtkButton *));
     step10->draw_areas = malloc(sizeof(GtkDrawingArea *));
 
     step10->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step10"));
-    step10->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "save_solved_grid_step10"));
+    step10->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "launch_solver_step10"));
     step10->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step10"));
+   
+    /* STEP 11 */
+    Step *step11 = malloc(sizeof(Step));
+    step11->buttons = malloc(sizeof(GtkButton *));
+    step11->draw_areas = malloc(sizeof(GtkDrawingArea *));
+
+    step11->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step11"));
+    step11->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "save_solved_grid_step11"));
+    step11->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step11"));
 
     ui->steps[0] = step1;
     ui->steps[1] = step2;
@@ -139,6 +175,7 @@ UI * init_ui(GtkBuilder *builder)
     ui->steps[7] = step8;
     ui->steps[8] = step9;
     ui->steps[9] = step10;
+    ui->steps[10] = step11;
 
     /* HEADER BAR */
     ui->header = malloc(sizeof(Header *));
@@ -181,10 +218,10 @@ void connect_signals(UI *ui)
     g_signal_connect(ui->steps[1]->buttons[1], "clicked", G_CALLBACK(confirm_select), ui);
 
     g_signal_connect(ui->steps[2]->draw_areas[0], "draw", G_CALLBACK(on_draw_step3), ui);
-    g_signal_connect(ui->steps[2]->buttons[0], "clicked", G_CALLBACK(previous_sub_step), ui);
-    g_signal_connect(ui->steps[2]->buttons[1], "clicked", G_CALLBACK(next_sub_step), ui);
-    g_signal_connect(ui->steps[2]->buttons[2], "clicked", G_CALLBACK(last_step), ui);
-    g_signal_connect(ui->steps[2]->buttons[3], "clicked", G_CALLBACK(confirm_sub_steps), ui);
+    g_signal_connect(ui->steps[2]->buttons[0], "clicked", G_CALLBACK(on_previous_step3), ui);
+    g_signal_connect(ui->steps[2]->buttons[1], "clicked", G_CALLBACK(on_next_step3), ui);
+    g_signal_connect(ui->steps[2]->buttons[2], "clicked", G_CALLBACK(on_skip_step3), ui);
+    g_signal_connect(ui->steps[2]->buttons[3], "clicked", G_CALLBACK(confirm_sub_steps2), ui);
 
     g_signal_connect(ui->steps[3]->draw_areas[0], "draw", G_CALLBACK(on_draw_step4), ui);
     g_signal_connect(ui->steps[3]->scales[0], "value-changed", G_CALLBACK(on_spin_value_changed), ui);
@@ -192,6 +229,13 @@ void connect_signals(UI *ui)
     g_signal_connect(ui->steps[3]->buttons[0], "clicked", G_CALLBACK(confirm_rotation), ui);
 
     g_signal_connect(ui->steps[4]->draw_areas[0], "draw", G_CALLBACK(on_draw_step5), ui);
+    g_signal_connect(ui->steps[4]->buttons[0], "clicked", G_CALLBACK(launch_grid_detect), ui);
+
+    g_signal_connect(ui->steps[5]->draw_areas[0], "draw", G_CALLBACK(on_draw_step6), ui);
+    g_signal_connect(ui->steps[5]->buttons[0], "clicked", G_CALLBACK(on_previous_step6), ui);
+    g_signal_connect(ui->steps[5]->buttons[1], "clicked", G_CALLBACK(on_next_step6), ui);
+    g_signal_connect(ui->steps[5]->buttons[2], "clicked", G_CALLBACK(on_skip_step6), ui);
+    g_signal_connect(ui->steps[5]->buttons[3], "clicked", G_CALLBACK(confirm_sub_steps5), ui);
 }
 
 void set_step(UI *ui, int num)
@@ -204,6 +248,43 @@ void display_image(GtkDrawingArea *draw_area, Image *img, UI *ui, int step, int 
 {
     copy_image(img, ui->steps[step]->images[image]);
     gtk_widget_queue_draw(GTK_WIDGET(draw_area));
+}
+
+void copy_hough_param(UI *ui, int from, int to)
+{
+    ui->steps[5]->hough_param[to]->lines_len = ui->steps[5]->hough_param[from]->lines_len;
+
+    if (ui->steps[5]->hough_param[from]->sq != NULL) 
+    {
+        ui->steps[5]->hough_param[to]->sq = ui->steps[5]->hough_param[from]->sq;
+    }
+
+    if (ui->steps[5]->hough_param[from]->gs != NULL)
+    {
+        ui->steps[5]->hough_param[to]->gs = ui->steps[5]->hough_param[from]->gs;
+    }
+
+    ui->steps[5]->hough_param[to]->real_lines = malloc(sizeof(int *) * 
+            ui->steps[5]->hough_param[to]->lines_len);
+    for (unsigned int i = 0; i < ui->steps[5]->hough_param[from]->lines_len; i++)
+    {
+        ui->steps[5]->hough_param[to]->real_lines[i] = malloc(sizeof(int) * 3);
+        for (int j = 0; j < 3; j++)
+        {
+            ui->steps[5]->hough_param[to]->real_lines[i][j]= 
+                ui->steps[5]->hough_param[from]->real_lines[i][j];
+        }
+    }
+
+    for (int i = 0; i < 5; i++)
+    {
+        if (ui->steps[5]->hough_param[from]->result_imgs[i] != NULL)
+        {
+            ui->steps[5]->hough_param[to]->result_imgs[i] = malloc(sizeof(Image));
+            copy_image(ui->steps[5]->hough_param[from]->result_imgs[i],
+                ui->steps[5]->hough_param[to]->result_imgs[i]);
+        }
+    }
 }
 
 GdkPixbuf * Image_to_pixbuf(Image *img)
@@ -265,33 +346,48 @@ void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int im
     g_object_unref(pixbuf);
 }
 
-void set_sub_step_label(UI *ui)
+void set_sub_step_label(UI *ui, int step)
 {
-    switch (ui->steps[2]->sub_step)
+    switch (ui->steps[step]->sub_step)
     {
         case 0:
         {
-            gtk_label_set_text(ui->steps[2]->labels[0], "Original image");
+            if (step == 5)
+                gtk_label_set_text(ui->steps[5]->labels[0], "Pre-processed image");
+            else
+                gtk_label_set_text(ui->steps[2]->labels[0], "Original image");
             break;
         } 
         case 1:
         {
-            gtk_label_set_text(ui->steps[2]->labels[0], "Applied gray scale");
+            if (step == 5)
+                gtk_label_set_text(ui->steps[5]->labels[0], "Applied Hough transform");
+            else
+                gtk_label_set_text(ui->steps[2]->labels[0], "Applied gray scale");
             break;
         }
         case 2:
         {
-            gtk_label_set_text(ui->steps[2]->labels[0], "Applied normalization");
+            if (step == 5)
+                gtk_label_set_text(ui->steps[5]->labels[0], "Applied auto-rotation");
+            else
+                gtk_label_set_text(ui->steps[2]->labels[0], "Applied normalization");
             break;
         }
         case 3:
         {
-            gtk_label_set_text(ui->steps[2]->labels[0], "Applied Gaussian blur");
+            if (step == 5)
+                gtk_label_set_text(ui->steps[5]->labels[0], "Applied square detection");
+            else
+                gtk_label_set_text(ui->steps[2]->labels[0], "Applied Gaussian blur");
             break;
         }
         case 4:
         {
-            gtk_label_set_text(ui->steps[2]->labels[0], "Applied dilation");
+            if (step == 5)
+                gtk_label_set_text(ui->steps[5]->labels[0], "Applied perspective correction");
+            else
+                gtk_label_set_text(ui->steps[2]->labels[0], "Applied dilation");
             break;
         }
         case 5:
@@ -318,6 +414,245 @@ void rotate_pixbuf(GtkWidget *widget, UI *ui, gboolean is_scale)
     gtk_widget_queue_draw(GTK_WIDGET(ui->steps[3]->draw_areas[0]));
 }
 
+void previous_sub_step(GtkButton *button, UI *ui, int step)
+{
+    --ui->steps[step]->sub_step;
+    g_print("Clicked previous: curr sub step: %d\n", ui->steps[2]->sub_step);
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[1]), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[2]), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[3]), FALSE);
+
+    if (ui->steps[step]->sub_step >= 0)
+    {
+        if (ui->steps[step]->sub_step == 0)
+            gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+        --ui->steps[step]->curr_img;
+        gtk_widget_queue_draw(GTK_WIDGET(ui->steps[step]->draw_areas[0]));
+    } else {
+        ui->steps[step]->sub_step = 0;
+    }
+
+    set_sub_step_label(ui, step);
+    
+}
+
+
+void next_sub_step(GtkButton *button, UI *ui, int step)
+{
+    ++ui->steps[step]->sub_step;
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[0]), TRUE);
+    g_print("Clicked: curr sub step: %d\n", ui->steps[step]->sub_step);
+
+    if (step == 2)
+    {
+        switch (ui->steps[2]->sub_step)
+        {
+            case 1:
+            {
+                Image gray_scale;
+                copy_image(ui->steps[2]->images[0], &gray_scale);
+                ++ui->steps[2]->curr_img;
+
+                grayscale(&gray_scale);
+                copy_image(&gray_scale, ui->steps[2]->images[1]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying grayscale!\n");
+                break;
+            }
+
+            case 2:
+            {
+                Image normal;
+                copy_image(ui->steps[2]->images[1], &normal);
+                ++ui->steps[2]->curr_img;
+
+                normalize(&normal);
+                copy_image(&normal, ui->steps[2]->images[2]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying normalize!\n");
+                break;
+            }
+            case 3:
+            {
+                Image blur;
+                copy_image(ui->steps[2]->images[2], &blur);
+                ++ui->steps[2]->curr_img;
+                
+                unsigned char filter_size = blur.width > blur.height ? blur.width /300 : blur.height /300;
+                gaussian_blur(&blur, filter_size);
+                copy_image(&blur, ui->steps[2]->images[3]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying gaussian blur!\n");
+                break;
+            }
+            case 4:
+            {
+                Image dilat;
+                copy_image(ui->steps[2]->images[3], &dilat);
+                ++ui->steps[2]->curr_img;
+                
+                unsigned char filter_size = dilat.width > dilat.height ? dilat.width /300 : dilat.height /300;
+                dilation(&dilat, filter_size);
+                copy_image(&dilat, ui->steps[2]->images[4]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying dilation!\n");
+                break;
+            }
+            case 5:
+            {
+                Image eros;
+                copy_image(ui->steps[2]->images[4], &eros);
+                ++ui->steps[2]->curr_img;
+                
+                unsigned char filter_size = eros.width > eros.height ? eros.width /300 : eros.height /300;
+                erosion(&eros, filter_size);
+                copy_image(&eros, ui->steps[2]->images[5]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying erosion!\n");
+                break;
+            }
+            case 6:
+            {
+                Image can;
+                copy_image(ui->steps[2]->images[5], &can);
+                ++ui->steps[2]->curr_img;
+                
+                canny(&can);
+                copy_image(&can, ui->steps[2]->images[6]);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
+                g_print("Displaying canny!\n");
+
+                gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+                gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), FALSE);
+                gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[3]), TRUE);
+                break;
+            }
+            default:
+            {
+                ui->steps[2]->sub_step = 7; 
+            }
+        }
+
+        set_sub_step_label(ui, 2);
+
+    } else {
+
+        switch (ui->steps[5]->sub_step)
+        {
+            case 1:
+            {
+                Image hough;
+                copy_image(ui->steps[5]->images[0], &hough);
+                ++ui->steps[5]->curr_img;
+                
+                hough_transform(&hough, &ui->steps[5]->hough_param[0]->lines_len, &ui->steps[5]->hough_param[0]->real_lines);
+                ui->steps[5]->hough_param[0]->result_imgs[0] = &hough;
+
+                //copy_image(&hough, ui->steps[5]->hough_param->result_imgs[0]);
+                copy_image(&hough, ui->steps[5]->images[1]);
+                copy_hough_param(ui, 0, 1);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
+                g_print("Displaying hough transform!\n");
+                break;
+            }
+            case 2:
+            {
+                Image auto_rot;
+                copy_image(ui->steps[5]->images[1], &auto_rot);
+                ++ui->steps[5]->curr_img;
+
+                Image tmp;
+                copy_image(ui->steps[5]->images[0], &tmp);
+                
+                auto_rotation(&auto_rot, ui->steps[5]->images[0], &ui->steps[5]->hough_param[1]->lines_len,
+                        &ui->steps[5]->hough_param[1]->real_lines, &ui->steps[5]->hough_param[1]->result_imgs);
+
+                copy_image(&tmp, ui->steps[5]->images[0]);
+                copy_image(&auto_rot, ui->steps[5]->images[2]);
+                copy_hough_param(ui, 1, 2);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
+                g_print("Displaying auto_rotation!\n");
+                break;
+            }
+            case 3:
+            {
+                Image squ;
+                copy_image(ui->steps[5]->images[2], &squ);
+                ++ui->steps[5]->curr_img;
+                
+                squares(&squ, &ui->steps[5]->hough_param[2]->lines_len, &ui->steps[5]->hough_param[2]->real_lines,
+                        &ui->steps[5]->hough_param[2]->sq, &ui->steps[5]->hough_param[2]->gs, &ui->steps[5]->hough_param[2]->result_imgs);
+                copy_image(&squ, ui->steps[5]->images[3]);
+                copy_hough_param(ui, 2, 3);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
+                g_print("Displaying square detection!\n");
+                break;
+            }
+            case 4:
+            {
+                Image perspect;
+                copy_image(ui->steps[5]->images[3], &perspect);
+                ++ui->steps[5]->curr_img;
+                
+                perspective(&perspect, &ui->steps[5]->hough_param[3]->gs, &ui->steps[5]->hough_param[3]->result_imgs);
+                copy_image(&perspect, ui->steps[5]->images[4]);
+
+                gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+                gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[2]), FALSE);
+                gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[3]), TRUE);
+
+                gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
+                g_print("Displaying perspective!\n");
+                break;
+            }
+            default:
+            {
+                ui->steps[5]->sub_step = 5; 
+            }
+        }
+        set_sub_step_label(ui, 5);
+    }
+
+
+}
+
+void last_step(GtkButton *button, UI *ui, int step)
+{
+    for (;ui->steps[step]->sub_step < (step == 5 ? 4 : 6);)
+        next_sub_step(ui->steps[step]->buttons[1], ui, step);
+
+    gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+}
+
+void confirm_sub_steps2(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    set_step(ui, 3);
+    copy_image(ui->steps[2]->images[ui->steps[2]->curr_img], ui->steps[3]->images[0]);
+    copy_image(ui->steps[2]->images[ui->steps[2]->curr_img], ui->steps[3]->images[1]);
+
+    gtk_button_get_label(button); // prevent unused param
+}
+
+void confirm_sub_steps5(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    set_step(ui, 6);
+    copy_image(ui->steps[5]->images[3], ui->steps[6]->images[0]);
+
+    gtk_button_get_label(button); // prevent unused param
+}
 
 ////////////
 
@@ -364,7 +699,7 @@ void confirm_select(GtkButton *button, gpointer user_data)
     gtk_button_get_label(button); // prevent unused param
     set_step(ui, 2);
     display_image(ui->steps[2]->draw_areas[0], ui->steps[1]->images[0], ui, 2, 0);
-    set_sub_step_label(ui);
+    set_sub_step_label(ui, 2);
 }
 
 void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
@@ -375,155 +710,18 @@ void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
 
 
 /* STEP 3 */
-void previous_sub_step(GtkButton *button, gpointer user_data)
+
+void on_previous_step3(GtkButton *button, gpointer user_data)
 {
-    UI *ui = user_data;
-    --ui->steps[2]->sub_step;
-    g_print("Clicked previous: curr sub step: %d\n", ui->steps[2]->sub_step);
-    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[1]), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[3]), FALSE);
-
-    if (ui->steps[2]->sub_step >= 0)
-    {
-        if (ui->steps[2]->sub_step == 0)
-            gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-        --ui->steps[2]->curr_img;
-        gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-    } else {
-        ui->steps[2]->sub_step = 0;
-    }
-
-    set_sub_step_label(ui);
-    
+    previous_sub_step(button, user_data, 2);
 }
-
-
-void next_sub_step(GtkButton *button, gpointer user_data)
+void on_next_step3(GtkButton *button, gpointer user_data)
 {
-    UI *ui = user_data;
-    ++ui->steps[2]->sub_step;
-    gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[0]), TRUE);
-    g_print("Clicked: curr sub step: %d\n", ui->steps[2]->sub_step);
-
-    switch (ui->steps[2]->sub_step)
-    {
-        case 1:
-        {
-            Image gray_scale;
-            copy_image(ui->steps[2]->images[0], &gray_scale);
-            ++ui->steps[2]->curr_img;
-
-            grayscale(&gray_scale);
-            copy_image(&gray_scale, ui->steps[2]->images[1]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying grayscale!\n");
-            break;
-        }
-
-        case 2:
-        {
-            Image normal;
-            copy_image(ui->steps[2]->images[1], &normal);
-            ++ui->steps[2]->curr_img;
-
-            normalize(&normal);
-            copy_image(&normal, ui->steps[2]->images[2]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying normalize!\n");
-            break;
-        }
-        case 3:
-        {
-            Image blur;
-            copy_image(ui->steps[2]->images[2], &blur);
-            ++ui->steps[2]->curr_img;
-            
-            unsigned char filter_size = blur.width > blur.height ? blur.width /300 : blur.height /300;
-            gaussian_blur(&blur, filter_size);
-            copy_image(&blur, ui->steps[2]->images[3]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying gaussian blur!\n");
-            break;
-        }
-        case 4:
-        {
-            Image dilat;
-            copy_image(ui->steps[2]->images[3], &dilat);
-            ++ui->steps[2]->curr_img;
-            
-            unsigned char filter_size = dilat.width > dilat.height ? dilat.width /300 : dilat.height /300;
-            dilation(&dilat, filter_size);
-            copy_image(&dilat, ui->steps[2]->images[4]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying dilation!\n");
-            break;
-        }
-        case 5:
-        {
-            Image eros;
-            copy_image(ui->steps[2]->images[4], &eros);
-            ++ui->steps[2]->curr_img;
-            
-            unsigned char filter_size = eros.width > eros.height ? eros.width /300 : eros.height /300;
-            erosion(&eros, filter_size);
-            copy_image(&eros, ui->steps[2]->images[5]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying erosion!\n");
-            break;
-        }
-        case 6:
-        {
-            Image can;
-            copy_image(ui->steps[2]->images[5], &can);
-            ++ui->steps[2]->curr_img;
-            
-            canny(&can);
-            copy_image(&can, ui->steps[2]->images[6]);
-
-            gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-            g_print("Displaying canny!\n");
-
-            gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-            gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), FALSE);
-            gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[3]), TRUE);
-            break;
-        }
-        default:
-        {
-            ui->steps[2]->sub_step = 7; 
-        }
-
-    }
-
-    set_sub_step_label(ui);
-
+    next_sub_step(button, user_data, 2);
 }
-
-void last_step(GtkButton *button, gpointer user_data)
+void on_skip_step3(GtkButton *button, gpointer user_data)
 {
-    UI *ui = user_data;
-
-    for (;ui->steps[2]->sub_step < 6;)
-        next_sub_step(ui->steps[2]->buttons[1], ui);
-
-    gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
-}
-
-void confirm_sub_steps(GtkButton *button, gpointer user_data)
-{
-    UI *ui = user_data;
-
-    set_step(ui, 3);
-    copy_image(ui->steps[2]->images[ui->steps[2]->curr_img], ui->steps[3]->images[0]);
-    copy_image(ui->steps[2]->images[ui->steps[2]->curr_img], ui->steps[3]->images[1]);
-
-    gtk_button_get_label(button); // prevent unused param
+    last_step(button, user_data, 2);
 }
 
 void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
@@ -570,6 +768,37 @@ void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
     draw_image(draw_area, cr, ui, 4, 0);
 }
 
+void launch_grid_detect(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    set_step(ui, 5);
+    copy_image(ui->steps[4]->images[0], ui->steps[5]->images[0]);
+
+    set_sub_step_label(ui, 5);
+    gtk_button_get_label(button);
+}
+
+
+/* STEP 6 */
+void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
+{
+    UI *ui = user_data;
+    draw_image(draw_area, cr, ui, 5, ui->steps[5]->curr_img);
+}
+
+void on_previous_step6(GtkButton *button, gpointer user_data)
+{
+    previous_sub_step(button, user_data, 5);
+}
+void on_next_step6(GtkButton *button, gpointer user_data)
+{
+    next_sub_step(button, user_data, 5);
+}
+void on_skip_step6(GtkButton *button, gpointer user_data)
+{
+    last_step(button, user_data, 5);
+}
 
 
 ////////////

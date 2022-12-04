@@ -3,15 +3,30 @@
 
 #include <gtk/gtk.h>
 
+#include "image.h"
+#include "image_tools.h"
+#include "rotate.h"
+
 #include "blur.h"
 #include "canny.h"
 #include "canny_tools.h"
 #include "grayscale.h"
 #include "morphological_ops.h"
 #include "normalize.h"
-#include "image.h"
-#include "image_tools.h"
-#include "rotate.h"
+
+#include "houghtransform.h"
+#include "auto_rotation.h"
+#include "squares.h"
+#include "perspective.h"
+
+
+typedef struct hs {
+    int **real_lines;
+    unsigned int lines_len;
+    Square *sq;
+    Square *gs;
+    Image **result_imgs;
+} HoughS;
 
 typedef struct step {
     GtkViewport *viewport;
@@ -25,6 +40,7 @@ typedef struct step {
     Image **images;
     int curr_img;
     int sub_step;
+    HoughS **hough_param;
 } Step;
 
 typedef struct progress {
@@ -42,7 +58,7 @@ typedef struct ui {
     GtkWindow *window;
     GtkStack *stack;
 
-    Step *steps[10];
+    Step *steps[11];
     Header *header;
     Progress *progress;
 
@@ -63,6 +79,9 @@ void connect_signals(UI *ui);
 void set_step(UI *ui, int num);
 void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img);
 void set_label_sub_step(UI *ui);
+void previous_sub_step(GtkButton *button, UI *ui, int step);
+void next_sub_step(GtkButton *button, UI *ui, int step);
+void last_step(GtkButton *button, UI *ui, int step);
 
 // CALLBACKS //
 
@@ -71,15 +90,21 @@ void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step4(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 
 // Buttons
 void cancel_select(GtkButton *button, gpointer user_data);
 void confirm_select(GtkButton *button, gpointer user_data);
-void previous_sub_step(GtkButton *button, gpointer user_data);
-void next_sub_step(GtkButton *button, gpointer user_data);
-void last_step(GtkButton *button, gpointer user_data);
-void confirm_sub_steps(GtkButton *button, gpointer user_data);
+void on_previous_step3(GtkButton *button, gpointer user_data);
+void on_next_step3(GtkButton *button, gpointer user_data);
+void on_skip_step3(GtkButton *button, gpointer user_data);
+void confirm_sub_steps2(GtkButton *button, gpointer user_data);
+void confirm_sub_steps5(GtkButton *button, gpointer user_data);
 void confirm_rotation(GtkButton *button, gpointer user_data);
+void on_previous_step6(GtkButton *button, gpointer user_data);
+void on_next_step6(GtkButton *button, gpointer user_data);
+void on_skip_step6(GtkButton *button, gpointer user_data);
+void launch_grid_detect(GtkButton *button, gpointer user_data);
 
 // Custom buttons
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);
