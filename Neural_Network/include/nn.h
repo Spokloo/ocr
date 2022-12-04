@@ -65,6 +65,6 @@ void train_neural_network(char *path, char *weights_path);
 /*
  * Test nn on an image.
  */
-void test_neural_network(char *path);
+void test_neural_network(char *path, char *weights);
 
 #endif

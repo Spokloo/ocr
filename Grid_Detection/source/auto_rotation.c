@@ -56,7 +56,7 @@ int get_rotated_angle(int **lines, unsigned int len, int theta)
     return angle;
 }
 
-void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***real_lines, Image ***result_imgs)
+int auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***real_lines, Image ***result_imgs)
 {
     // Auto rotating the image
     int theta = 180;
@@ -96,5 +96,6 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
     }
 
     free_image(copy_img);
+    return angle;
 }
 

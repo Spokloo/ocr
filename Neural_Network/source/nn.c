@@ -201,10 +201,10 @@ void train_neural_network(char *path, char *weights_path)
 /*
  * Test nn on an image.
  */
-void test_neural_network(char *path)
+void test_neural_network(char *path, char *weights)
 {
     NeuralNetwork nn = new_nn();
-    load_weights(&nn, "weights");
+    load_weights(&nn, weights);
     Image img = load_image(path);
     char *input = image_to_int(&img);
     printf("%d\n", get_output(&nn, input, 0));
