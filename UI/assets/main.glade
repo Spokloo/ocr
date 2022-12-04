@@ -2,8 +2,20 @@
 <!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="adjustment_scale_step4">
+    <property name="upper">360</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_spin_step4">
+    <property name="upper">360</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkApplicationWindow" id="org.gtk.gridokucr">
     <property name="can-focus">False</property>
+    <property name="default-width">850</property>
+    <property name="default-height">500</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -551,8 +563,10 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                         <child>
                           <object class="GtkButton" id="previous_step3">
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="halign">center</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -598,6 +612,7 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="halign">center</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -643,6 +658,7 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="halign">center</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -681,6 +697,51 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                             <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="confirm_filters_step3">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                            <property name="halign">center</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Confirm filters</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="icon-name">dialog-ok</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </object>
@@ -741,7 +802,6 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">center</property>
                         <property name="margin-start">10</property>
                         <property name="margin-end">10</property>
                         <property name="margin-top">10</property>
@@ -749,7 +809,12 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                           <object class="GtkSpinButton" id="spin_step4">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <property name="margin-start">10</property>
                             <property name="margin-end">10</property>
+                            <property name="width-chars">3</property>
+                            <property name="input-purpose">number</property>
+                            <property name="adjustment">adjustment_spin_step4</property>
+                            <property name="numeric">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -773,10 +838,13 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="margin-start">10</property>
-                            <property name="round-digits">1</property>
+                            <property name="margin-end">10</property>
+                            <property name="adjustment">adjustment_scale_step4</property>
+                            <property name="round-digits">0</property>
+                            <property name="digits">0</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">2</property>
                           </packing>
@@ -799,7 +867,7 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                         <property name="margin-bottom">10</property>
                         <property name="layout-style">start</property>
                         <child>
-                          <object class="GtkButton" id="confirm__rotation_step4">
+                          <object class="GtkButton" id="confirm_rotation_step4">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
@@ -935,8 +1003,7 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="icon-name">widget-gtk-flowbox</property>
-                                    <property name="use-fallback">True</property>
+                                    <property name="icon-name">edit-copy</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>

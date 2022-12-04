@@ -10,6 +10,8 @@
 #include "morphological_ops.h"
 #include "normalize.h"
 #include "image.h"
+#include "image_tools.h"
+#include "rotate.h"
 
 typedef struct step {
     GtkViewport *viewport;
@@ -60,20 +62,29 @@ UI * init_ui(GtkBuilder *builder);
 void connect_signals(UI *ui);
 void set_step(UI *ui, int num);
 void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img);
+void set_label_sub_step(UI *ui);
 
 // CALLBACKS //
 
-/*
- * Callback for step1 file chooser button
- * @param: *button -> the file chooser button,
- *         *user_data -> pointer to the ui struct
- */
-void on_file_set(GtkFileChooserButton *button, gpointer user_data);
-void cancel_select(GtkButton *button, gpointer user_data);
-void confirm_select(GtkButton *button, gpointer user_data);
-void next_sub_step(GtkButton *button, gpointer user_data);
+// Drawing areas
 void on_draw_step2(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step3(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step4(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+
+// Buttons
+void cancel_select(GtkButton *button, gpointer user_data);
+void confirm_select(GtkButton *button, gpointer user_data);
+void previous_sub_step(GtkButton *button, gpointer user_data);
+void next_sub_step(GtkButton *button, gpointer user_data);
+void last_step(GtkButton *button, gpointer user_data);
+void confirm_sub_steps(GtkButton *button, gpointer user_data);
+void confirm_rotation(GtkButton *button, gpointer user_data);
+
+// Custom buttons
+void on_file_set(GtkFileChooserButton *button, gpointer user_data);
+void on_spin_value_changed(GtkSpinButton *spin, gpointer user_data);
+void on_scale_value_changed(GtkScale *scale, gpointer user_data);
 
 // MAIN //
 
