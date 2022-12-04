@@ -32,7 +32,10 @@ int main(int argc, char **argv)
     save_image(&img, "results/step_01a_hough_lines.jpeg");
 
     auto_rotation(&img, &copy_img, &lines_len, &real_lines, &result_imgs);
+    save_image(&img, "results/step_01b_auto_rotation.jpeg");
     squares(&img, &lines_len, &real_lines, &sq, &gs, &result_imgs);
+    save_image(result_imgs[2], "results/step_02_squares_detection.jpeg");
+    save_image(result_imgs[3], "results/step_03_main_grid_detection.jpeg");
     perspective(&img, &gs, &result_imgs);
     time_t end = time(NULL);
 
@@ -43,6 +46,8 @@ int main(int argc, char **argv)
     free(real_lines);
 
     free(sq);
+    free_image(result_imgs[2]);
+    free(result_imgs[2]);
     free(result_imgs);
     free_image(&img);
 }

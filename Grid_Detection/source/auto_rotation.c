@@ -61,7 +61,7 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
     // Auto rotating the image
     int theta = 180;
     int angle = get_rotated_angle(*real_lines, *lines_len, theta);
-    char *path = "results/step_01b_auto_rotation.jpeg";
+    //char *path = "results/step_01b_auto_rotation.jpeg";
 
     if (angle != 0)
     {
@@ -87,11 +87,11 @@ void auto_rotation(Image *img, Image *copy_img, unsigned int *lines_len, int ***
 
         // Storing image
         (*result_imgs)[1] = img;
-        save_image(copy_img, path);
+        //save_image(copy_img, path);
     }
     else
     {
-        remove(path);
+        //remove(path);
         (*result_imgs)[1] = NULL;
     }
 

@@ -7,9 +7,9 @@
  * Save all weights of a neural network in a file 'weights' in current
  * directory.
  */
-void save_weights(NeuralNetwork *nn)
+void save_weights(NeuralNetwork *nn, char *path)
 {
-    FILE *save = fopen("weights", "w");
+    FILE *save = fopen(path, "w");
     for (unsigned int i = 0; i < NB_HIDDEN; i++)
     {
         fprintf(save, "%f\n", nn->hidden[i]->value);
@@ -35,9 +35,9 @@ void save_weights(NeuralNetwork *nn)
  * Load all weights saved in a file 'weights' (if exists) to the neural network.
  * Throw an error if the 'weights' file is invalid.
  */
-void load_weights(NeuralNetwork *nn)
+void load_weights(NeuralNetwork *nn, char *path)
 {
-    FILE *data = fopen("weights", "r");
+    FILE *data = fopen(path, "r");
     if (data != NULL)
     {
         char *line = NULL;

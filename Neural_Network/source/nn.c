@@ -186,7 +186,7 @@ double activate_function(double n)
 /*
  * Train nn from A to Z.
  */
-void train_neural_network(char *path)
+void train_neural_network(char *path, char *weights_path)
 {
     NeuralNetwork nn = new_nn();
     NnDatas data = load_training_images(path);
@@ -194,7 +194,7 @@ void train_neural_network(char *path)
     train(&nn, &data);
     free_data(&data);
     printf("\e[?25h"); // reshow cursor
-    save_weights(&nn);
+    save_weights(&nn, weights_path);
     free_nn(&nn);
 }
 
@@ -204,7 +204,7 @@ void train_neural_network(char *path)
 void test_neural_network(char *path)
 {
     NeuralNetwork nn = new_nn();
-    load_weights(&nn);
+    load_weights(&nn, "weights");
     Image img = load_image(path);
     char *input = image_to_int(&img);
     printf("%d\n", get_output(&nn, input, 0));
