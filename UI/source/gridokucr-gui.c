@@ -596,7 +596,7 @@ int launch_gui(int argc, char **argv)
     UI *ui = init_ui(builder);
     connect_signals(ui);
 
-    gtk_header_bar_set_subtitle(ui->header->header_bar, "");
+    //gtk_header_bar_set_subtitle(ui->header->header_bar, "");
     gtk_widget_show(GTK_WIDGET(ui->window));
 
     gtk_main();
