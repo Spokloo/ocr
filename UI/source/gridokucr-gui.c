@@ -664,10 +664,10 @@ void last_step(GtkButton *button, UI *ui, int step)
 
 void Image_to_grid(UI *ui)
 {
-    //// POST PRE-PROCESSING ////
+    //// POST GRID DETECTION ////
     Image **cells = malloc(sizeof(Image *) * 81);
     Image *tmp;
-
+    
     get_cells(ui->steps[7]->images[0], cells);
 
     for (unsigned char i = 0; i < 81; i++)
@@ -695,7 +695,6 @@ void Image_to_grid(UI *ui)
     ui->steps[7]->grid = grid;
 
     print_grid(ui->steps[7]->grid);
-    g_print("Num : %d\n", ui->steps[7]->grid[0][1]);
 }
 
 ////////////
