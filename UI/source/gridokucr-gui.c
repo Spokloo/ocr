@@ -85,8 +85,8 @@ UI * init_ui(GtkBuilder *builder)
     step6->buttons = malloc(sizeof(GtkButton *) * 4);
     step6->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step6->labels = malloc(sizeof(GtkLabel *));
-    step6->images = malloc(sizeof(Image *) * 5);
-    for (int i = 0; i < 5; i++)
+    step6->images = malloc(sizeof(Image *) * 6);
+    for (int i = 0; i < 6; i++)
         step6->images[i] = malloc(sizeof(Image));
     step6->hough_param = malloc(sizeof(HoughS *) * 4);
     for (int j = 0; j < 4; j++)
@@ -433,7 +433,7 @@ void rotate_pixbuf(GtkWidget *widget, UI *ui, gboolean is_scale)
 void previous_sub_step(GtkButton *button, UI *ui, int step)
 {
     --ui->steps[step]->sub_step;
-    g_print("Clicked previous: curr sub step: %d\n", ui->steps[2]->sub_step);
+    g_print("Clicked previous: curr sub step: %d\n", ui->steps[step]->sub_step);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[1]), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[2]), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[3]), FALSE);
@@ -442,6 +442,8 @@ void previous_sub_step(GtkButton *button, UI *ui, int step)
     {
         if (ui->steps[step]->sub_step == 0)
             gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+        if (step == 5 && ui->steps[5]->curr_img == 5)
+            --ui->steps[5]->curr_img;
         --ui->steps[step]->curr_img;
         gtk_widget_queue_draw(GTK_WIDGET(ui->steps[step]->draw_areas[0]));
     } else {
@@ -592,7 +594,10 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
 
                 copy_image(ui->steps[2]->images[5], ui->steps[5]->images[4]);
                 if (ui->steps[5]->hough_param[1]->result_imgs[1] != NULL)
-                    rotate(ui->steps[5]->images[4], angle);
+                {
+                    g_print("Autorotate before canny");
+                    rotate(ui->steps[5]->images[4], -angle);
+                }
 
                 copy_image(&tmp, ui->steps[5]->images[0]);
                 copy_image(&auto_rot, ui->steps[5]->images[2]);
@@ -620,11 +625,13 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
             case 4:
             {
                 ++ui->steps[5]->curr_img;
+                copy_image(ui->steps[5]->images[4], ui->steps[5]->images[5]);
                 
                 Square gs = *ui->steps[5]->hough_param[3]->gs;
                 int points[8] = {gs.p1.x, gs.p1.y, gs.p2.x, gs.p2.y,
                     gs.p3.x, gs.p3.y, gs.p4.x, gs.p4.y};
-                correct_perspective(ui->steps[5]->images[4], points);
+                correct_perspective(ui->steps[5]->images[5], points);
+                ++ui->steps[5]->curr_img;
 
                 gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
                 gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[2]), FALSE);
@@ -801,7 +808,7 @@ void confirm_sub_steps5(GtkButton *button, gpointer user_data)
     UI *ui = user_data;
 
     set_step(ui, 7);
-    copy_image(ui->steps[5]->images[4], ui->steps[7]->images[0]);
+    copy_image(ui->steps[5]->images[5], ui->steps[7]->images[0]);
 
     gtk_button_get_label(button); // prevent unused param
 }
@@ -812,6 +819,7 @@ void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
     UI *ui = user_data;
     if (ui->steps[5]->is_display)
         draw_image(draw_area, cr, ui, 5, ui->steps[5]->curr_img);
+    g_print("Curr img : %d\n", ui->steps[5]->curr_img);
 }
 
 void on_previous_step6(GtkButton *button, gpointer user_data)
