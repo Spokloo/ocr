@@ -2,6 +2,8 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <locale.h>
 
 /*
  * Save all weights of a neural network in a file 'weights' in current
@@ -40,7 +42,9 @@ void load_weights(NeuralNetwork *nn, char *path)
     FILE *data = fopen(path, "r");
     if (data != NULL)
     {
-        char *line = NULL;
+        char *saved_locale;
+        saved_locale = setlocale(LC_NUMERIC, "C");
+        char *line = NULL, *tmp = NULL;
         size_t len;
 
         for (unsigned int i = 0; i < NB_HIDDEN; i++)
@@ -55,7 +59,7 @@ void load_weights(NeuralNetwork *nn, char *path)
             {
                 if (getline(&line, &len, data) == -1)
                     errx(1, "Invalid weights file");
-                nn->hidden[i]->inputweights[j] = strtod(line, NULL);
+                nn->hidden[i]->inputweights[j] = strtod(line, &tmp);
             }
         }
         for (unsigned int i = 0; i < NB_OUTPUT; i++)
@@ -77,6 +81,7 @@ void load_weights(NeuralNetwork *nn, char *path)
             errx(1, "Invalid weights file");
         free(line);
         fclose(data);
+        setlocale(LC_NUMERIC, saved_locale);
     }
     else
         printf("No weights file.");
