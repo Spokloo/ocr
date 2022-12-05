@@ -81,7 +81,7 @@ unsigned int get_examples_size(char *path)
     // of all sub-folders to train for min images of each numbers
     unsigned int n = strlen(path), nb = 0, min = 65535;
     char subpath[n + 3];
-    strncpy(subpath, path, n);
+    strcpy(subpath, path);
     subpath[n] = '/';
     n++;
 
@@ -103,7 +103,7 @@ void load_data(char *path, NnDatas *data)
     unsigned int n = strlen(path), sum = 0;
     unsigned long i_input = 0;
     char subpath[128];
-    strncpy(subpath, path, n);
+    strcpy(subpath, path);
     subpath[n] = '/';
     n++;
     subpath[n + 1] = '/';
@@ -196,14 +196,5 @@ NnDatas load_training_images(char *path)
         data.expected[i] = malloc(NB_OUTPUT * sizeof(char));
     }
     load_data(path, &data);
-    /*for (unsigned int i = 0; i < 10; i++)
-    {
-        for (unsigned int j = 0; j < 10; j++)
-        {
-            printf("%d  ", data.expected[i][j]);
-        }
-        printf("\n");
-    }*/
-    // free_data(input, expected);
     return data;
 }
