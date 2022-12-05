@@ -21,6 +21,12 @@
 
 #include "images_post_grid.h"
 
+#include "nn.h"
+
+#include "solver_fun.h"
+
+#include "grid_gen.h"
+
 
 typedef struct hs {
     int **real_lines;
@@ -44,6 +50,7 @@ typedef struct step {
     int sub_step;
     HoughS **hough_param;
     gboolean is_display;
+    int **grid;
 } Step;
 
 typedef struct progress {
@@ -109,6 +116,7 @@ void on_previous_step6(GtkButton *button, gpointer user_data);
 void on_next_step6(GtkButton *button, gpointer user_data);
 void on_skip_step6(GtkButton *button, gpointer user_data);
 void launch_grid_detect(GtkButton *button, gpointer user_data);
+void on_launch_digit_recog(GtkButton *button, gpointer user_data);
 
 // Custom buttons
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);

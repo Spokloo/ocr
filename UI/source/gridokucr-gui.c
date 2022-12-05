@@ -250,6 +250,7 @@ void connect_signals(UI *ui)
     g_signal_connect(ui->steps[5]->buttons[3], "clicked", G_CALLBACK(confirm_sub_steps5), ui);
 
     g_signal_connect(ui->steps[7]->draw_areas[0], "draw", G_CALLBACK(on_draw_step8), ui);
+    g_signal_connect(ui->steps[7]->buttons[0], "clicked", G_CALLBACK(on_launch_digit_recog), ui);
 }
 
 void set_step(UI *ui, int num)
@@ -425,7 +426,8 @@ void rotate_pixbuf(GtkWidget *widget, UI *ui, gboolean is_scale)
 
     copy_image(ui->steps[3]->images[1], ui->steps[3]->images[0]);
     rotate(ui->steps[3]->images[0], angle);
-    //copy_image(&tmp, ui->steps[3]->images[0]);
+    rotate(ui->steps[2]->images[5], angle);
+    copy_image(ui->steps[2]->images[5], ui->steps[3]->images[0]);
 
     gtk_widget_queue_draw(GTK_WIDGET(ui->steps[3]->draw_areas[0]));
 }
@@ -660,6 +662,41 @@ void last_step(GtkButton *button, UI *ui, int step)
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 }
 
+void Image_to_grid(UI *ui)
+{
+    //// POST PRE-PROCESSING ////
+    Image **cells = malloc(sizeof(Image *) * 81);
+    Image *tmp;
+
+    get_cells(ui->steps[7]->images[0], cells);
+
+    for (unsigned char i = 0; i < 81; i++)
+    {
+        post_processing(cells[i]);
+        tmp = get_number_in_cell(cells[i]);
+        free(cells[i]);
+        cells[i] = tmp;
+        cells[i] = resize_28(cells[i]);
+    }
+
+    //// DIGIT RECOGNITION /// /
+    NeuralNetwork nn = new_nn();
+    load_weights(&nn, "../Neural_Network/weights");
+    
+    int **grid = load_result(cells, &nn);
+    free_nn(&nn);
+    for (unsigned char i = 0; i < 81; i++)
+    {
+        free_image(cells[i]);
+        free(cells[i]);
+    }
+    free(cells);
+
+    ui->steps[7]->grid = grid;
+
+    print_grid(ui->steps[7]->grid);
+    g_print("Num : %d\n", ui->steps[7]->grid[0][1]);
+}
 
 ////////////
 
@@ -819,7 +856,6 @@ void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
     UI *ui = user_data;
     if (ui->steps[5]->is_display)
         draw_image(draw_area, cr, ui, 5, ui->steps[5]->curr_img);
-    g_print("Curr img : %d\n", ui->steps[5]->curr_img);
 }
 
 void on_previous_step6(GtkButton *button, gpointer user_data)
@@ -843,6 +879,14 @@ void on_draw_step8(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data)
     UI *ui = user_data;
     if (ui->steps[7]->is_display)
         draw_image(draw_area, cr, ui, 7, ui->steps[7]->curr_img);
+}
+
+void on_launch_digit_recog(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    Image_to_grid(ui);
+
+    gtk_button_get_label(button);
 }
 
 
