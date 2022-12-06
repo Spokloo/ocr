@@ -190,10 +190,10 @@ void train_neural_network(char *path, char *weights_path)
 {
     NeuralNetwork nn = new_nn();
     NnDatas data = load_training_images(path);
-    printf("\e[?25l"); // hide cursor
+    printf("\033[?25l"); // hide cursor
     train(&nn, &data);
     free_data(&data);
-    printf("\e[?25h"); // reshow cursor
+    printf("\033[?25h"); // reshow cursor
     save_weights(&nn, weights_path);
     free_nn(&nn);
 }

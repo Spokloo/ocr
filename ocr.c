@@ -98,11 +98,11 @@ void img_args(int argc, char **argv)
         print_help();
 
     char tmppath[128];
-    unsigned int n;
+    unsigned int n = 0;
     if (save_inter)
     {
         n = strlen(inter_path);
-        strncpy(tmppath, inter_path, n);
+        strcpy(tmppath, inter_path);
         tmppath[n] = '/';
     }
     Image img = load_image(img_path);
