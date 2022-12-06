@@ -37,8 +37,8 @@ UI * init_ui(GtkBuilder *builder)
     step3->buttons = malloc(sizeof(GtkButton *) * 4);
     step3->draw_areas = malloc(sizeof(GtkDrawingArea *));
     step3->labels = malloc(sizeof(GtkLabel *));
-    step3->images = malloc(sizeof(Image *) * 7);
-    for (int i = 0; i < 7; i++)
+    step3->images = malloc(sizeof(Image *) * 8);
+    for (int i = 0; i < 8; i++)
         step3->images[i] = malloc(sizeof(Image));
     
     step3->curr_img = 0;
@@ -292,6 +292,8 @@ void set_step(UI *ui, int num)
     ui->steps[ui->curr_step]->is_display = FALSE;
     ui->curr_step = num;
     ui->steps[ui->curr_step]->is_display = TRUE;
+
+    gtk_progress_bar_set_fraction(ui->progress->progress_bar, ui->curr_step / 10.0);
 }
 
 void display_image(GtkDrawingArea *draw_area, Image *img, UI *ui, int step, int image)
@@ -460,8 +462,9 @@ void rotate_pixbuf(GtkWidget *widget, UI *ui, gboolean is_scale)
 
     copy_image(ui->steps[3]->images[1], ui->steps[3]->images[0]);
     rotate(ui->steps[3]->images[0], angle);
+
+    copy_image(ui->steps[2]->images[6], ui->steps[2]->images[5]);
     rotate(ui->steps[2]->images[5], angle);
-    copy_image(ui->steps[2]->images[5], ui->steps[3]->images[0]);
 
     gtk_widget_queue_draw(GTK_WIDGET(ui->steps[3]->draw_areas[0]));
 }
@@ -565,6 +568,7 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 unsigned char filter_size = eros.width > eros.height ? eros.width /300 : eros.height /300;
                 erosion(&eros, filter_size);
                 copy_image(&eros, ui->steps[2]->images[5]);
+                copy_image(&eros, ui->steps[2]->images[6]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
                 g_print("Displaying erosion!\n");
@@ -574,10 +578,10 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
             {
                 Image can;
                 copy_image(ui->steps[2]->images[5], &can);
-                ++ui->steps[2]->curr_img;
+                ui->steps[2]->curr_img += 2;
                 
                 canny(&can);
-                copy_image(&can, ui->steps[2]->images[6]);
+                copy_image(&can, ui->steps[2]->images[7]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
                 g_print("Displaying canny!\n");
