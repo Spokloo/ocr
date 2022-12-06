@@ -351,6 +351,7 @@ GdkPixbuf * Image_to_pixbuf(Image *img)
 
 void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img)
 {
+    copy_image(ui->steps[step]->images[0], ui->curr_img);
     GdkPixbuf *pixbuf = Image_to_pixbuf(ui->steps[step]->images[img]);
 
     // Scaling coords and image size //
@@ -788,6 +789,8 @@ void on_file_set(GtkFileChooserButton *button, gpointer user_data)
     gchar buffer[200];
     g_snprintf(buffer, 200, "Image path: %s", path);
     gtk_label_set_text(ui->steps[1]->labels[0], buffer);
+
+    gtk_header_bar_set_subtitle(ui->header->header_bar, g_file_get_basename(file));
 
     set_step(ui, 1);
 }

@@ -32,6 +32,7 @@ gridoku-ocr: $(OBJ)
 	$(CC) $^ -o $@ $(FLAGS)
 
 gridoku-cr-gui: $(OBJ_GUI)
+	@echo -e "\e[1;31m\\nCompiling GUI\e[0m"
 	$(CC) $^ -o $@ $(FLAGS)
 
 $(DIR_OBJ)/%.o: %.c $(INC)
