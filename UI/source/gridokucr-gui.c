@@ -1166,6 +1166,11 @@ void on_restart(GtkButton *button, gpointer user_data)
     gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[1]), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), FALSE);
 
+    for (unsigned int i = 0; i < 12; i++)
+    {
+        ui->steps[i]->sub_step = 0;
+    }
+
     gtk_button_get_label(button);
 }
 
