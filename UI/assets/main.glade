@@ -336,6 +336,7 @@ Solved Grid</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">10</property>
                 <property name="orientation">vertical</property>
+                <property name="pulse-step">0.01</property>
                 <property name="text" translatable="yes">Progress</property>
               </object>
               <packing>
