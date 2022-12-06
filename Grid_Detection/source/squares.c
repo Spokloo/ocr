@@ -3,12 +3,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <string.h>
-#include <stdio.h>
-
-int x = 1157;
-int y = 1026;
-
 void sort_lines(int** lines, int len)
 {
     for (int i = 0; i < len - 1; i++) {
@@ -227,30 +221,13 @@ Square *draw_grid_square(Image *img, int nb_squares, Square *squares,
             continue;
 
         double factor = (diff / a2) * a1;
-        double square_factor = a1 * 2 - factor * 3.5;
+        double square_factor = a1 * 1.5 - factor * 3.5;
 
         if (square_factor >= best_factor)
         {
-            //printf("factor n°%d: %f\n", i, square_factor);
-            //Image copy;
-            //copy_image(img, &copy);
-            //draw_square(&copy, *current, (Pixel){0, 0, 255});
-            //char *f = malloc(sizeof(char) * 15);
-            //sprintf(f, "test_%d", i);
-
-            //save_image(&copy, f);
-            //free_image(&copy);
-
             best_factor = square_factor;
             grid_square = current;
         }
-    }
-
-    if (strstr(img->path, "02"))
-    {
-        //grid_square->p2 = (Point) { x, grid_square->p2.y };
-        //grid_square->p3 = (Point) { x, y };
-        //grid_square->p4 = (Point) { grid_square->p4.x, y };
     }
 
     draw_square(img, *grid_square, (Pixel){0, 0, 255});
