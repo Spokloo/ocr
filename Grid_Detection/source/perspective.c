@@ -36,7 +36,7 @@ void perspective(Image *img, Square **gs, Image ***result_imgs)
 
     // Storing image
     (*result_imgs)[4] = img;
-    save_image(img, "results/step_04_perspective_correction.jpeg");
+    //save_image(img, "results/step_04_perspective_correction.jpeg");
 
     // Extracting the 81 cells
     extract_cells(img);
