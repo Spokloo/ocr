@@ -8,16 +8,18 @@ INC_DIR = include
 DIR_OBJ = obj
 
 #- - - - - - - - AUTOMATIC VARIABLES - - - - - - - -
-SRC = $(shell find -name "*.c" -not -path '*main.c*' | sed 's/.\///')
+SRC = $(shell find -name "*.c" -not -path '*main.c*' -not -path '*gridoku-cr-gui.c*'| sed 's/.\///')
+SRC_GUI = $(shell find -name "*.c" -not -path '*main.c*' -not -path '*ocr.c*'| sed 's/.\///')
 INC = $(shell find -name "*.h")
 
 OBJ = $(addprefix $(DIR_OBJ)/, $(SRC:c=o))
+OBJ_GUI = $(addprefix $(DIR_OBJ)/, $(SRC_GUI:c=o))
 INC_DIR_ARG = $(addprefix -I, $(shell find -type d -name $(INC_DIR) -not -path '*obj*' | sed 's/.\///')) -ITools/
 
 FLAGS = $(INC_DIR_ARG) $(CFLAGS) $(LDLIBS)
 
 #- - - - - - - - RULES - - - - - - - -
-all: init gridoku-ocr clear
+all: init gridoku-ocr gridoku-cr-gui clear
 
 init:
 	@mkdir -p $(DIR_OBJ)
@@ -29,9 +31,13 @@ clear:
 gridoku-ocr: $(OBJ)
 	$(CC) $^ -o $@ $(FLAGS)
 
+gridoku-cr-gui: $(OBJ_GUI)
+	$(CC) $^ -o $@ $(FLAGS)
+
 $(DIR_OBJ)/%.o: %.c $(INC)
 	$(CC) -c $< -o $@ $(FLAGS)
 
 clean:
 	rm -fr $(DIR_OBJ)
+	rm -fr gridoku-cr-gui
 	rm -f gridoku-ocr

@@ -700,7 +700,7 @@ void Image_to_grid(UI *ui)
 
     //// DIGIT RECOGNITION /// /
     NeuralNetwork nn = new_nn();
-    load_weights(&nn, "../Neural_Network/weights");
+    load_weights(&nn, "Neural_Network/weights");
     
     int **grid = load_result(cells, &nn);
     free_nn(&nn);
@@ -716,7 +716,7 @@ void Image_to_grid(UI *ui)
 
 void gen_grid(UI *ui, int **old_grid, int **solved_grid, int step)
 {
-    Image grid_img = load_image("../Solved_Grid_Gen/images/blank_grid.png");
+    Image grid_img = load_image("Solved_Grid_Gen/images/blank_grid.png");
     int x = 8, y = 8;
 
     Pixel normal_color = {.r = 0, .g = 0, .b = 0};
@@ -1096,7 +1096,7 @@ int launch_gui(int argc, char **argv)
 
     GtkBuilder *builder = gtk_builder_new();
     GError *error = NULL;
-    if (gtk_builder_add_from_file(builder, "assets/main.glade", &error) == 0)
+    if (gtk_builder_add_from_file(builder, "UI/assets/main.glade", &error) == 0)
     {
         g_printerr("Error loading builder: %s\n", error->message);
         g_clear_error(&error);
