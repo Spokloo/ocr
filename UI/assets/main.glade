@@ -2127,6 +2127,7 @@ If the recognition is not correct, &lt;span weight="bold"&gt;place the correct d
             <child>
               <object class="GtkButton" id="reload_button">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Restart process with current image</property>
@@ -2162,43 +2163,12 @@ If the recognition is not correct, &lt;span weight="bold"&gt;place the correct d
                 <property name="spacing">5</property>
                 <property name="layout-style">start</property>
                 <child>
-                  <object class="GtkButton" id="open_img_button">
+                  <object class="GtkFileChooserButton" id="open_img_button">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="halign">center</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="spacing">10</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Open</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="icon-name">document-open</property>
-                            <property name="use-fallback">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
+                    <property name="sensitive">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="title" translatable="yes"/>
+                    <property name="width-chars">7</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -2209,6 +2179,7 @@ If the recognition is not correct, &lt;span weight="bold"&gt;place the correct d
                 <child>
                   <object class="GtkButton" id="save_img_button">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="halign">center</property>

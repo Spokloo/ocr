@@ -61,6 +61,7 @@ typedef struct progress {
 
 typedef struct header {
     GtkHeaderBar *header_bar;
+    GtkFileChooserButton *button;
     GtkButton **buttons;
 } Header;
 
@@ -131,6 +132,12 @@ void save_solved_image(GtkButton *button, gpointer user_data);
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);
 void on_spin_value_changed(GtkSpinButton *spin, gpointer user_data);
 void on_scale_value_changed(GtkScale *scale, gpointer user_data);
+
+// Header bar
+void on_save_header(GtkButton *button, gpointer user_data);
+void on_open_header(GtkFileChooserButton *button, gpointer user_data);
+void on_restart(GtkButton *button, gpointer user_data);
+
 
 // MAIN //
 

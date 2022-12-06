@@ -200,10 +200,10 @@ UI * init_ui(GtkBuilder *builder)
     /* HEADER BAR */
     ui->header = malloc(sizeof(Header *));
     ui->header->header_bar = GTK_HEADER_BAR(gtk_builder_get_object(builder, "header_bar"));
-    ui->header->buttons = malloc(sizeof(GtkButton *) * 3);
+    ui->header->buttons = malloc(sizeof(GtkButton *) * 2);
     ui->header->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "reload_button"));
-    ui->header->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "open_img_button"));
-    ui->header->buttons[2] = GTK_BUTTON(gtk_builder_get_object(builder, "save_img_button"));
+    ui->header->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "save_img_button"));
+    ui->header->button = GTK_FILE_CHOOSER_BUTTON(gtk_builder_get_object(builder, "open_img_button"));
 
     /* PROGRESS BAR */
     ui->progress = malloc(sizeof(Progress *));
@@ -230,6 +230,7 @@ UI * init_ui(GtkBuilder *builder)
 
 void connect_signals(UI *ui)
 {
+    ///////// STEPS /////////////
     g_signal_connect(ui->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(ui->steps[0]->file_chooser_button, "file-set", G_CALLBACK(on_file_set), ui);
 
@@ -270,11 +271,24 @@ void connect_signals(UI *ui)
 
     g_signal_connect(ui->steps[10]->draw_areas[0], "draw", G_CALLBACK(on_draw_step11), ui);
     g_signal_connect(ui->steps[10]->buttons[0], "clicked", G_CALLBACK(save_solved_image), ui);
+
+    ///// HEADER BAR /////
+    g_signal_connect(ui->header->button, "file-set", G_CALLBACK(on_open_header), ui);
+    g_signal_connect(ui->header->buttons[0], "clicked", G_CALLBACK(on_restart), ui);
+    g_signal_connect(ui->header->buttons[1], "clicked", G_CALLBACK(on_save_header), ui);
 }
 
 void set_step(UI *ui, int num)
 {
     gtk_stack_set_visible_child(ui->stack, GTK_WIDGET(ui->steps[num]->viewport));
+
+    if (num != 0)
+    {
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[1]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[0]), TRUE);
+    }
+
     ui->steps[ui->curr_step]->is_display = FALSE;
     ui->curr_step = num;
     ui->steps[ui->curr_step]->is_display = TRUE;
@@ -351,7 +365,7 @@ GdkPixbuf * Image_to_pixbuf(Image *img)
 
 void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img)
 {
-    copy_image(ui->steps[step]->images[0], ui->curr_img);
+    copy_image(ui->steps[step]->images[img], ui->curr_img);
     GdkPixbuf *pixbuf = Image_to_pixbuf(ui->steps[step]->images[img]);
 
     // Scaling coords and image size //
@@ -1085,6 +1099,72 @@ void save_solved_image(GtkButton *button, gpointer user_data)
 }
 
 
+/* HEADER BAR */
+void on_save_header(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    if (ui->curr_step != 0)
+    {
+        // SAVE DIALOG
+        GtkWidget *dialog;
+        GtkFileChooser *chooser;
+        GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+        gint res;
+
+        dialog = gtk_file_chooser_dialog_new(
+            "Save file", GTK_WINDOW(ui->window), action, "Cancel",
+            GTK_RESPONSE_CANCEL, "Save", GTK_RESPONSE_ACCEPT, NULL);
+
+        chooser = GTK_FILE_CHOOSER(dialog);
+        gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+        gtk_file_chooser_set_current_name(chooser, "Untitled");
+        ///
+
+        res = gtk_dialog_run(GTK_DIALOG(dialog));
+        if (res == GTK_RESPONSE_ACCEPT)
+        {
+            char *res, *filename;
+            res = gtk_file_chooser_get_filename(chooser);
+
+            filename = malloc(strlen(res) + 6);
+            strcpy(filename, res);
+            strcat(filename, ".jpeg\0");
+
+            save_image(ui->curr_img, filename);
+        }
+
+        gtk_widget_destroy(dialog);
+    }
+    gtk_button_get_label(button);
+}
+
+void on_open_header(GtkFileChooserButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(button));
+    char *path = g_file_get_path(file);
+    
+    Image img = load_image(path);
+
+    display_image(ui->steps[ui->curr_step]->draw_areas[0], &img, ui, ui->curr_step, 0);
+
+    set_step(ui, ui->curr_step);
+}
+
+void on_restart(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+
+    set_step(ui, 0);
+    gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[1]), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), FALSE);
+
+    gtk_button_get_label(button);
+}
+
 ////////////
 
 
@@ -1109,7 +1189,7 @@ int launch_gui(int argc, char **argv)
     UI *ui = init_ui(builder);
     connect_signals(ui);
 
-    //gtk_header_bar_set_subtitle(ui->header->header_bar, "");
+    gtk_header_bar_set_subtitle(ui->header->header_bar, "");
     gtk_widget_show(GTK_WIDGET(ui->window));
 
     gtk_main();
