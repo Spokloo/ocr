@@ -12,6 +12,16 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkFileFilter" id="filefilter1">
+    <mime-types>
+      <mime-type>image/ *</mime-type>
+    </mime-types>
+    <patterns>
+      <pattern>*.png</pattern>
+      <pattern>*.jpg</pattern>
+      <pattern>*.jpeg</pattern>
+    </patterns>
+  </object>
   <object class="GtkApplicationWindow" id="org.gtk.gridokucr">
     <property name="can-focus">False</property>
     <property name="default-width">850</property>
@@ -395,7 +405,8 @@ To get started, open a Sudoku either by clicking the button &lt;span weight="bol
                         <property name="margin-end">10</property>
                         <property name="margin-top">10</property>
                         <property name="margin-bottom">20</property>
-                        <property name="title" translatable="yes"/>
+                        <property name="filter">filefilter1</property>
+                        <property name="title" translatable="yes">Select a Sudoku image</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

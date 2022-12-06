@@ -92,6 +92,7 @@ void set_label_sub_step(UI *ui);
 void previous_sub_step(GtkButton *button, UI *ui, int step);
 void next_sub_step(GtkButton *button, UI *ui, int step);
 void last_step(GtkButton *button, UI *ui, int step);
+void gen_grid(UI *ui, int **old_grid, int **solved_grid, int step);
 
 // CALLBACKS //
 
@@ -102,6 +103,10 @@ void on_draw_step4(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step8(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step9_0(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step9_1(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step10(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step11(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 
 // Buttons
 void cancel_select(GtkButton *button, gpointer user_data);
@@ -117,6 +122,10 @@ void on_next_step6(GtkButton *button, gpointer user_data);
 void on_skip_step6(GtkButton *button, gpointer user_data);
 void launch_grid_detect(GtkButton *button, gpointer user_data);
 void on_launch_digit_recog(GtkButton *button, gpointer user_data);
+void on_place(GtkButton *button, gpointer user_data);
+void on_confirm_digit(GtkButton *button, gpointer user_data);
+void launch_solver(GtkButton *button, gpointer user_data);
+void save_solved_image(GtkButton *button, gpointer user_data);
 
 // Custom buttons
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);
