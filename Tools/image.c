@@ -148,7 +148,7 @@ void save_image(Image *img, char *newFileName)
  */
 void free_image(Image *img)
 {
-    unsigned width = img->width;
+    unsigned int width = img->width;
     for (unsigned int i = 0; i < width; i++)
         free(img->matrix[i]);
     free(img->matrix);
