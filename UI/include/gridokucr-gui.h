@@ -14,10 +14,10 @@
 #include "morphological_ops.h"
 #include "normalize.h"
 
-#include "houghtransform.h"
 #include "auto_rotation.h"
-#include "squares.h"
+#include "houghtransform.h"
 #include "perspective.h"
+#include "squares.h"
 
 #include "images_post_grid.h"
 
@@ -27,8 +27,8 @@
 
 #include "grid_gen.h"
 
-
-typedef struct hs {
+typedef struct hs
+{
     int **real_lines;
     unsigned int lines_len;
     Square *sq;
@@ -36,7 +36,8 @@ typedef struct hs {
     Image **result_imgs;
 } HoughS;
 
-typedef struct step {
+typedef struct step
+{
     GtkViewport *viewport;
     GtkButton **buttons;
     GtkFileChooserButton *file_chooser_button;
@@ -53,19 +54,22 @@ typedef struct step {
     int **grid;
 } Step;
 
-typedef struct progress {
+typedef struct progress
+{
     GtkBox *box;
     GtkProgressBar *progress_bar;
     GtkButton **buttons;
 } Progress;
 
-typedef struct header {
+typedef struct header
+{
     GtkHeaderBar *header_bar;
     GtkFileChooserButton *button;
     GtkButton **buttons;
 } Header;
 
-typedef struct ui {
+typedef struct ui
+{
     GtkWindow *window;
     GtkStack *stack;
     GtkMessageDialog *dialog;
@@ -78,18 +82,17 @@ typedef struct ui {
     Image *curr_img;
 } UI;
 
-
-
 // CUSTOM FUNCTIONS //
 
 /*
  * Initialise the whole UI with malloc
  * @param: *builder -> pointer to builder
  */
-UI * init_ui(GtkBuilder *builder);
+UI *init_ui(GtkBuilder *builder);
 void connect_signals(UI *ui);
 void set_step(UI *ui, int num);
-void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step, int img);
+void draw_image(GtkDrawingArea *draw_area, cairo_t *cr, UI *ui, int step,
+                int img);
 void set_label_sub_step(UI *ui);
 void previous_sub_step(GtkButton *button, UI *ui, int step);
 void next_sub_step(GtkButton *button, UI *ui, int step);
@@ -105,8 +108,10 @@ void on_draw_step4(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step5(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step6(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step8(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
-void on_draw_step9_0(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
-void on_draw_step9_1(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
+void on_draw_step9_0(GtkDrawingArea *draw_area, cairo_t *cr,
+                     gpointer user_data);
+void on_draw_step9_1(GtkDrawingArea *draw_area, cairo_t *cr,
+                     gpointer user_data);
 void on_draw_step10(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 void on_draw_step11(GtkDrawingArea *draw_area, cairo_t *cr, gpointer user_data);
 
@@ -146,7 +151,6 @@ void on_scale_value_changed(GtkScale *scale, gpointer user_data);
 void on_save_header(GtkButton *button, gpointer user_data);
 void on_open_header(GtkFileChooserButton *button, gpointer user_data);
 void on_restart(GtkButton *button, gpointer user_data);
-
 
 // MAIN //
 
