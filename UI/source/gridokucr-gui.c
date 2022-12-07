@@ -287,7 +287,6 @@ void connect_signals(UI *ui)
 void set_step(UI *ui, int num)
 {
     gtk_stack_set_visible_child(ui->stack, GTK_WIDGET(ui->steps[num]->viewport));
-    g_print("Curr step: %d\n", num);
 
     if (num != 0)
     {
@@ -485,7 +484,6 @@ void rotate_pixbuf(GtkWidget *widget, UI *ui, gboolean is_scale)
 void previous_sub_step(GtkButton *button, UI *ui, int step)
 {
     --ui->steps[step]->sub_step;
-    g_print("Clicked previous: curr sub step: %d\n", ui->steps[step]->sub_step);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[1]), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[2]), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[3]), FALSE);
@@ -511,7 +509,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
 {
     ++ui->steps[step]->sub_step;
     gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[step]->buttons[0]), TRUE);
-    g_print("Clicked: curr sub step: %d\n", ui->steps[step]->sub_step);
 
     if (step == 2)
     {
@@ -527,7 +524,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&gray_scale, ui->steps[2]->images[1]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying grayscale!\n");
                 break;
             }
 
@@ -541,7 +537,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&normal, ui->steps[2]->images[2]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying normalize!\n");
                 break;
             }
             case 3:
@@ -555,7 +550,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&blur, ui->steps[2]->images[3]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying gaussian blur!\n");
                 break;
             }
             case 4:
@@ -569,7 +563,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&dilat, ui->steps[2]->images[4]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying dilation!\n");
                 break;
             }
             case 5:
@@ -584,7 +577,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&eros, ui->steps[2]->images[6]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying erosion!\n");
                 break;
             }
             case 6:
@@ -597,7 +589,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(&can, ui->steps[2]->images[7]);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[2]->draw_areas[0]));
-                g_print("Displaying canny!\n");
 
                 gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
                 gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), FALSE);
@@ -630,7 +621,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_hough_param(ui, 0, 1);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
-                g_print("Displaying hough transform!\n");
                 break;
             }
             case 2:
@@ -648,7 +638,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_image(ui->steps[2]->images[5], ui->steps[5]->images[4]);
                 if (ui->steps[5]->hough_param[1]->result_imgs[1] != NULL)
                 {
-                    g_print("Autorotate before canny");
                     rotate(ui->steps[5]->images[4], -angle);
                 }
 
@@ -657,7 +646,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_hough_param(ui, 1, 2);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
-                g_print("Displaying auto_rotation!\n");
                 break;
             }
             case 3:
@@ -672,7 +660,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 copy_hough_param(ui, 2, 3);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
-                g_print("Displaying square detection!\n");
                 break;
             }
             case 4:
@@ -691,7 +678,6 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
                 gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[3]), TRUE);
 
                 gtk_widget_queue_draw(GTK_WIDGET(ui->steps[5]->draw_areas[0]));
-                g_print("Displaying perspective!\n");
                 break;
             }
             default:
@@ -848,7 +834,6 @@ void on_file_set(GtkFileChooserButton *button, gpointer user_data)
 
     display_image(ui->steps[1]->draw_areas[0], &img, ui, 1, 0);
 
-    g_print("File selected.\nPath: %s\n", ui->steps[1]->images[0]->path);
 
     gchar buffer[200];
     g_snprintf(buffer, 200, "Image path: %s", path);

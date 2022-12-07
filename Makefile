@@ -1,5 +1,5 @@
 #- - - - - - - - VARIABLES - - - - - - - -
-CC = gcc -pedantic-errors -g
+CC = gcc -O3 #-pedantic-errors -g
 CFLAGS = -Wall -Wextra `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2`
 LDLIBS = `pkg-config --libs gtk+-3.0 ` `pkg-config --libs sdl2` -lSDL2_image -lm
 
