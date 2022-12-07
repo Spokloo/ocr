@@ -115,18 +115,6 @@ UI * init_ui(GtkBuilder *builder)
     }
     step6->is_display = FALSE;
 
-    /* STEP 7 */
-    Step *step7 = malloc(sizeof(Step));
-    step7->buttons = malloc(sizeof(GtkButton *));
-    step7->draw_areas = malloc(sizeof(GtkDrawingArea *));
-    step7->event_box = malloc(sizeof(GtkEventBox *));
-    step7->images = malloc(sizeof(Image *));
-    step7->images[0] = malloc(sizeof(Image));
-
-    step7->viewport = GTK_VIEWPORT(gtk_builder_get_object(builder, "step7"));
-    step7->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "confirm_crop_step7"));
-    step7->draw_areas[0] = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "draw_area_step7"));
-    step7->event_box = GTK_EVENT_BOX(gtk_builder_get_object(builder, "crop_box_step7"));
     
     /* STEP 8 */
     Step *step8 = malloc(sizeof(Step));
@@ -191,7 +179,6 @@ UI * init_ui(GtkBuilder *builder)
     ui->steps[3] = step4;
     ui->steps[4] = step5;
     ui->steps[5] = step6;
-    ui->steps[6] = step7;
     ui->steps[7] = step8;
     ui->steps[8] = step9;
     ui->steps[9] = step10;
@@ -211,19 +198,29 @@ UI * init_ui(GtkBuilder *builder)
     ui->progress->box = GTK_BOX(gtk_builder_get_object(builder, "steps"));
     ui->progress->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
 
-    ui->progress->buttons = malloc(sizeof(GtkButton *) * 8);
-    ui->progress->buttons[0] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button1"));
-    ui->progress->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button2"));
-    ui->progress->buttons[2] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button3"));
-    ui->progress->buttons[3] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button4"));
-    ui->progress->buttons[4] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button5"));
-    ui->progress->buttons[5] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button6"));
-    ui->progress->buttons[6] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button7"));
-    ui->progress->buttons[7] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button8"));
+    ui->progress->buttons = malloc(sizeof(GtkButton *) * 11);
+    ui->progress->buttons[1] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button1"));
+    ui->progress->buttons[2] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button2"));
+    ui->progress->buttons[3] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button3"));
+    ui->progress->buttons[4] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button4"));
+    ui->progress->buttons[7] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button6"));
+    ui->progress->buttons[9] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button7"));
+    ui->progress->buttons[10] = GTK_BUTTON(gtk_builder_get_object(builder, "step_button8"));
 
     ui->curr_step = 0;
     
+    for (int i = 0; i < 11; i++)
+    {
+        if (i != 6)
+        {
+            ui->steps[i]->sub_step = 0;
+            ui->steps[i]->curr_img = 0;
+        }
+    }
+
     ui->curr_img = malloc(sizeof(Image));
+
+    ui->dialog = GTK_MESSAGE_DIALOG(gtk_builder_get_object(builder, "dialog"));
 
     return ui;
 }
@@ -276,23 +273,39 @@ void connect_signals(UI *ui)
     g_signal_connect(ui->header->button, "file-set", G_CALLBACK(on_open_header), ui);
     g_signal_connect(ui->header->buttons[0], "clicked", G_CALLBACK(on_restart), ui);
     g_signal_connect(ui->header->buttons[1], "clicked", G_CALLBACK(on_save_header), ui);
+
+    ///// PROGRESS BAR /////
+    g_signal_connect(ui->progress->buttons[1], "clicked", G_CALLBACK(on_load_image), ui);
+    g_signal_connect(ui->progress->buttons[2], "clicked", G_CALLBACK(on_pre_proc), ui);
+    g_signal_connect(ui->progress->buttons[3], "clicked", G_CALLBACK(on_man_rot), ui);
+    g_signal_connect(ui->progress->buttons[4], "clicked", G_CALLBACK(on_grid_detect), ui);
+    g_signal_connect(ui->progress->buttons[7], "clicked", G_CALLBACK(on_digit_recog), ui);
+    g_signal_connect(ui->progress->buttons[9], "clicked", G_CALLBACK(on_solve_grid), ui);
+    g_signal_connect(ui->progress->buttons[10], "clicked", G_CALLBACK(on_save_solved), ui);
 }
 
 void set_step(UI *ui, int num)
 {
     gtk_stack_set_visible_child(ui->stack, GTK_WIDGET(ui->steps[num]->viewport));
+    g_print("Curr step: %d\n", num);
 
     if (num != 0)
     {
-        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), TRUE);
         gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[1]), TRUE);
         gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[0]), TRUE);
     }
+
+    if (num == 0 || num == 1 || num == 2 || num == 5 || num == 8)
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), FALSE);
+    else
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), TRUE);
 
     ui->steps[ui->curr_step]->is_display = FALSE;
     ui->curr_step = num;
     ui->steps[ui->curr_step]->is_display = TRUE;
 
+    if (num == 1 || num == 2 || num == 3 || num == 4 || num == 7 || num == 9 || num == 10)
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->progress->buttons[num]), TRUE);
     gtk_progress_bar_set_fraction(ui->progress->progress_bar, ui->curr_step / 10.0);
 }
 
@@ -780,6 +793,39 @@ void gen_grid(UI *ui, int **old_grid, int **solved_grid, int step)
 }
 
 
+void display_grid_not_solvable(UI *ui)
+{
+    gtk_dialog_run(GTK_DIALOG(ui->dialog));
+    gtk_widget_hide(GTK_WIDGET(ui->dialog));
+}
+
+
+void restart_from(UI *ui, int step)
+{
+    for (unsigned int i = step; i < 11; i++)
+    {
+        if (i != 6) 
+        {
+            ui->steps[i]->sub_step = 0;
+            ui->steps[i]->curr_img = 0;
+        }
+
+        // STEP 3 buttons
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[0]), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[1]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[3]), FALSE);
+
+        // STEP 6 buttons
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[0]), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[1]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[2]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[3]), FALSE);
+    }
+
+    set_step(ui, step);
+
+}
 ////////////
 
 
@@ -1047,14 +1093,20 @@ void launch_solver(GtkButton *button, gpointer user_data)
     }
 
     ui->steps[10]->grid = solve(tmp);
-    gen_grid(ui, ui->steps[7]->grid, ui->steps[10]->grid, 10);
 
-    for (int i = 0; i < 9; i++)
-        free(tmp[i]);
-    free(tmp);
+    if(ui->steps[10]->grid == NULL)
+        display_grid_not_solvable(ui);
+    else 
+    {
+        gen_grid(ui, ui->steps[7]->grid, ui->steps[10]->grid, 10);
 
-    set_step(ui, 10);
-    gtk_button_get_label(button);
+        for (int i = 0; i < 9; i++)
+            free(tmp[i]);
+        free(tmp);
+
+        set_step(ui, 10);
+        gtk_button_get_label(button);
+    }
 }
 
 
@@ -1166,13 +1218,81 @@ void on_restart(GtkButton *button, gpointer user_data)
     gtk_widget_set_sensitive(GTK_WIDGET(ui->header->buttons[1]), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(ui->header->button), FALSE);
 
-    for (unsigned int i = 0; i < 12; i++)
+    for (unsigned int i = 0; i < 11; i++)
     {
-        ui->steps[i]->sub_step = 0;
+        if (i != 6)
+        {
+            ui->steps[i]->sub_step = 0;
+            ui->steps[i]->curr_img = 0;
+        }
+
+        // STEP 3 buttons
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[0]), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[1]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[2]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[2]->buttons[3]), FALSE);
+
+        // STEP 6 buttons
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[0]), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[1]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[2]), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(ui->steps[5]->buttons[3]), FALSE);
     }
 
     gtk_button_get_label(button);
 }
+
+
+/* PROGRESS BAR */
+void on_load_image(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 1);
+    gtk_button_get_label(button);
+}
+
+void on_pre_proc(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 2);
+    gtk_button_get_label(button);
+}
+
+void on_man_rot(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 3);
+    gtk_button_get_label(button);
+}
+
+void on_grid_detect(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 4);
+    gtk_button_get_label(button);
+}
+
+void on_digit_recog(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 7);
+    gtk_button_get_label(button);
+}
+
+void on_solve_grid(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 9);
+    gtk_button_get_label(button);
+}
+
+void on_save_solved(GtkButton *button, gpointer user_data)
+{
+    UI *ui = user_data;
+    restart_from(ui, 10);
+    gtk_button_get_label(button);
+}
+
 
 ////////////
 

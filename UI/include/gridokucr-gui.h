@@ -68,6 +68,7 @@ typedef struct header {
 typedef struct ui {
     GtkWindow *window;
     GtkStack *stack;
+    GtkMessageDialog *dialog;
 
     Step *steps[11];
     Header *header;
@@ -127,6 +128,14 @@ void on_place(GtkButton *button, gpointer user_data);
 void on_confirm_digit(GtkButton *button, gpointer user_data);
 void launch_solver(GtkButton *button, gpointer user_data);
 void save_solved_image(GtkButton *button, gpointer user_data);
+
+void on_load_image(GtkButton *button, gpointer user_data);
+void on_pre_proc(GtkButton *button, gpointer user_data);
+void on_man_rot(GtkButton *button, gpointer user_data);
+void on_grid_detect(GtkButton *button, gpointer user_data);
+void on_digit_recog(GtkButton *button, gpointer user_data);
+void on_solve_grid(GtkButton *button, gpointer user_data);
+void on_save_solved(GtkButton *button, gpointer user_data);
 
 // Custom buttons
 void on_file_set(GtkFileChooserButton *button, gpointer user_data);

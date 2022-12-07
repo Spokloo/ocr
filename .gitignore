@@ -64,3 +64,6 @@ solver/solver
 UI/src/#main.glade#
 
 */tags
+
+compile_commands.json
+.cache/
