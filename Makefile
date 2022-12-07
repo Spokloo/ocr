@@ -1,6 +1,6 @@
 #- - - - - - - - VARIABLES - - - - - - - -
 CC = gcc -O3 #-pedantic-errors -g
-CFLAGS = -Wall -Wextra `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2`
+CFLAGS = -D__NO_INLINE__ -Wall -Wextra `pkg-config --cflags gtk+-3.0` `pkg-config --cflags sdl2`
 LDLIBS = `pkg-config --libs gtk+-3.0 ` `pkg-config --libs sdl2` -lSDL2_image -lm
 
 SRC_DIR = source
@@ -19,7 +19,7 @@ INC_DIR_ARG = $(addprefix -I, $(shell find -type d -name $(INC_DIR) -not -path '
 FLAGS = $(INC_DIR_ARG) $(CFLAGS) $(LDLIBS)
 
 #- - - - - - - - RULES - - - - - - - -
-all: init gridoku-ocr gridoku-cr-gui clear
+all: init gridoku-cr gridoku-cr-gui clear
 
 init:
 	@mkdir -p $(DIR_OBJ)
@@ -28,7 +28,8 @@ init:
 clear:
 	@find $(DIR_OBJ) -type d -empty -delete
 
-gridoku-ocr: $(OBJ)
+gridoku-cr: $(OBJ)
+	@echo -e "\e[1;31m\\nCompiling Console\e[0m"
 	$(CC) $^ -o $@ $(FLAGS)
 
 gridoku-cr-gui: $(OBJ_GUI)
@@ -41,4 +42,4 @@ $(DIR_OBJ)/%.o: %.c $(INC)
 clean:
 	rm -fr $(DIR_OBJ)
 	rm -fr gridoku-cr-gui
-	rm -f gridoku-ocr
+	rm -f gridoku-cr
