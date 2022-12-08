@@ -728,7 +728,7 @@ void next_sub_step(GtkButton *button, UI *ui, int step)
             copy_image(ui->steps[5]->images[1], &auto_rot);
             ++ui->steps[5]->curr_img;
 
-            copy_hough_param(ui, 0, 1);
+            //copy_hough_param(ui, 0, 1);
 
             Image tmp;
             copy_image(ui->steps[5]->images[0], &tmp);

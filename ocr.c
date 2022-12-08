@@ -97,7 +97,7 @@ void img_args(int argc, char **argv)
     if (optind >= argc)
         print_help();
 
-    char tmppath[128];
+    char tmppath[strlen(inter_path) + 40];
     unsigned int n = 0;
     if (save_inter)
     {
@@ -355,7 +355,7 @@ void img_args(int argc, char **argv)
         printf("Generating solved Sudoku image...\n");
     if (save_inter)
     {
-        char tmppath2[128];
+        char tmppath2[strlen(inter_path) + 40];
         tmppath[n + 9] = '\0';
         strcpy(tmppath2, tmppath);
         tmppath[n + 1] = '\0';
