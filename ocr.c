@@ -97,10 +97,11 @@ void img_args(int argc, char **argv)
     if (optind >= argc)
         print_help();
 
-    char tmppath[strlen(inter_path) + 40];
+    char *tmppath = NULL;
     unsigned int n = 0;
     if (save_inter)
     {
+        tmppath = malloc((strlen(inter_path) + 40) * sizeof(char));
         n = strlen(inter_path);
         strcpy(tmppath, inter_path);
         tmppath[n] = '/';
@@ -317,7 +318,6 @@ void img_args(int argc, char **argv)
     // - - - - - - - - - - SOLVER - - - - - - - - - -
     if (verbose)
         printf("Solving grid...\n");
-
     if (save_inter)
     {
         tmppath[n + 1] = '\0';
@@ -362,6 +362,7 @@ void img_args(int argc, char **argv)
         strcat(tmppath, "5.0-result.png");
         construct_grid(tmppath2, "Solved_Grid_Gen/images/blank_grid.png",
                        tmppath);
+        free(tmppath);
     }
     else if (out)
         construct_grid("grid", "Solved_Grid_Gen/images/blank_grid.png",
